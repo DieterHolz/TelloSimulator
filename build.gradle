@@ -1,0 +1,72 @@
+plugins {
+	id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.1.0'
+    id 'org.asciidoctor.jvm.pdf' version '3.1.0'
+}
+
+group 'ch.fhnw'
+version '0.1'
+
+repositories {
+	jcenter()
+    mavenCentral()
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots/"
+	}
+
+}
+
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/java", "src/main/resources"]
+        }
+    }
+}
+
+compileJava {
+    options.encoding    = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+	testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
+
+asciidoctorj {
+    modules {
+       diagram.version '1.5.18'
+    }
+}
+
+asciidoctor {
+  sourceDir  file('docs')
+  sources {
+    include 'documentation.adoc','syntax.adoc'
+  }
+  outputDir  file('build/docs')
+  attributes  'source-highlighter': 'coderay',
+              'coderay-linenums-mode': 'table',
+              'sourcedir': "${projectDir}/src/main/java",
+              'targeted-env': 'Sample'
+}
+
+asciidoctorPdf {
+  sourceDir 'docs'
+
+  asciidoctorj {
+    attributes 'source-highlighter' : 'coderay',
+               'sourcedir': "${projectDir}/src/main/java",
+               'targeted-env': 'PDF Sample'
+  }
+}

@@ -1,0 +1,64 @@
+= Sample Documentation
+:icons: font
+:toc: left
+:revnumber: 1.0
+
+[TIP] 
+Check out AsciiDocFx
+
+Some sample documentaiton to show AsciiDoctor capabilities.
+
+Build for: {targeted-env}
+
+== Section
+
+.Important Links
+* https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[Quick reference]
+* https://asciidoctor.org/docs/asciidoc-vs-markdown/[AsciiDoc vs Markdown]
+* https://asciidoctor.org/docs/asciidoc-writers-guide/[AsciiDoc Writers Guide]
+* https://asciidoctor.org/docs/asciidoctor-pdf[AsciidocPDF]
+* https://github.com/asciidoctor/asciidoctor-pdf[Asciidoctor Pdf @github]
+* https://github.com/asciidoctor/asciidoctor-pdf/blob/master/docs/theming-guide.adoc[Asciidoctor Pdf Theme Guide]
+
+
+
+
+== Syntax Highlighting
+
+[source,java]
+----
+public class Presenter{ <1>
+
+    @GET <2>
+    @Transactional
+    public List<Appointment> list() {
+        return Appointment.listAll(); <3>
+    }
+
+
+}
+----
+<1> class definition
+<2> HTTP method mapping
+<3> response 
+
+
+== Diagram Example with Mermaid
+
+include::{includedir}/service-diagram.adoc[]
+
+
+== Includes
+
+[format="csv", options="header"]
+|===
+base,outcome
+
+include::{includedir}/test.csv[]
+|===
+
+[source,java]
+.tellosimulator/SomeClass.java
+----
+include::{sourcedir}/tellosimulator/SomeClass.java[tags=someMethod]
+----
