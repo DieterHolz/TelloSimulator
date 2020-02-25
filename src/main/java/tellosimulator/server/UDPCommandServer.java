@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.*;
 
 public class UDPCommandServer extends Thread {
-	DatagramSocket commandSocket;
+	DatagramSocket commandSocket = new DatagramSocket(null);
 
 	int commandPort = 8889;
 
@@ -19,11 +19,14 @@ public class UDPCommandServer extends Thread {
 	public UDPCommandServer() throws SocketException {
 
 		try {
-			commandSocket = new DatagramSocket(commandPort);
+			InetAddress address = InetAddress.getLocalHost();
+			commandSocket.connect(address, commandPort);
+			System.out.println(commandSocket.getRemoteSocketAddress().toString());
 
 			// sets timeout in milliseconds, limiting the waiting time when receiving data.
 			// If the timeout expires, a SocketTimeoutException is raised.
-			commandSocket.setSoTimeout(securityTimeout);
+
+			//commandSocket.setSoTimeout(securityTimeout);
 
 		} catch (IOException ex) {
 			System.out.println("Command server error: " + ex.getMessage());
@@ -48,22 +51,23 @@ public class UDPCommandServer extends Thread {
 				String received = new String(packet.getData(), 0, packet.getLength());
 				System.out.println("Received command: " + received);
 
-				if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
+				/*if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
 					sdkModeInitiated = true;
 					String ok = TelloCommands.OK;
 					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address,
 							port);
 					commandSocket.send(responsePacket);
 					continue;
-				}
+				}*/
 
-				if (sdkModeInitiated) {
-					String response = CommandHandler.handle(received);
+				/*if (sdkModeInitiated) {
+					// String response = CommandHandler.handle(received);
+					String response = "ok";
 					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,
 							address, port);
 					commandSocket.send(responsePacket);
 					continue;
-				}
+				}*/
 
 			} catch (SocketTimeoutException ex) {
 				System.out.println("Timeout error: " + ex.getMessage());
