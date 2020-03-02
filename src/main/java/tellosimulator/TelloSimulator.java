@@ -1,6 +1,6 @@
 package tellosimulator;
 
-import tellosimulator.server.UDPCommandServer;
+import tellosimulator.network.UDPCommandServer;
 
 public class TelloSimulator {
 

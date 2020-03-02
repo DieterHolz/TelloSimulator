@@ -1,6 +1,6 @@
 package tellosimulator.commands;
 
-import tellosimulator.server.UDPVideoServer;
+import tellosimulator.network.UDPVideoServer;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package tellosimulator.server;
+package tellosimulator.network;
 
 import tellosimulator.commands.CommandHandler;
 import tellosimulator.commands.TelloCommands;
@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.net.*;
 
 public class UDPCommandServer extends Thread {
-	DatagramSocket commandSocket = new DatagramSocket(null);
-
-	int commandPort = 8889;
+	DatagramSocket commandSocket;
 
 	private boolean running;
 	private boolean sdkModeInitiated;
@@ -19,14 +17,17 @@ public class UDPCommandServer extends Thread {
 	public UDPCommandServer() throws SocketException {
 
 		try {
-			InetAddress address = InetAddress.getLocalHost();
-			commandSocket.connect(address, commandPort);
-			System.out.println(commandSocket.getRemoteSocketAddress().toString());
+			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
+			InetAddress address = InetAddress.getByName("127.0.0.1");
+			//commandSocket.setSoTimeout(securityTimeout);
+			commandSocket.connect(address, TelloSDKValues.COMMAND_PORT);
+
+			System.out.println(address+ "HELLO");
 
 			// sets timeout in milliseconds, limiting the waiting time when receiving data.
 			// If the timeout expires, a SocketTimeoutException is raised.
 
-			//commandSocket.setSoTimeout(securityTimeout);
+
 
 		} catch (IOException ex) {
 			System.out.println("Command server error: " + ex.getMessage());
@@ -49,7 +50,7 @@ public class UDPCommandServer extends Thread {
 
 				packet = new DatagramPacket(buffer, buffer.length, address, port);
 				String received = new String(packet.getData(), 0, packet.getLength());
-				System.out.println("Received command: " + received);
+				System.out.println("Received command: " + received + "YAY!");
 
 				/*if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
 					sdkModeInitiated = true;
