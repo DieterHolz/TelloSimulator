@@ -5,6 +5,7 @@ import tellosimulator.commands.TelloCommands;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Arrays;
 
 public class UDPCommandServer extends Thread {
 	DatagramSocket commandSocket;
@@ -18,9 +19,9 @@ public class UDPCommandServer extends Thread {
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
-			InetAddress address = InetAddress.getByName("127.0.0.1");
+			InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
 			//commandSocket.setSoTimeout(securityTimeout);
-			commandSocket.connect(address, TelloSDKValues.COMMAND_PORT);
+			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
 
 			System.out.println(address+ "HELLO");
 
@@ -44,31 +45,26 @@ public class UDPCommandServer extends Thread {
 
 			try {
 				System.out.println("Waiting for commands...");
-				commandSocket.receive(packet);
-				InetAddress address = packet.getAddress();
-				int port = packet.getPort();
+				String received = readString();
+				System.out.println("Received command: " + received);
 
-				packet = new DatagramPacket(buffer, buffer.length, address, port);
-				String received = new String(packet.getData(), 0, packet.getLength());
-				System.out.println("Received command: " + received + "YAY!");
+				InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+				int port = TelloSDKValues.OP_COMMAND_PORT;
 
-				/*if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
+				if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
 					sdkModeInitiated = true;
 					String ok = TelloCommands.OK;
-					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address,
-							port);
+					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
 					commandSocket.send(responsePacket);
 					continue;
-				}*/
+				}
 
-				/*if (sdkModeInitiated) {
-					// String response = CommandHandler.handle(received);
-					String response = "ok";
-					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,
-							address, port);
+				if (sdkModeInitiated) {
+					String response = CommandHandler.handle(received);
+					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 					commandSocket.send(responsePacket);
 					continue;
-				}*/
+				}
 
 			} catch (SocketTimeoutException ex) {
 				System.out.println("Timeout error: " + ex.getMessage());
@@ -80,5 +76,19 @@ public class UDPCommandServer extends Thread {
 			}
 		}
 		commandSocket.close();
+	}
+
+	private byte[] readBytes() throws IOException {
+		byte[] data = new byte[256];
+		DatagramPacket packet = new DatagramPacket(data, data.length);
+		commandSocket.receive(packet);
+		return Arrays.copyOf(data, packet.getLength());
+	}
+
+	String readString() throws IOException {
+		byte[] data = readBytes();
+		String str = new String(data, "UTF-8");
+		if (TelloSDKValues.DEBUG) System.out.println("[IN ] " + str.trim());
+		return str;
 	}
 }

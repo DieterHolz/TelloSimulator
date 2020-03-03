@@ -5,7 +5,7 @@ public class TelloCommands {
 	public static final String OK = "ok";
 	public static final String ERROR = "error";
 
-	public static final String COMMAND = "Command";
+	public static final String COMMAND = "command";
 	public static final String TAKEOFF = "takeoff";
 	public static final String LAND = "land";
 	public static final String STREAMON = "streamon";
