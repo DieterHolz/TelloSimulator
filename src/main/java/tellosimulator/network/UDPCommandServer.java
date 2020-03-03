@@ -1,7 +1,7 @@
 package tellosimulator.network;
 
 import tellosimulator.commands.CommandHandler;
-import tellosimulator.commands.TelloCommands;
+import tellosimulator.commands.TelloControlCommands;
 
 import java.io.IOException;
 import java.net.*;
@@ -51,9 +51,9 @@ public class UDPCommandServer extends Thread {
 				InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
 				int port = TelloSDKValues.OP_COMMAND_PORT;
 
-				if (!sdkModeInitiated && received.equals(TelloCommands.COMMAND)) {
+				if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
 					sdkModeInitiated = true;
-					String ok = TelloCommands.OK;
+					String ok = TelloControlCommands.OK;
 					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
 					commandSocket.send(responsePacket);
 					continue;
