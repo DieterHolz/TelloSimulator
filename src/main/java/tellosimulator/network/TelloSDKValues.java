@@ -26,7 +26,6 @@ public class TelloSDKValues {
     public static final int OP_COMMAND_PORT = 8889;
     public static final String OP_IP_ADDRESS = "127.0.0.1";
     public static final int SIM_COMMAND_PORT = 8880;
-    public static final String SIM_IP_ADDRESS = "127.0.0.1";
     public static final int STATE_PORT = 8890;
     public static final int STREAM_PORT = 11111;
 

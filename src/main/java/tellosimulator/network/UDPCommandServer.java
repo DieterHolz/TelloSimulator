@@ -2,6 +2,7 @@ package tellosimulator.network;
 
 import tellosimulator.commands.CommandHandler;
 import tellosimulator.commands.TelloControlCommands;
+import tellosimulator.drone.TelloDrone;
 
 import java.io.IOException;
 import java.net.*;
@@ -39,6 +40,8 @@ public class UDPCommandServer extends Thread {
 	public void run() {
 		running = true;
 		sdkModeInitiated = false;
+		TelloDrone telloDrone = new TelloDrone();
+		CommandHandler commandHandler = new CommandHandler(telloDrone);
 
 		while (running) {
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -60,7 +63,7 @@ public class UDPCommandServer extends Thread {
 				}
 
 				if (sdkModeInitiated) {
-					String response = CommandHandler.handle(received);
+					String response = commandHandler.handle(received);
 					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 					commandSocket.send(responsePacket);
 					continue;
