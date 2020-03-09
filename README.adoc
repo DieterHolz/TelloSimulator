@@ -1,7 +1,29 @@
 = TelloSimulator
 
+Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtuellen Tello Drohne. Die Applikation
+bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
+und verfügt über ein UI mit 3D-Welt, in welcher die Software-Drohne fliegt.
+
+== Kurzanleitung zur Verbindung mit dem Simulator:
+
+Im Gegensatz zur echten Drohne hat der TelloSimulator keine eigene IP-Adresse. Er verwendet die
+localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
+Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
+
+*Schritt 1:* DatagramSocket auf Port 8889 erstellen.
+
+`ds = new DatagramSocket(8889);`
+
+*Schritt 2:* Mit 127.0.01 auf Port 8880 verbinden.
+
+`ds.connect(127.0.0.1, 8880);`
+
+*Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
 
 
+
+
+---
 
 package tellosimulator;
 
