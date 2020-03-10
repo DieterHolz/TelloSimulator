@@ -1,14 +1,17 @@
 package tellosimulator;
 
-import tellosimulator.network.UDPCommandServer;
+import tellosimulator.network.UDPCommandConnection;
+import tellosimulator.network.UDPStateConnection;
 
 public class TelloSimulator {
 
     public static void main(String[] args) throws Exception {
 
-        UDPCommandServer server = new UDPCommandServer();
-        server.start();
+        UDPCommandConnection commandConnection = new UDPCommandConnection();
+        commandConnection.start();
+
+        UDPStateConnection stateConnection = new UDPStateConnection();
+        stateConnection.start();
 
     }
-
 }

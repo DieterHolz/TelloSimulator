@@ -1,7 +1,7 @@
 package tellosimulator.commands;
 
 import tellosimulator.drone.TelloDrone;
-import tellosimulator.network.UDPVideoServer;
+import tellosimulator.network.UDPVideoConnection;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +19,7 @@ public class CommandHandler {
 			List<String> data = Arrays.asList(received.split(" "));
 			String command = data.get(0);
             List<String> params = null;
-
-            UDPVideoServer videoServer = new UDPVideoServer();
+			UDPVideoConnection videoConnection = new UDPVideoConnection();
 
             if (data.size() > 1) {
 				params = data.subList(1, data.size());
@@ -42,17 +41,18 @@ public class CommandHandler {
 
 				case TelloControlCommands.STREAMON:
                     System.out.println("command handling for command: streamon");
-
-					if (!videoServer.isRunning()) {
-						videoServer.setRunning(true);
-						videoServer.run();
+					videoConnection.connect();
+					if (!videoConnection.isRunning()) {
+						videoConnection.setRunning(true);
+						videoConnection.run();
 					}
 					break;
 
 				case TelloControlCommands.STREAMOFF:
 					System.out.println("command handling for command: streamoff");
-					if (videoServer.isRunning()) {
-						videoServer.setRunning(false);
+
+					if (videoConnection.isRunning()) {
+						videoConnection.setRunning(false);
 					}
 					break;
 

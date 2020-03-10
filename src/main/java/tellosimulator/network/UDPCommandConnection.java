@@ -8,29 +8,20 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
 
-public class UDPCommandServer extends Thread {
+public class UDPCommandConnection extends Thread {
 	DatagramSocket commandSocket;
 
-	private boolean running;
+	private boolean running = false;
 	private boolean sdkModeInitiated;
-	private int securityTimeout = 15000;
 	private byte[] buffer = new byte[512]; // TODO: how much buffer do we need?
 
-	public UDPCommandServer() throws SocketException {
+	public UDPCommandConnection() throws SocketException {
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
 			InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
-			//commandSocket.setSoTimeout(securityTimeout);
+			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
-
-			System.out.println(address+ "HELLO");
-
-			// sets timeout in milliseconds, limiting the waiting time when receiving data.
-			// If the timeout expires, a SocketTimeoutException is raised.
-
-
-
 		} catch (IOException ex) {
 			System.out.println("Command server error: " + ex.getMessage());
 			ex.printStackTrace();
