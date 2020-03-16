@@ -234,49 +234,49 @@ public class CommandHandler {
 	//validate methods
 
 	private void validateUp(int x) {
-		if(x>=-500 && x<=500) {
+		if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.UP, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateDown(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.DOWN, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateLeft(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.LEFT, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateRight(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.RIGHT, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateForward(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.FORWARD, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateBack(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.BACK, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateCw(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CW, "x", String.valueOf(x), "1-360");
 		}
 	}
 
 	private void validateCcw(int x) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CCW, "x", String.valueOf(x), "1-360");
 		}
 	}
@@ -288,19 +288,19 @@ public class CommandHandler {
 	}
 
 	private void validateGo(int x, int y, int z, int speed, String mid) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x", String.valueOf(x), "-500-500");
 		}
-		if(y>=-500 && y<=500) {
+        if(y<-500 || y>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "y", String.valueOf(y), "-500-500");
 		}
-		if(z>=-500 && z<=500) {
+        if(z<-500 || z>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "z", String.valueOf(z), "-500-500");
 		}
-		if(speed>=10 && speed<=100) {
+		if(speed<10 || speed>100) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "speed", String.valueOf(speed), "-500-500");
 		}
-		if(!(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20)) {
+		if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
             throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x, y and z", "x: "+String.valueOf(x)+", y: "+String.valueOf(y)+", z: "+String.valueOf(z), "x, y and z values can't be set between -20-20 simultaneously");
 		}
 		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
@@ -309,31 +309,31 @@ public class CommandHandler {
 	}
 
 	private void validateCurve(int x1, int x2, int y1, int y2, int z1, int z2, int speed, String mid) {
-		if(x1>=-500 && x1<=500) {
+        if(x1<-500 || x1>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "x1", String.valueOf(x1), "-500-500");
 		}
-		if(x2>=-500 && x2<=500) {
+        if(x2<-500 || x2>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "x2", String.valueOf(x2), "-500-500");
 		}
-		if(y1>=-500 && y1<=500) {
+        if(y1<-500 || y1>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "y1", String.valueOf(y1), "-500-500");
 		}
-		if(y2>=-500 && y2<=500) {
+        if(y2<-500 || y2>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "y2", String.valueOf(y2), "-500-500");
 		}
-		if(z1>=-500 && z1<=500) {
+        if(z1<-500 || z1>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "z1", String.valueOf(z1), "-500-500");
 		}
-		if(z2>=-500 && z2<=500) {
+        if(z2<-500 || z2>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "z2", String.valueOf(z2), "-500-500");
 		}
-		if(speed>=10 && speed<=100) {
+		if(speed<10 || speed>100) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "speed", String.valueOf(speed), "-500-500");
 		}
-		if(!(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20)) {
+		if(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20) {
             throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x1, y1 and z1", "x1: "+String.valueOf(x1)+", y1: "+String.valueOf(y1)+", z1: "+String.valueOf(z1), "x1, y1 and z1 values can't be set between -20-20 simultaneously");
 		}
-		if(!(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20)) {
+		if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
             throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x2, y2 and z2", "x2: "+String.valueOf(x2)+", y2: "+String.valueOf(y2)+", z2: "+String.valueOf(z2), "x2, y2 and z2 values can't be set between -20-20 simultaneously");
 		}
 		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
@@ -343,16 +343,16 @@ public class CommandHandler {
 	}
 
 	private void validateJump(int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
-		if(x>=-500 && x<=500) {
+        if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.JUMP, "x", String.valueOf(x), "-500-500");
 		}
-		if(y>=-500 && y<=500) {
+        if(y<-500 || y>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.JUMP, "y", String.valueOf(y), "-500-500");
 		}
-		if(z>=-500 && z<=500) {
+        if(z<-500 || z>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.JUMP, "z", String.valueOf(z), "-500-500");
 		}
-		if(speed>=10 && speed<=100) {
+        if(speed<10 || speed>100) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.JUMP, "speed", String.valueOf(speed), "10-100");
 		}
 		// yaw value ist not documented in the sdk todo: find out the valid value for yaw
@@ -365,22 +365,22 @@ public class CommandHandler {
     }
 
 	private void validateSpeed(int x) {
-		if(x>=10 && x<=100) {
+        if(x<10 || x>100) {
 			throw new TelloIllegalArgumentException(TelloSetCommands.SPEED, "speed", String.valueOf(x), "10-100");
 		}
 	}
 
 	private void validateRc(int a, int b, int c, int d) {
-		if(a>=-100 && a<=100) {
+		if(a<-100 && a>100) {
 			throw new TelloIllegalArgumentException(TelloSetCommands.RC, "a", String.valueOf(a), "-100-100");
 		}
-		if(b>=-100 && b<=100) {
+        if(b<-100 && b>100) {
 			throw new TelloIllegalArgumentException(TelloSetCommands.RC, "b", String.valueOf(b), "-100-100");
 		}
-		if(a>=-100 && a<=100) {
+        if(c<-100 && c>100) {
 			throw new TelloIllegalArgumentException(TelloSetCommands.RC, "c", String.valueOf(c), "-100-100");
 		}
-		if(d>=-100 && d<=100) {
+        if(d<-100 && d>100) {
 			throw new TelloIllegalArgumentException(TelloSetCommands.RC, "d", String.valueOf(d), "-100-100");
 		}
 	}
