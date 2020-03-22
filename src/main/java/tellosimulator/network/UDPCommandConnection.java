@@ -55,6 +55,7 @@ public class UDPCommandConnection extends Thread {
 
 				if (sdkModeInitiated) {
 					String response = commandHandler.handle(received);
+					System.out.println("vom Commandhandler erhaltene Antwort: "+response);
 					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 					commandSocket.send(responsePacket);
 					continue;
@@ -69,8 +70,9 @@ public class UDPCommandConnection extends Thread {
 				e.printStackTrace();
 			}
 		}
-		commandSocket.close();
+		commandSocket.close(); //todo: müsste das nicht in ein finally?
 	}
+
 
 	private byte[] readBytes() throws IOException {
 		byte[] data = new byte[256];

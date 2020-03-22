@@ -221,8 +221,7 @@ public class CommandHandler {
 					telloDrone.readSn();
 
 				default:
-					System.out.println("command handling for command: invalid command");
-					// todo: throw exception invalid command
+					throw new IllegalArgumentException("invalid command");
 			}
 
 			return "ok";
