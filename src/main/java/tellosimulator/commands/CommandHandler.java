@@ -42,7 +42,7 @@ public class CommandHandler {
 
 				case TelloControlCommands.STREAMON:
                     System.out.println("command handling for command: streamon");
-					videoConnection.connect();
+
 					if (!videoConnection.isRunning()) {
 						videoConnection.setRunning(true);
 						videoConnection.run();

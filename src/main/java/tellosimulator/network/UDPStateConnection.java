@@ -1,5 +1,6 @@
 package tellosimulator.network;
 
+import tellosimulator.drone.TelloDrone;
 import tellosimulator.state.TelloDroneState;
 import tellosimulator.state.TelloStateSerializer;
 
@@ -8,28 +9,26 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
+import java.util.concurrent.TimeUnit;
 
 public class UDPStateConnection extends Thread {
-
     DatagramSocket stateSocket;
+    TelloDrone telloDrone;
 
     private boolean running;
+    private byte[] buffer = new byte[512];
 
     public boolean isRunning() {
         return running;
     }
-
     public void setRunning(boolean running) {
         this.running = running;
     }
 
-    private byte[] buffer = new byte[512];
+    public UDPStateConnection(TelloDrone telloDrone) throws SocketException {
 
-    public UDPStateConnection() throws SocketException {
+        this.telloDrone = telloDrone;
 
         try {
             stateSocket = new DatagramSocket(TelloSDKValues.SIM_STATE_PORT);
@@ -45,13 +44,27 @@ public class UDPStateConnection extends Thread {
 
     public void run() {
         running = true;
+        InetAddress address = null;
+        try {
+            address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
 
-        while (running) {
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-            //TelloDroneState state = new TelloDroneState();
-            //TelloStateSerializer.serializeState(state);
+            while (running) {
+                try {
+                    String droneState = TelloStateSerializer.serializeState(telloDrone.getDroneState());
+                    DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
+                    stateSocket.send(statePacket);
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+            }
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
         }
+
         stateSocket.close();
     }
 
