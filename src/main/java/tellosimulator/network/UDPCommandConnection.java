@@ -10,12 +10,15 @@ import java.util.Arrays;
 
 public class UDPCommandConnection extends Thread {
 	DatagramSocket commandSocket;
+	TelloDrone telloDrone;
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512]; // TODO: how much buffer do we need?
 
-	public UDPCommandConnection() throws SocketException {
+	public UDPCommandConnection(TelloDrone telloDrone) throws SocketException {
+
+		this.telloDrone = telloDrone;
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
@@ -23,6 +26,7 @@ public class UDPCommandConnection extends Thread {
 			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
 		} catch (IOException ex) {
+			//TODO: throw custom exception instead
 			System.out.println("Command server error: " + ex.getMessage());
 			ex.printStackTrace();
 		}
@@ -31,7 +35,6 @@ public class UDPCommandConnection extends Thread {
 	public void run() {
 		running = true;
 		sdkModeInitiated = false;
-		TelloDrone telloDrone = new TelloDrone();
 		CommandHandler commandHandler = new CommandHandler(telloDrone);
 
 		while (running) {
@@ -70,7 +73,7 @@ public class UDPCommandConnection extends Thread {
 				e.printStackTrace();
 			}
 		}
-		commandSocket.close(); //todo: müsste das nicht in ein finally?
+		commandSocket.close(); //todo: should maybe in a "finally" section
 	}
 
 

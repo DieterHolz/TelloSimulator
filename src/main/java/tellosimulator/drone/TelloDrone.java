@@ -1,6 +1,14 @@
 package tellosimulator.drone;
 
+import tellosimulator.state.TelloDroneState;
+
 public class TelloDrone {
+
+	TelloDroneState droneState = new TelloDroneState(25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 30.5, 30.5, 30.5, 30.5);
+
+	public TelloDroneState getDroneState() {
+		return droneState;
+	}
 
 	//TODO: save coordinates as coordinate/triple or something like this?
 
