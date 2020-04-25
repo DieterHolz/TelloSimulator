@@ -44,8 +44,8 @@ public class CommandHandler {
                     System.out.println("command handling for command: streamon");
 
 					if (!videoConnection.isRunning()) {
+						videoConnection.start();
 						videoConnection.setRunning(true);
-						videoConnection.run();
 					}
 					break;
 
