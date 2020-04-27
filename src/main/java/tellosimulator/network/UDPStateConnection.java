@@ -47,7 +47,7 @@ public class UDPStateConnection extends Thread {
                     String droneState = telloDrone.getDroneState();
                     DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
                     stateSocket.send(statePacket);
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(100);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

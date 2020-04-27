@@ -2,28 +2,34 @@ package tellosimulator.drone;
 
 public class TelloDrone {
 
-    private int pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
+    private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
 
 	public String getDroneState() {
-		return "pitch:" + pitch +
-				"; roll:" + roll +
-				"; yaw:" + yaw +
-				"; speedX:" + speedX +
-				"; speedY:" + speedY +
-				"; speedZ:" + speedZ +
-				"; tempLow:" + tempLow +
-				"; tempHigh:" + tempHigh +
-				"; tofDistance:" + tofDistance +
-				"; height:" + height +
-				"; battery:" + battery +
-				"; barometer:" + barometer +
-				"; motorTime:" + motorTime +
-				"; accelerationX:" + accelerationX +
-				"; accelerationY:" + accelerationY +
-				"; accelerationZ:" + accelerationZ +
-				";";
-	}
+
+	    //TODO: check if mission pad detection feature is enabled/disbled
+        return  "mid:" + mid +
+                ";x:" + x +
+                ";y:" + y +
+                ";z:" + z +
+                ";pitch:" + pitch +
+                ";roll:" + roll +
+                ";yaw:" + yaw +
+                ";vgx:" + speedX +
+                ";vgy:" + speedY +
+                ";vgz:" + speedZ +
+                ";templ:" + tempLow +
+                ";temph:" + tempHigh +
+                ";tof:" + tofDistance +
+                ";h:" + height +
+                ";bat:" + battery +
+                ";baro:" + barometer +
+                ";time:" + motorTime +
+                ";agx:" + accelerationX +
+                ";agy:" + accelerationY +
+                ";agz:" + accelerationZ +
+                ";";
+    }
 
 	//TODO: save coordinates as coordinate/triple or something like this?
 
