@@ -1,13 +1,28 @@
 package tellosimulator.drone;
 
-import tellosimulator.state.TelloDroneState;
-
 public class TelloDrone {
 
-	TelloDroneState droneState = new TelloDroneState(25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 30.5, 30.5, 30.5, 30.5);
+    private int pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
+    private double barometer, accelerationX, accelerationY, accelerationZ;
 
-	public TelloDroneState getDroneState() {
-		return droneState;
+	public String getDroneState() {
+		return "pitch:" + pitch +
+				"; roll:" + roll +
+				"; yaw:" + yaw +
+				"; speedX:" + speedX +
+				"; speedY:" + speedY +
+				"; speedZ:" + speedZ +
+				"; tempLow:" + tempLow +
+				"; tempHigh:" + tempHigh +
+				"; tofDistance:" + tofDistance +
+				"; height:" + height +
+				"; battery:" + battery +
+				"; barometer:" + barometer +
+				"; motorTime:" + motorTime +
+				"; accelerationX:" + accelerationX +
+				"; accelerationY:" + accelerationY +
+				"; accelerationZ:" + accelerationZ +
+				";";
 	}
 
 	//TODO: save coordinates as coordinate/triple or something like this?
@@ -137,5 +152,72 @@ public class TelloDrone {
 	public void readSn() {
 		//TODO: Send the Tello serial number
 	}
+
+
+	//getter and setter
+
+    public int getPitch() {
+        return pitch;
+    }
+
+    public int getRoll() {
+        return roll;
+    }
+
+    public int getYaw() {
+        return yaw;
+    }
+
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public int getSpeedZ() {
+        return speedZ;
+    }
+
+    public int getTempLow() {
+        return tempLow;
+    }
+
+    public int getTempHigh() {
+        return tempHigh;
+    }
+
+    public int getTofDistance() {
+        return tofDistance;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getBattery() {
+        return battery;
+    }
+
+    public int getMotorTime() {
+        return motorTime;
+    }
+
+    public double getBarometer() {
+        return barometer;
+    }
+
+    public double getAccelerationX() {
+        return accelerationX;
+    }
+
+    public double getAccelerationY() {
+        return accelerationY;
+    }
+
+    public double getAccelerationZ() {
+        return accelerationZ;
+    }
 
 }
