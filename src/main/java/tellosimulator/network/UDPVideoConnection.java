@@ -5,11 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.util.concurrent.TimeUnit;
+import java.net.*;
 
 public class UDPVideoConnection extends Thread {
 	DatagramSocket videoSocket;
@@ -28,15 +24,8 @@ public class UDPVideoConnection extends Thread {
 	public UDPVideoConnection() throws SocketException {
 
 		try {
-//			videoSocket = new DatagramSocket(TelloSDKValues.SIM_STREAM_PORT);
-//			videoSocket.setSoTimeout(TelloSDKValues.VIDEO_SOCKET_TIMEOUT);
-
-//			videoSocket = new DatagramSocket((TelloSDKValues.SIM_STREAM_PORT));
-//			InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
-//			//videoSocket.setSoTimeout(TelloSDKValues.VIDEO_SOCKET_TIMEOUT);
-//			videoSocket.connect(address, TelloSDKValues.OP_STREAM_PORT);
-
 			videoSocket = new DatagramSocket();
+			videoSocket.setSoTimeout(TelloSDKValues.VIDEO_SOCKET_TIMEOUT);
 
 		} catch (IOException ex) {
 			//TODO: throw custom exception eg. "TelloStreamException" instead
@@ -47,56 +36,31 @@ public class UDPVideoConnection extends Thread {
 
 	public void run() {
 
-//		while (running) {
-//			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//			try {
-//				BufferedImage img = ImageIO.read(new File("src/main/resources/oop.jpg"));
-//
-//				ImageIO.write(img, "jpg", baos);
-//
-//				baos.flush();
-//				byte[] buffer = baos.toByteArray();
-//				videoSocket.send(packet);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//		}
+		InetAddress address = null;
+		try {
+			address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
-		while(running) {
+		while (running) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try {
-				BufferedImage img = ImageIO.read(new File("src/main/resources/testimg.jpg"));
-				//System.out.println("bufferedimage: " + img);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				BufferedImage img = ImageIO.read(new File("src/main/resources/oop.jpg"));
 				ImageIO.write(img, "jpg", baos);
 				baos.flush();
 				byte[] buffer = baos.toByteArray();
 
-				InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
-
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, TelloSDKValues.OP_STREAM_PORT);
-
 				videoSocket.send(packet);
 
-//				while(running) {
-//					videoSocket.send(packet);
-//					try {
-//						TimeUnit.SECONDS.sleep(2);
-//					} catch(InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
-
-		videoSocket.close(); //todo: should maybe in a "finally" section
+		videoSocket.close();
 	}
 
 }

@@ -1,13 +1,7 @@
 package tellosimulator.network;
 
 import tellosimulator.drone.TelloDrone;
-import tellosimulator.state.TelloDroneState;
-import tellosimulator.state.TelloStateSerializer;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.concurrent.TimeUnit;
@@ -50,10 +44,10 @@ public class UDPStateConnection extends Thread {
 
             while (running) {
                 try {
-                    String droneState = TelloStateSerializer.serializeState(telloDrone.getDroneState());
+                    String droneState = telloDrone.getDroneState();
                     DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
                     stateSocket.send(statePacket);
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(100);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
