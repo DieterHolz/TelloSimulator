@@ -4,8 +4,23 @@ Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtue
 bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
 und verfügt über ein UI mit 3D-Welt, in welcher die Software-Drohne fliegt.
 
-== Kurzanleitung zur Verbindung mit dem Simulator:
+== Installationsanleitung für Testzwecke:
 
+Um den Simulator zu testen, wird ein Programm benötigt, welches dem Simulator Kommandos schickt. Hierfür steht unter
+https://github.com/danielobrist/TelloDemoCommander eine Applikation zur Verfügung. Nachdem sowohl der TelloSimulator als
+auch der TelloDemoCommander ausgegeckt wurden und lokal startbar sind, können folgende Schritte ausgeführt werden:
+
+1. In der Main-Klasse des TelloDemoCommander den gewünschten Flight-Plan definieren.
+
+2. TelloSimulator starten.
+
+3. TelloDemoCommander starten.
+
+Der definierte Flight-Plan sollte anschliessend auf der Konsole des TelloSimulators ausgegeben werden.
+
+== Verbinden mit dem Simulator-API:
+
+//TODO: Anforderungsänderung "muss im WLAN funktionieren" --> TelloSDKValues / Verbindung mit anderen IPs erklären
 Im Gegensatz zur echten Drohne hat der TelloSimulator keine eigene IP-Adresse. Er verwendet die
 localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
 Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
@@ -19,7 +34,6 @@ Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
 `ds.connect(127.0.0.1, 8880);`
 
 *Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
-
 
 
 
