@@ -1,15 +1,19 @@
 package tellosimulator.commands;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tellosimulator.drone.TelloDrone;
 import tellosimulator.exception.TelloIllegalArgumentException;
+import tellosimulator.network.UDPCommandConnection;
 import tellosimulator.network.UDPVideoConnection;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandler {
+	private static final Logger LOGGER = LogManager.getLogger(CommandHandler.class);
 
-    TelloDrone telloDrone;
+	TelloDrone telloDrone;
 
     public CommandHandler(TelloDrone telloDrone) {
         this.telloDrone = telloDrone;
@@ -26,14 +30,14 @@ public class CommandHandler {
 				params = data.subList(1, data.size());
 			}
 
+			LOGGER.debug("handling command: " + command);
 			switch(command) {
 
 				case TelloControlCommands.COMMAND:
-					System.out.println("command handling for command: command");
 					break;
 
 				case TelloControlCommands.TAKEOFF:
-                    telloDrone.takeOff();
+					telloDrone.takeOff();
 					break;
 
 				case TelloControlCommands.LAND:
@@ -41,16 +45,14 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.STREAMON:
-                    System.out.println("command handling for command: streamon");
 
 					if (!videoConnection.isRunning()) {
 						videoConnection.setRunning(true);
-						videoConnection.run();
+						videoConnection.start();
 					}
 					break;
 
 				case TelloControlCommands.STREAMOFF:
-					System.out.println("command handling for command: streamoff");
 
 					if (videoConnection.isRunning()) {
 						videoConnection.setRunning(false);
@@ -58,6 +60,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.EMERGENCY:
+
 					telloDrone.emergency();
 					break;
 
