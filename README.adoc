@@ -36,6 +36,8 @@ Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
 *Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
 
 
+== Literaturverzeichnis
+JavaFX 3D Tutorial: https://www.youtube.com/watch?v=nBjwBmH8OhQ
 
 ---
 
