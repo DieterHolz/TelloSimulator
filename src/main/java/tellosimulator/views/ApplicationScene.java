@@ -16,5 +16,16 @@ public class ApplicationScene extends Scene {
         camera.translateYProperty().set(-TelloSimulator.ROOMHEIGHT /2);
         this.setFill(Color.BLUE);
         this.setCamera(camera);
+
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event ->  {
+            switch (event.getCode()) {
+                case W:
+                    camera.translateZProperty().set(camera.getTranslateZ() + 10);
+                    break;
+                case S:
+                    camera.translateZProperty().set(camera.getTranslateZ() - 10);
+                    break;
+            }
+        });
     }
 }
