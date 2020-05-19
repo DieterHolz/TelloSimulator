@@ -11,9 +11,9 @@ import tellosimulator.views.ApplicationUI;
 
 public class TelloSimulator extends Application {
 
-    public static final double ROOMWIDTH = 1000;
+    public static final double ROOMWIDTH = 300;
     public static final double ROOMHEIGHT = 240;
-    public static final double ROOMDEPTH = 1000;
+    public static final double ROOMDEPTH = 800;
     public static final double WALLDEPTH = 0.01;
 
     @Override
