@@ -1,7 +1,11 @@
 package tellosimulator.drone;
 
+import javafx.scene.Group;
+import tellosimulator.views.ApplicationUI;
+
 public class TelloDrone {
 
+	private Group drone3d;
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
 
@@ -35,6 +39,7 @@ public class TelloDrone {
 
 	public void takeOff() {
 		//TODO: Auto takeoff.
+		drone3d.translateYProperty().set(-50);
 	}
 
 	public void land() {
@@ -47,26 +52,32 @@ public class TelloDrone {
 
 	public void up(int x) {
 		//TODO: Ascend to “x” cm.
+		drone3d.translateYProperty().set(drone3d.getTranslateY()-x);
 	}
 
 	public void down(int x) {
 		//TODO: Descend to “x” cm.
+		drone3d.translateYProperty().set(drone3d.getTranslateY()+x);
 	}
 
 	public void left(int x) {
 		//TODO: Fly left for “x” cm.
+		drone3d.translateXProperty().set(drone3d.getTranslateX()-x);
 	}
 
 	public void right(int x) {
 		//TODO: Fly right for “x” cm.
+		drone3d.translateXProperty().set(drone3d.getTranslateX()+x);
 	}
 
 	public void forward(int x) {
 		//TODO: Fly forward for “x” cm.
+		drone3d.translateZProperty().set(drone3d.getTranslateZ()-x);
 	}
 
 	public void back(int x) {
 		//TODO: Fly backward for “x” cm.
+		drone3d.translateZProperty().set(drone3d.getTranslateZ()+x);
 	}
 
 	public void cw(int x) {
@@ -225,5 +236,17 @@ public class TelloDrone {
     public double getAccelerationZ() {
         return accelerationZ;
     }
+
+
+
+	// Getter and Setter
+
+	public Group getDrone3d() {
+		return drone3d;
+	}
+
+	public void setDrone3d(Group drone3d) {
+		this.drone3d = drone3d;
+	}
 
 }

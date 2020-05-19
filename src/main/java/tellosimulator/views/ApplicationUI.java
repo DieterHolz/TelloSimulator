@@ -1,6 +1,5 @@
 package tellosimulator.views;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -10,28 +9,30 @@ import tellosimulator.drone.TelloDrone;
 
 public class ApplicationUI extends StackPane {
     private final TelloDrone telloDrone;
+    private Group drone3d;
 
     public ApplicationUI(TelloDrone telloDrone) {
         this.telloDrone = telloDrone;
 
-        initialize3dDrone(18, 5, 16);
-        initialize3dRoom(TelloSimulator.ROOMWIDTH,TelloSimulator.ROOMHEIGHT,TelloSimulator.ROOMDEPTH,TelloSimulator.WALLDEPTH);
+        initialize3dDrone(telloDrone, 18, 5, 16);
+        initialize3dRoom(TelloSimulator.ROOM_WIDTH,TelloSimulator.ROOM_HEIGHT,TelloSimulator.ROOM_DEPTH,TelloSimulator.WALL_DEPTH);
     }
 
-    private void initialize3dDrone(double width, double height, double depth) {
+    private void initialize3dDrone(TelloDrone telloDrone, double width, double height, double depth) {
 
         PhongMaterial lightskyblue = new PhongMaterial();
         lightskyblue.setDiffuseColor(Color.LIGHTSKYBLUE);
         Box drone = new Box(width, height, depth);
         drone.setMaterial(lightskyblue);
 
-        Group drone3d = new Group();
+        drone3d = new Group();
         drone3d.getChildren().add(drone);
 
-        drone3d.translateXProperty().set(TelloSimulator.ROOMWIDTH /2);
+        drone3d.translateXProperty().set(TelloSimulator.ROOM_WIDTH /2);
         drone3d.translateYProperty().set(-height/2);
-        drone3d.translateZProperty().set(Math.min(TelloSimulator.ROOMDEPTH/5, 500));
+        drone3d.translateZProperty().set(Math.min(TelloSimulator.ROOM_DEPTH /5, 500));
 
+        telloDrone.setDrone3d(drone3d);
         this.getChildren().add(drone3d);
     }
 
@@ -65,5 +66,6 @@ public class ApplicationUI extends StackPane {
 
         return box;
     }
+
 
 }
