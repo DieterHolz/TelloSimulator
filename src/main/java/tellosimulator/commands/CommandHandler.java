@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tellosimulator.drone.TelloDrone;
 import tellosimulator.exception.TelloIllegalArgumentException;
-import tellosimulator.network.UDPCommandConnection;
 import tellosimulator.network.UDPVideoConnection;
+import tellosimulator.video.VideoPublisher;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +14,7 @@ public class CommandHandler {
 	private static final Logger LOGGER = LogManager.getLogger(CommandHandler.class);
 
 	TelloDrone telloDrone;
+	VideoPublisher publisher;
 
     public CommandHandler(TelloDrone telloDrone) {
         this.telloDrone = telloDrone;
@@ -46,11 +47,12 @@ public class CommandHandler {
 
 				case TelloControlCommands.STREAMON:
 
-					if (!videoConnection.isRunning()) {
+					publisher.startPublisher();
+					/*if (!videoConnection.isRunning()) {
 						videoConnection.setRunning(true);
 						videoConnection.start();
 					}
-					break;
+					break;*/
 
 				case TelloControlCommands.STREAMOFF:
 
