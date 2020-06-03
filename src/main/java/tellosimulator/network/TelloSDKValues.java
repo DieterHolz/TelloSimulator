@@ -30,7 +30,7 @@ public class TelloSDKValues {
     public static final int OP_STREAM_PORT = 11111;
     public static final int SIM_STREAM_PORT = 11101;
 
-    public static final int COMMAND_SOCKET_TIMEOUT = 20000;
+    public static final int COMMAND_SOCKET_TIMEOUT = 200000; //todo: change to 20000
     public static final int COMMAND_TIMEOUT = 15000;
     public static final int STATE_SOCKET_TIMEOUT = 1000;
     public static final int VIDEO_SOCKET_TIMEOUT = 1000;

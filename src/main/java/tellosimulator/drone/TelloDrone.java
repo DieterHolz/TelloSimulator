@@ -1,13 +1,15 @@
 package tellosimulator.drone;
 
-import javafx.scene.Group;
-import tellosimulator.views.ApplicationUI;
+import tellosimulator.commands.TelloControlCommands;
+import tellosimulator.views.Command3d;
+import tellosimulator.views.Drone3d;
 
 public class TelloDrone {
 
-	private Group drone3d;
+	private Drone3d drone3d;
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
+
 
 	public String getDroneState() {
 
@@ -39,7 +41,8 @@ public class TelloDrone {
 
 	public void takeOff() {
 		//TODO: Auto takeoff.
-		drone3d.translateYProperty().set(-50);
+		Command3d command3d = new Command3d(TelloControlCommands.TAKEOFF, 50);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void land() {
@@ -52,32 +55,38 @@ public class TelloDrone {
 
 	public void up(int x) {
 		//TODO: Ascend to “x” cm.
-		drone3d.translateYProperty().set(drone3d.getTranslateY()-x);
+		Command3d command3d = new Command3d(TelloControlCommands.UP, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void down(int x) {
 		//TODO: Descend to “x” cm.
-		drone3d.translateYProperty().set(drone3d.getTranslateY()+x);
+		Command3d command3d = new Command3d(TelloControlCommands.DOWN, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void left(int x) {
 		//TODO: Fly left for “x” cm.
-		drone3d.translateXProperty().set(drone3d.getTranslateX()-x);
+		Command3d command3d = new Command3d(TelloControlCommands.LEFT, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void right(int x) {
 		//TODO: Fly right for “x” cm.
-		drone3d.translateXProperty().set(drone3d.getTranslateX()+x);
+		Command3d command3d = new Command3d(TelloControlCommands.RIGHT, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void forward(int x) {
 		//TODO: Fly forward for “x” cm.
-		drone3d.translateZProperty().set(drone3d.getTranslateZ()-x);
+		Command3d command3d = new Command3d(TelloControlCommands.FORWARD, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void back(int x) {
 		//TODO: Fly backward for “x” cm.
-		drone3d.translateZProperty().set(drone3d.getTranslateZ()+x);
+		Command3d command3d = new Command3d(TelloControlCommands.BACK, x);
+		drone3d.getDrone3dCommandQueue().getCommandQueue().add(command3d);
 	}
 
 	public void cw(int x) {
@@ -241,11 +250,7 @@ public class TelloDrone {
 
 	// Getter and Setter
 
-	public Group getDrone3d() {
-		return drone3d;
-	}
-
-	public void setDrone3d(Group drone3d) {
+	public void setDrone3d(Drone3d drone3d) {
 		this.drone3d = drone3d;
 	}
 

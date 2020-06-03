@@ -21,8 +21,6 @@ public class TelloSimulator extends Application {
 
         TelloDrone telloDrone = new TelloDrone();
 
-
-
         Parent rootPanel = new ApplicationUI(telloDrone);
         Scene scene = new ApplicationScene(rootPanel, primaryStage);
 
