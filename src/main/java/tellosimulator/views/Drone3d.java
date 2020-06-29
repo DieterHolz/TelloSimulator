@@ -13,6 +13,9 @@ import tellosimulator.network.UDPCommandConnection;
 
 public class Drone3d {
 
+    private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
+    private double barometer, accelerationX, accelerationY, accelerationZ;
+
     private Group GroupDrone3d;
     private Drone3dCommandQueue drone3dCommandQueue;
     private AnimationTimer animationTimer;
@@ -79,8 +82,97 @@ public class Drone3d {
 
         animationTimer.start();
     }
+    public String getDroneState() {
 
-    //Getter and setter
+        //TODO: check if mission pad detection feature is enabled/disbled
+        return  "mid:" + mid +
+                ";x:" + x +
+                ";y:" + y +
+                ";z:" + z +
+                ";pitch:" + pitch +
+                ";roll:" + roll +
+                ";yaw:" + yaw +
+                ";vgx:" + speedX +
+                ";vgy:" + speedY +
+                ";vgz:" + speedZ +
+                ";templ:" + tempLow +
+                ";temph:" + tempHigh +
+                ";tof:" + tofDistance +
+                ";h:" + height +
+                ";bat:" + battery +
+                ";baro:" + barometer +
+                ";time:" + motorTime +
+                ";agx:" + accelerationX +
+                ";agy:" + accelerationY +
+                ";agz:" + accelerationZ +
+                ";";
+    }
+
+    //getter and setter
+
+    public int getPitch() {
+        return pitch;
+    }
+
+    public int getRoll() {
+        return roll;
+    }
+
+    public int getYaw() {
+        return yaw;
+    }
+
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public int getSpeedZ() {
+        return speedZ;
+    }
+
+    public int getTempLow() {
+        return tempLow;
+    }
+
+    public int getTempHigh() {
+        return tempHigh;
+    }
+
+    public int getTofDistance() {
+        return tofDistance;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getBattery() {
+        return battery;
+    }
+
+    public int getMotorTime() {
+        return motorTime;
+    }
+
+    public double getBarometer() {
+        return barometer;
+    }
+
+    public double getAccelerationX() {
+        return accelerationX;
+    }
+
+    public double getAccelerationY() {
+        return accelerationY;
+    }
+
+    public double getAccelerationZ() {
+        return accelerationZ;
+    }
 
     public Group getGroupDrone3d() {
         return GroupDrone3d;
