@@ -28,7 +28,7 @@ public class UDPCommandConnection extends Thread {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
 			InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
 			//TODO: uncomment to set timeout in final version
-			commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
+			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
 		} catch (IOException ex) {
 			//TODO: throw custom exception instead

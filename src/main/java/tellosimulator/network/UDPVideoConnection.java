@@ -1,17 +1,20 @@
 package tellosimulator.network;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
 
+import javax.imageio.ImageIO;
+
 public class UDPVideoConnection extends Thread {
 	DatagramSocket videoSocket;
 
 	private boolean running = false;
-	private byte[] buffer = new byte[2048];
+	private int bufferSize = 2048;
+	private int port = TelloSDKValues.OP_STREAM_PORT;
+	private String host = TelloSDKValues.OP_IP_ADDRESS;
 
 	public boolean isRunning() {
 		return running;
@@ -44,17 +47,41 @@ public class UDPVideoConnection extends Thread {
 		}
 
 		while (running) {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try {
-				BufferedImage img = ImageIO.read(new File("src/main/resources/oop.jpg"));
+				BufferedImage         img  = ImageIO.read(new File("src/main/resources/oop.jpg"));
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
 				ImageIO.write(img, "jpg", baos);
 				baos.flush();
-				byte[] buffer = baos.toByteArray();
 
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, TelloSDKValues.OP_STREAM_PORT);
+				byte[] completeImg = baos.toByteArray();
+
+				byte[] buff = new byte[bufferSize];
+				int    c    = 0;
+
+				DatagramSocket socket    = new DatagramSocket();
+				InetAddress    IPAddress = InetAddress.getByName(host);
+
+				int packetsSend = 0;
+				for (int i = 0; i < completeImg.length; i++) {
+					buff[c] = completeImg[i];
+					c++;
+					if ((i + 1) % bufferSize == 0) {
+						DatagramPacket packet = new DatagramPacket(buff, buff.length, IPAddress, port);
+						videoSocket.send(packet);
+						Thread.sleep(1);  //kurz warten (keine Ahnung warum das noetig ist)
+						c = 0;
+						packetsSend++;
+					}
+				}
+
+				DatagramPacket packet = new DatagramPacket(buff, buff.length, address, TelloSDKValues.OP_STREAM_PORT);
 				videoSocket.send(packet);
+				packetsSend++;
+				System.out.println("sent last mini-packet :" + packet.getLength());
+				System.out.println("packetsSend = " + packetsSend);
 
-			} catch (IOException e) {
+			} catch (IOException | InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
