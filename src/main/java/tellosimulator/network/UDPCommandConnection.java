@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tellosimulator.commands.CommandHandler;
 import tellosimulator.commands.TelloControlCommands;
-import tellosimulator.drone.TelloDrone;
+import tellosimulator.views.Drone3d;
 
 import java.io.IOException;
 import java.net.*;
@@ -14,13 +14,13 @@ public class UDPCommandConnection extends Thread {
 	private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
 
 	DatagramSocket commandSocket;
-	TelloDrone telloDrone;
+	Drone3d telloDrone;
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512]; // TODO: how much buffer do we need?
 
-	public UDPCommandConnection(TelloDrone telloDrone) throws SocketException {
+	public UDPCommandConnection(Drone3d telloDrone) throws SocketException {
 
 		this.telloDrone = telloDrone;
 

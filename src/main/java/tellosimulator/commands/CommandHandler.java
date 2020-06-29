@@ -2,10 +2,11 @@ package tellosimulator.commands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tellosimulator.drone.TelloDrone;
 import tellosimulator.exception.TelloIllegalArgumentException;
 import tellosimulator.network.UDPVideoConnection;
 import tellosimulator.video.VideoPublisher;
+import tellosimulator.views.Command3d;
+import tellosimulator.views.Drone3d;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
 public class CommandHandler {
 	private static final Logger LOGGER = LogManager.getLogger(CommandHandler.class);
 
-	TelloDrone telloDrone;
+	Drone3d drone3d;
 	VideoPublisher publisher;
 
-    public CommandHandler(TelloDrone telloDrone) {
-        this.telloDrone = telloDrone;
+    public CommandHandler(Drone3d drone3d) {
+        this.drone3d = drone3d;
     }
 
     public String handle(String received) {
@@ -38,11 +39,12 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.TAKEOFF:
-					telloDrone.takeOff();
+                    Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, 50);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(takeoffCommand3d);
 					break;
 
 				case TelloControlCommands.LAND:
-					telloDrone.land();
+                    //TODO: Auto landing.
 					break;
 
 				case TelloControlCommands.STREAMON:
@@ -62,62 +64,67 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.EMERGENCY:
-
-					telloDrone.emergency();
+                    //TODO: Stop motors immediately.
 					break;
 
 				case TelloControlCommands.UP:
 					int xUp = Integer.parseInt(params.get(0));
 					validateUp(xUp);
-					telloDrone.up(xUp);
+                    Command3d upCommand3d = new Command3d(TelloControlCommands.UP, xUp);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(upCommand3d);
 					break;
 
 				case TelloControlCommands.DOWN:
 					int xDown = Integer.parseInt(params.get(0));
 					validateDown(xDown);
-					telloDrone.down(xDown);
+                    Command3d downCommand3d = new Command3d(TelloControlCommands.DOWN, xDown);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(downCommand3d);
 					break;
 
 				case TelloControlCommands.LEFT:
 					int xLeft = Integer.parseInt(params.get(0));
 					validateLeft(xLeft);
-					telloDrone.left(xLeft);
+                    Command3d leftCommand3d = new Command3d(TelloControlCommands.LEFT, xLeft);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(leftCommand3d);
 					break;
 
 				case TelloControlCommands.RIGHT:
 					int xRight = Integer.parseInt(params.get(0));
 					validateRight(xRight);
-					telloDrone.right(xRight);
+                    Command3d rightCommand3d = new Command3d(TelloControlCommands.RIGHT, xRight);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(rightCommand3d);
 					break;
 
 				case TelloControlCommands.FORWARD:
 					int xForward = Integer.parseInt(params.get(0));
 					validateForward(xForward);
-					telloDrone.forward(xForward);
+                    Command3d forwardCommand3d = new Command3d(TelloControlCommands.FORWARD, xForward);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(forwardCommand3d);
 					break;
 
 				case TelloControlCommands.BACK:
 					int xBack = Integer.parseInt(params.get(0));
 					validateBack(xBack);
-					telloDrone.back(xBack);
+                    Command3d backCommand3d = new Command3d(TelloControlCommands.BACK, xBack);
+                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(backCommand3d);
 					break;
 
 				case TelloControlCommands.CW:
 					int xCw = Integer.parseInt(params.get(0));
 					validateCw(xCw);
-					telloDrone.cw(xCw);
+                    //TODO: Rotate "x" degrees clockwise.
 					break;
 
 				case TelloControlCommands.CCW:
 					int xCcw = Integer.parseInt(params.get(0));
 					validateCcw(xCcw);
-					telloDrone.ccw(xCcw);
+                    //TODO: Rotate "x" degrees counterclockwise. x = 1-360
 					break;
 
 				case TelloControlCommands.FLIP:
 					String xFlip = params.get(0);
 					validateFlip(xFlip);
-					telloDrone.flip(xFlip);
+                    //TODO: Flip in "x" direction. "l"=left, "r"=right, "f"=forward, "b"=back
 					break;
 
 				case TelloControlCommands.GO:
@@ -128,11 +135,11 @@ public class CommandHandler {
 					String midGo = params.get(4);
 
 					validateGo(xGo,yGo,zGo,speedGo,midGo);
-					telloDrone.go(xGo,yGo,zGo,speedGo,midGo);
+                    //TODO: Fly to "x" "y" "z" at "speed" (cm/s).
 					break;
 
 				case TelloControlCommands.STOP:
-                    telloDrone.stop();
+                    //TODO: Hovers in the air
 					break;
 
 				case TelloControlCommands.CURVE:
@@ -145,7 +152,7 @@ public class CommandHandler {
 					int speedCurve = Integer.parseInt(params.get(6));
 					String midCurve = params.get(7);
 					validateCurve(x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve);
-					telloDrone.curve(x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve);
+                    //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
 					break;
 
 				case TelloControlCommands.JUMP:
@@ -158,11 +165,11 @@ public class CommandHandler {
 					String mid2Jump = params.get(6);
 
 					validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
-					telloDrone.jump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
+                    //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
 					break;
 
 				case TelloSetCommands.SPEED:
-					telloDrone.speed(Integer.parseInt(params.get(0)));
+                    //TODO: Set speed to "x" cm/s
 					break;
 
 				case TelloSetCommands.RC:
@@ -171,59 +178,66 @@ public class CommandHandler {
 					int c = Integer.parseInt(params.get(0));
 					int d = Integer.parseInt(params.get(0));
 					validateRc(a,b,c,d);
-					telloDrone.rc(a,b,c,d);
+                    //TODO: Set remot controller control via four channels
 					break;
 
 				case TelloSetCommands.WIFI:
 					String ssidWifi = params.get(0);
 					String passWifi = params.get(1);
 					validateWifi(ssidWifi, passWifi);
-					telloDrone.wifi(ssidWifi,passWifi);
+                    //TODO: Set Wi-Fi password
 					break;
 
 				case TelloSetCommands.MON:
-					telloDrone.mon();
+                    //TODO: Enable mission pad detection (both forward and downward detection).
 					break;
 
 				case TelloSetCommands.MOFF:
-					telloDrone.moff();
+                    //TODO: Disable mission pad detection.
 					break;
 
 				case TelloSetCommands.MDIRECTION:
 					int xMdirection = Integer.parseInt(params.get(0));
 					validateMdirection(xMdirection);
-					telloDrone.mdirection(xMdirection);
+                    if(xMdirection==0) {
+                        //TODO: Enable downward detection only
+                    } else if(xMdirection==1) {
+                        //TODO: Enable forward detection only
+                    } else if(xMdirection==2) {
+                        //TODO: Enable both forward and downward detection
+                    }
 					break;
 
 				case TelloSetCommands.AP:
 					String ssidAp = params.get(0);
 					String passAp = params.get(1);
 					validateAp(ssidAp, passAp);
-					telloDrone.ap(ssidAp,passAp);
+                    //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
 					break;
 
 				case TelloReadCommands.SPEED:
-					telloDrone.readSpeed();
+                    //TODO: Send current speed (10-100 cm/s)
 					break;
 
 				case TelloReadCommands.BATTERY:
-					telloDrone.readBattery();
+                    //TODO: Send current battery percentage (0-100)
 					break;
 
 				case TelloReadCommands.TIME:
-					telloDrone.readTime();
+                    //TODO: Send current flight time
 					break;
 
 				case TelloReadCommands.WIFI:
-					telloDrone.readWifi();
+                    //TODO: Send Wi-Fi SNR
 					break;
 
 				case TelloReadCommands.SDK:
-					telloDrone.readSdk();
+                    //TODO: Send the Tello SDK version
 					break;
 
 				case TelloReadCommands.SN:
-					telloDrone.readSn();
+                    //TODO: Send the Tello serial number
+					break;
 
 				default:
 					throw new IllegalArgumentException("invalid command");
