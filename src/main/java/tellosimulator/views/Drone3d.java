@@ -1,17 +1,29 @@
 package tellosimulator.views;
 
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.util.Duration;
+import jdk.jshell.spi.ExecutionControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.opencv.core.Point3;
 import tellosimulator.TelloSimulator;
 import tellosimulator.commands.TelloControlCommands;
+import tellosimulator.commands.TelloDefaultValues;
 import tellosimulator.network.UDPCommandConnection;
 
+import java.util.List;
+
 public class Drone3d {
+    
+    private final double INITIAL_X_POSITION = TelloSimulator.ROOM_WIDTH /2;
+
 
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
@@ -19,10 +31,18 @@ public class Drone3d {
     private Group GroupDrone3d;
     private Drone3dCommandQueue drone3dCommandQueue;
     private AnimationTimer animationTimer;
-    int currentAnimationLeftDistance = 0;
     Command3d currentAnimationCommand = null;
+    boolean animationRunning;
+    
+    private Point3D position;
+    private Point3D orientation; // y is always 0..
+    private int speed;
 
     private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
+
+    private final DoubleProperty xPosition = new SimpleDoubleProperty();
+    private final DoubleProperty yPosition = new SimpleDoubleProperty();
+    private final DoubleProperty zPosition = new SimpleDoubleProperty();
 
 
     public Drone3d(double width, double height, double depth) {
@@ -37,45 +57,149 @@ public class Drone3d {
         GroupDrone3d = new Group();
         GroupDrone3d.getChildren().add(box);
 
-        GroupDrone3d.translateXProperty().set(TelloSimulator.ROOM_WIDTH /2);
+        // move 3d Drone to starting position
+        GroupDrone3d.translateXProperty().set(INITIAL_X_POSITION);
         GroupDrone3d.translateYProperty().set(-height/2);
         GroupDrone3d.translateZProperty().set(Math.min(TelloSimulator.ROOM_DEPTH /5, 500));
+        
+        // set initial position parameter
+        Point3D initialPosition = new Point3D(INITIAL_X_POSITION, -height/2, Math.min(TelloSimulator.ROOM_DEPTH /5, 500));
+        setPosition(initialPosition);
+
+        // set initial orientation to z-axis (into the screen)
+        setOrientation(new Point3D(0, 0 , 1));
+        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
 
         drone3dCommandQueue = new Drone3dCommandQueue();
-
+        animationRunning = false;
+        setupValueChangedListeners();
         createAnimationLoop();
+
+
     }
+
+    //TODO: add initialize methods like in oop2 / cue
+
+    private void setupValueChangedListeners() {
+    }
+
+
+    /**
+     * Moves the drone to the given target coordinates.
+     * @param target the position vector/coordinates of the target
+     */
+    private void move (Point3D target){
+        double xPos = GroupDrone3d.getTranslateX();
+        double yPos = GroupDrone3d.getTranslateY();
+        double zPos = GroupDrone3d.getTranslateZ();
+        Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
+        Point3D to = target;
+        Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
+        Animation animation = createTimeline(from, to, duration);
+        animation.setOnFinished(event -> {
+            GroupDrone3d.translateXProperty().set(to.getX());
+            GroupDrone3d.translateYProperty().set(to.getY());
+            GroupDrone3d.translateZProperty().set(to.getZ());
+            animationRunning = false;
+            // trigger next ?
+        });
+        animation.play();
+    }
+
+    /**
+     * Moves the drone in one direction for a certain distance.
+     * @param directionVector the direction of the movement as a direction vector
+     * @param distance the distance (in cm)
+     */
+    private void move (Point3D directionVector, double distance){
+        double xPos = GroupDrone3d.getTranslateX(); //???
+        double yPos = GroupDrone3d.getTranslateY();
+        double zPos = GroupDrone3d.getTranslateZ();
+        Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
+        Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
+        Duration duration = Duration.seconds(distance / getSpeed());
+        Animation animation = createTimeline(from, to, duration);
+        animation.setOnFinished(event -> {
+            GroupDrone3d.translateXProperty().set(to.getX());
+            GroupDrone3d.translateYProperty().set(to.getY());
+            GroupDrone3d.translateZProperty().set(to.getZ());
+            animationRunning = false;
+            // trigger next ?
+        });
+        animation.play();
+
+    }
+
+    private Timeline createTimeline(Point3D start, Point3D end, Duration duration){
+        Timeline timeline = new Timeline();
+
+        KeyValue keyX = new KeyValue(GroupDrone3d.translateXProperty(), end.getX(), Interpolator.EASE_BOTH);
+        KeyValue keyY = new KeyValue(GroupDrone3d.translateYProperty(), end.getY(), Interpolator.EASE_BOTH);
+        KeyValue keyZ = new KeyValue(GroupDrone3d.translateZProperty(), end.getZ(), Interpolator.EASE_BOTH);
+
+        KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
+        timeline.getKeyFrames().add(keyFrame);
+        return timeline;
+    }
+
+
+    // vector calculations
+
+    private double calculateDistance(Point3D from, Point3D to) {
+        //TODO : calculate distance between two given points/ortsvektoren
+        return 0;
+    }
+
+    private Point3D getLeftNormalVector(){
+        //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
+        return null;
+    }
+
+    private Point3D getRightNormalVector(){
+        //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
+        return null;
+    }
+
 
     private void createAnimationLoop() {
 
         animationTimer = new AnimationTimer() {
             @Override
-            public void handle(long now) {
+            public void handle(long now) {  // called in every frame!
 
-                if(drone3dCommandQueue.getCommandQueue().size() != 0) {
+                if(drone3dCommandQueue.getCommandQueue().size() > 0 && !animationRunning) {
+                    currentAnimationCommand = drone3dCommandQueue.getCommandQueue().poll();
+                    List<String> params = currentAnimationCommand.getParameters();
 
-                    if(currentAnimationLeftDistance <= 0) {
-                        currentAnimationCommand = drone3dCommandQueue.getCommandQueue().poll();
-                        currentAnimationLeftDistance = currentAnimationCommand.getDistance();
+
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.TAKEOFF) {
+                        animationRunning = true;
+                        move(new Point3D(0, -1, 0), TelloDefaultValues.TAKEOFF_DISTANCE);  // 0,-1,0 should point upwards
+
                     }
-
-                    if(currentAnimationCommand.getDirection() == TelloControlCommands.TAKEOFF) {
-                        GroupDrone3d.translateYProperty().setValue(GroupDrone3d.getTranslateY()-1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.DOWN) {
-                        GroupDrone3d.translateYProperty().setValue(GroupDrone3d.getTranslateY()+1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.UP) {
-                        GroupDrone3d.translateYProperty().setValue(GroupDrone3d.getTranslateY()-1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.LEFT) {
-                        GroupDrone3d.translateXProperty().setValue(GroupDrone3d.getTranslateX()-1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.RIGHT) {
-                        GroupDrone3d.translateXProperty().setValue(GroupDrone3d.getTranslateX()+1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.BACK) {
-                        GroupDrone3d.translateZProperty().setValue(GroupDrone3d.getTranslateZ()+1);
-                    } else if(currentAnimationCommand.getDirection() == TelloControlCommands.FORWARD) {
-                        GroupDrone3d.translateZProperty().setValue(GroupDrone3d.getTranslateZ()-1);
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.DOWN) {
+                        // TODO
                     }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.UP) {
+                        // TODO
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.LEFT) {
+                        animationRunning = true;
+                        move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.RIGHT) {
+                        // TODO
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.BACK) {
+                        // TODO
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.FORWARD) {
+                        animationRunning = true;
+                        move(getOrientation(), Integer.parseInt(params.get(0)));
+                    }
+                    // TODO
 
-                    currentAnimationLeftDistance--;
+
                 }
             }
         };
@@ -185,4 +309,70 @@ public class Drone3d {
     public void setDrone3dCommandQueue(Drone3dCommandQueue drone3dCommandQueue) {
         this.drone3dCommandQueue = drone3dCommandQueue;
     }
+
+    public Point3D getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point3D position) {
+        this.position = position;
+    }
+
+    public Point3D getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Point3D orientation) {
+        this.orientation = orientation;
+    }
+
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void startAnimationLoop() {
+    }
+
+
+    public double getxPosition() {
+        return xPosition.get();
+    }
+
+    public DoubleProperty xPositionProperty() {
+        return xPosition;
+    }
+
+    public void setxPosition(double xPosition) {
+        this.xPosition.set(xPosition);
+    }
+
+    public double getyPosition() {
+        return yPosition.get();
+    }
+
+    public DoubleProperty yPositionProperty() {
+        return yPosition;
+    }
+
+    public void setyPosition(double yPosition) {
+        this.yPosition.set(yPosition);
+    }
+
+    public double getzPosition() {
+        return zPosition.get();
+    }
+
+    public DoubleProperty zPositionProperty() {
+        return zPosition;
+    }
+
+    public void setzPosition(double zPosition) {
+        this.zPosition.set(zPosition);
+    }
+
 }

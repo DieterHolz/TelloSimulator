@@ -14,6 +14,9 @@ import java.util.List;
 public class CommandHandler {
 	private static final Logger LOGGER = LogManager.getLogger(CommandHandler.class);
 
+	public static final int PRIORITY_NORMAL = 50;
+	public static final int PRIORITY_HIGH = 1;
+
 	Drone3d drone3d;
 	VideoPublisher publisher;
 
@@ -39,7 +42,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.TAKEOFF:
-                    Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, 50);
+                    Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, params,PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(takeoffCommand3d);
 					break;
 
@@ -48,18 +51,17 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.STREAMON:
-
-					publisher.startPublisher();
-					/*if (!videoConnection.isRunning()) {
-						videoConnection.setRunning(true);
-						videoConnection.start();
+					publisher = new VideoPublisher();
+					if (!publisher.isRunning()) {
+						publisher.setRunning(true);
+						publisher.start();
 					}
-					break;*/
+					break;
 
 				case TelloControlCommands.STREAMOFF:
 
-					if (videoConnection.isRunning()) {
-						videoConnection.setRunning(false);
+					if (publisher.isRunning()) {
+						publisher.setRunning(false);
 					}
 					break;
 
@@ -70,42 +72,42 @@ public class CommandHandler {
 				case TelloControlCommands.UP:
 					int xUp = Integer.parseInt(params.get(0));
 					validateUp(xUp);
-                    Command3d upCommand3d = new Command3d(TelloControlCommands.UP, xUp);
+                    Command3d upCommand3d = new Command3d(TelloControlCommands.UP, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(upCommand3d);
 					break;
 
 				case TelloControlCommands.DOWN:
 					int xDown = Integer.parseInt(params.get(0));
 					validateDown(xDown);
-                    Command3d downCommand3d = new Command3d(TelloControlCommands.DOWN, xDown);
+                    Command3d downCommand3d = new Command3d(TelloControlCommands.DOWN, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(downCommand3d);
 					break;
 
 				case TelloControlCommands.LEFT:
 					int xLeft = Integer.parseInt(params.get(0));
 					validateLeft(xLeft);
-                    Command3d leftCommand3d = new Command3d(TelloControlCommands.LEFT, xLeft);
+                    Command3d leftCommand3d = new Command3d(TelloControlCommands.LEFT, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(leftCommand3d);
 					break;
 
 				case TelloControlCommands.RIGHT:
 					int xRight = Integer.parseInt(params.get(0));
 					validateRight(xRight);
-                    Command3d rightCommand3d = new Command3d(TelloControlCommands.RIGHT, xRight);
+                    Command3d rightCommand3d = new Command3d(TelloControlCommands.RIGHT, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(rightCommand3d);
 					break;
 
 				case TelloControlCommands.FORWARD:
 					int xForward = Integer.parseInt(params.get(0));
 					validateForward(xForward);
-                    Command3d forwardCommand3d = new Command3d(TelloControlCommands.FORWARD, xForward);
+                    Command3d forwardCommand3d = new Command3d(TelloControlCommands.FORWARD, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(forwardCommand3d);
 					break;
 
 				case TelloControlCommands.BACK:
 					int xBack = Integer.parseInt(params.get(0));
 					validateBack(xBack);
-                    Command3d backCommand3d = new Command3d(TelloControlCommands.BACK, xBack);
+                    Command3d backCommand3d = new Command3d(TelloControlCommands.BACK, params, PRIORITY_NORMAL);
                     drone3d.getDrone3dCommandQueue().getCommandQueue().add(backCommand3d);
 					break;
 

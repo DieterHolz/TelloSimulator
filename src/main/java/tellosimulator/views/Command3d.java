@@ -1,42 +1,32 @@
 package tellosimulator.views;
 
+import java.util.List;
+
 public class Command3d {
-    String direction;
-    int distance;
+    String instruction;
+    List<String> parameters;
     int priority;
 
-    public Command3d(String direction, int distance) {
-        this.direction = direction;
-        this.distance = distance;
-        priority = 3;
+    public Command3d(String instruction, List<String> parameters, int priority){
+        this.instruction = instruction;
+        this.parameters = parameters;
+        this.priority = priority;
     }
 
-    public Command3d(String direction, int distance, int priority) {
-        this(direction, distance);
-        this.priority = 3;
-    }
 
     public String toString() {
-        return "direction: " + direction + ", distance: " + distance + ", priority: " + priority;
+        return "instruction: " + instruction + ", params: " + parameters + ", priority: " + priority;
     }
 
 
     //Getter and setter
 
-    public String getDirection() {
-        return direction;
+    public String getInstruction() {
+        return instruction;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
     }
 
     public int getPriority() {
@@ -45,5 +35,13 @@ public class Command3d {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
     }
 }
