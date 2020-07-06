@@ -8,12 +8,9 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import jdk.jshell.spi.ExecutionControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.opencv.core.Point3;
 import tellosimulator.TelloSimulator;
 import tellosimulator.commands.TelloControlCommands;
 import tellosimulator.commands.TelloDefaultValues;
@@ -90,13 +87,12 @@ public class Drone3d {
     private void rotate(int angle) {
         double x1 = getOrientation().getX();
         double z1 = getOrientation().getZ();
-        double x2 = Math.cos(angle) *1 - Math.sin(angle) * z1;
-        double z2 = Math.sin(angle) * x1 + Math.cos(angle) * z1;
-
-        orientation = new Point3D(x2,0, z2);
+        double x2 = Math.cos(angle*Math.PI/180)  * x1 - Math.sin(angle*Math.PI/180) * z1;
+        double z2 = Math.sin(angle*Math.PI/180) * x1 + Math.cos(angle*Math.PI/180) * z1;
+        orientation = new Point3D(x2, 0, z2);
         setAngle(getAngle()+angle);
-        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360); //TODO: calculate duration depending on angle
-        Animation animation = createRotateAnimation(angle, duration);
+        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
+        Animation animation = createRotateAnimation(duration);
         animation.setOnFinished(event -> animationRunning = false);
         animation.play();
     }
@@ -154,10 +150,10 @@ public class Drone3d {
         return timeline;
     }
 
-    private Timeline createRotateAnimation(int angle, Duration duration){
+    private Timeline createRotateAnimation(Duration duration){
         Timeline timeline = new Timeline();
         GroupDrone3d.setRotationAxis(getUpwardsNormalVector());
-        KeyValue key = new KeyValue(GroupDrone3d.rotateProperty(), angle);
+        KeyValue key = new KeyValue(GroupDrone3d.rotateProperty(), getAngle());
         KeyFrame keyFrame = new KeyFrame(duration, key);
         timeline.getKeyFrames().add(keyFrame);
         return timeline;
