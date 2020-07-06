@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import jdk.jshell.spi.ExecutionControl;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,7 @@ public class Drone3d {
     
     private Point3D position;
     private Point3D orientation; // y is always 0..
+    private int angle;
     private int speed;
 
     private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
@@ -68,6 +70,7 @@ public class Drone3d {
 
         // set initial orientation to z-axis (into the screen)
         setOrientation(new Point3D(0, 0 , 1));
+        setAngle(0);
         setSpeed(TelloDefaultValues.DEFAULT_SPEED);
 
         drone3dCommandQueue = new Drone3dCommandQueue();
@@ -84,6 +87,19 @@ public class Drone3d {
     }
 
 
+    private void rotate(int angle) {
+        double x1 = getOrientation().getX();
+        double z1 = getOrientation().getZ();
+        double x2 = Math.cos(angle * x1) - Math.sin(angle * z1);
+        double z2 = Math.sin(angle * x1) + Math.cos(angle * z1);
+        orientation = new Point3D(x2,0, z2);
+        this.angle += angle;
+        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*angle/360); //TODO: calculate duration depending on angle
+        Animation animation = createRotateAnimation(angle, duration);
+        animation.setOnFinished(event -> animationRunning = false);
+        animation.play();
+    }
+
     /**
      * Moves the drone to the given target coordinates.
      * @param target the position vector/coordinates of the target
@@ -95,7 +111,7 @@ public class Drone3d {
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = target;
         Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
-        Animation animation = createTimeline(from, to, duration);
+        Animation animation = createTimeline(to, duration);
         animation.setOnFinished(event -> {
             GroupDrone3d.translateXProperty().set(to.getX());
             GroupDrone3d.translateYProperty().set(to.getY());
@@ -103,6 +119,7 @@ public class Drone3d {
             animationRunning = false;
             // trigger next ?
         });
+        animationRunning = true;
         animation.play();
     }
 
@@ -118,26 +135,36 @@ public class Drone3d {
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
         Duration duration = Duration.seconds(distance / getSpeed());
-        Animation animation = createTimeline(from, to, duration);
+        Animation animation = createTimeline(to, duration);
         animation.setOnFinished(event -> {
-            GroupDrone3d.translateXProperty().set(to.getX());
+            GroupDrone3d.translateXProperty().set(to.getX()); //TODO needed?
             GroupDrone3d.translateYProperty().set(to.getY());
             GroupDrone3d.translateZProperty().set(to.getZ());
             animationRunning = false;
             // trigger next ?
         });
+        animationRunning = true;
         animation.play();
 
     }
 
-    private Timeline createTimeline(Point3D start, Point3D end, Duration duration){
+    private Timeline createTimeline(Point3D target, Duration duration){
         Timeline timeline = new Timeline();
 
-        KeyValue keyX = new KeyValue(GroupDrone3d.translateXProperty(), end.getX(), Interpolator.EASE_BOTH);
-        KeyValue keyY = new KeyValue(GroupDrone3d.translateYProperty(), end.getY(), Interpolator.EASE_BOTH);
-        KeyValue keyZ = new KeyValue(GroupDrone3d.translateZProperty(), end.getZ(), Interpolator.EASE_BOTH);
+        KeyValue keyX = new KeyValue(GroupDrone3d.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
+        KeyValue keyY = new KeyValue(GroupDrone3d.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
+        KeyValue keyZ = new KeyValue(GroupDrone3d.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
 
         KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
+        timeline.getKeyFrames().add(keyFrame);
+        return timeline;
+    }
+
+    private Timeline createRotateAnimation(int angle, Duration duration){
+        Timeline timeline = new Timeline();
+        GroupDrone3d.setRotationAxis(getUpwardsNormalVector());
+        KeyValue key = new KeyValue(GroupDrone3d.rotateProperty(), angle);
+        KeyFrame keyFrame = new KeyFrame(duration, key);
         timeline.getKeyFrames().add(keyFrame);
         return timeline;
     }
@@ -152,12 +179,20 @@ public class Drone3d {
 
     private Point3D getLeftNormalVector(){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return null;
+        return new Point3D(getOrientation().getZ(), getOrientation().getY(), -getOrientation().getX());
     }
 
     private Point3D getRightNormalVector(){
         //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return null;
+        return new Point3D(-getOrientation().getZ(), getOrientation().getY(), getOrientation().getX());
+    }
+
+    private Point3D getUpwardsNormalVector(){
+        return new Point3D(0,-1,0);
+    }
+
+    private Point3D getDownwardsNormalVector(){
+        return new Point3D(0,1,0);
     }
 
 
@@ -173,29 +208,41 @@ public class Drone3d {
 
 
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.TAKEOFF) {
-                        animationRunning = true;
-                        move(new Point3D(0, -1, 0), TelloDefaultValues.TAKEOFF_DISTANCE);  // 0,-1,0 should point upwards
+
+                        move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);  // 0,-1,0 should point upwards
 
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.DOWN) {
-                        // TODO
+                        animationRunning = true;
+                        move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.UP) {
-                        // TODO
+                        animationRunning = true;
+                        move(getUpwardsNormalVector(), Integer.parseInt(params.get(0)));
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.LEFT) {
                         animationRunning = true;
                         move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.RIGHT) {
-                        // TODO
+                        animationRunning = true;
+                        move(getRightNormalVector(), Integer.parseInt(params.get(0)));
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.BACK) {
-                        // TODO
+                        animationRunning = true;
+                        move(getOrientation().multiply(-1), Integer.parseInt(params.get(0)));
                     }
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.FORWARD) {
                         animationRunning = true;
                         move(getOrientation(), Integer.parseInt(params.get(0)));
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.CW) {
+                        animationRunning = true;
+                        rotate(Integer.parseInt(params.get(0)));
+                    }
+                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.CCW) {
+                        animationRunning = true;
+                        rotate(-Integer.parseInt(params.get(0)));
                     }
                     // TODO
 
@@ -206,6 +253,7 @@ public class Drone3d {
 
         animationTimer.start();
     }
+
     public String getDroneState() {
 
         //TODO: check if mission pad detection feature is enabled/disbled
@@ -375,4 +423,11 @@ public class Drone3d {
         this.zPosition.set(zPosition);
     }
 
+    public int getAngle() {
+        return angle;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
+    }
 }

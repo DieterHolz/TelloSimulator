@@ -114,13 +114,15 @@ public class CommandHandler {
 				case TelloControlCommands.CW:
 					int xCw = Integer.parseInt(params.get(0));
 					validateCw(xCw);
-                    //TODO: Rotate "x" degrees clockwise.
+					Command3d cwCommand3d = new Command3d(TelloControlCommands.CW, params, PRIORITY_NORMAL);
+					drone3d.getDrone3dCommandQueue().getCommandQueue().add(cwCommand3d);
 					break;
 
 				case TelloControlCommands.CCW:
 					int xCcw = Integer.parseInt(params.get(0));
 					validateCcw(xCcw);
-                    //TODO: Rotate "x" degrees counterclockwise. x = 1-360
+					Command3d ccwCommand3d = new Command3d(TelloControlCommands.CCW, params, PRIORITY_NORMAL);
+					drone3d.getDrone3dCommandQueue().getCommandQueue().add(ccwCommand3d);
 					break;
 
 				case TelloControlCommands.FLIP:
