@@ -128,7 +128,8 @@ public class CommandHandler {
 				case TelloControlCommands.FLIP:
 					String xFlip = params.get(0);
 					validateFlip(xFlip);
-                    //TODO: Flip in "x" direction. "l"=left, "r"=right, "f"=forward, "b"=back
+					Command3d flipCommand3d = new Command3d(TelloControlCommands.FLIP, params, PRIORITY_NORMAL);
+					drone3d.getDrone3dCommandQueue().getCommandQueue().add(flipCommand3d);
 					break;
 
 				case TelloControlCommands.GO:
