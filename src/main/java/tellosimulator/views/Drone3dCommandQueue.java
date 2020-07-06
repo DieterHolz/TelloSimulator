@@ -1,13 +1,15 @@
 package tellosimulator.views;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Drone3dCommandQueue {
 
-    private PriorityQueue<Command3d> commandQueue;
+    private Queue<Command3d> commandQueue;
 
     Drone3dCommandQueue() {
-        commandQueue = new PriorityQueue<>(new Command3dComparator());
+        commandQueue = new LinkedList<>();
     }
 
 
@@ -17,7 +19,7 @@ public class Drone3dCommandQueue {
 
     //Getter and Setter
 
-    public PriorityQueue<Command3d> getCommandQueue() {
+    public Queue<Command3d> getCommandQueue() {
         return commandQueue;
     }
 

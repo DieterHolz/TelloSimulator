@@ -49,6 +49,7 @@ public class Drone3d {
 
     public Drone3d(double width, double height, double depth) {
 
+        drone3dCommandQueue = new Drone3dCommandQueue();
         GroupDrone3d = new Group();
 
         PhongMaterial lightskyblue = new PhongMaterial();
@@ -73,7 +74,6 @@ public class Drone3d {
         setAngle(0);
         setSpeed(TelloDefaultValues.DEFAULT_SPEED);
 
-        drone3dCommandQueue = new Drone3dCommandQueue();
         animationRunning = false;
         setupValueChangedListeners();
         createAnimationLoop();
@@ -90,11 +90,12 @@ public class Drone3d {
     private void rotate(int angle) {
         double x1 = getOrientation().getX();
         double z1 = getOrientation().getZ();
-        double x2 = Math.cos(angle * x1) - Math.sin(angle * z1);
-        double z2 = Math.sin(angle * x1) + Math.cos(angle * z1);
+        double x2 = Math.cos(angle) *1 - Math.sin(angle) * z1;
+        double z2 = Math.sin(angle) * x1 + Math.cos(angle) * z1;
+
         orientation = new Point3D(x2,0, z2);
-        this.angle += angle;
-        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*angle/360); //TODO: calculate duration depending on angle
+        setAngle(getAngle()+angle);
+        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360); //TODO: calculate duration depending on angle
         Animation animation = createRotateAnimation(angle, duration);
         animation.setOnFinished(event -> animationRunning = false);
         animation.play();
@@ -113,13 +114,9 @@ public class Drone3d {
         Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
         Animation animation = createTimeline(to, duration);
         animation.setOnFinished(event -> {
-            GroupDrone3d.translateXProperty().set(to.getX());
-            GroupDrone3d.translateYProperty().set(to.getY());
-            GroupDrone3d.translateZProperty().set(to.getZ());
             animationRunning = false;
             // trigger next ?
         });
-        animationRunning = true;
         animation.play();
     }
 
@@ -137,9 +134,6 @@ public class Drone3d {
         Duration duration = Duration.seconds(distance / getSpeed());
         Animation animation = createTimeline(to, duration);
         animation.setOnFinished(event -> {
-            GroupDrone3d.translateXProperty().set(to.getX()); //TODO needed?
-            GroupDrone3d.translateYProperty().set(to.getY());
-            GroupDrone3d.translateZProperty().set(to.getZ());
             animationRunning = false;
             // trigger next ?
         });
@@ -179,12 +173,12 @@ public class Drone3d {
 
     private Point3D getLeftNormalVector(){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return new Point3D(getOrientation().getZ(), getOrientation().getY(), -getOrientation().getX());
+        return new Point3D(-getOrientation().getZ(), getOrientation().getY(), getOrientation().getX());
     }
 
     private Point3D getRightNormalVector(){
         //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return new Point3D(-getOrientation().getZ(), getOrientation().getY(), getOrientation().getX());
+        return new Point3D(getOrientation().getZ(), getOrientation().getY(), -getOrientation().getX());
     }
 
     private Point3D getUpwardsNormalVector(){
@@ -199,53 +193,46 @@ public class Drone3d {
     private void createAnimationLoop() {
 
         animationTimer = new AnimationTimer() {
+            private long lastTimerCall;
+
             @Override
             public void handle(long now) {  // called in every frame!
 
                 if(drone3dCommandQueue.getCommandQueue().size() > 0 && !animationRunning) {
+                    animationRunning = true;
                     currentAnimationCommand = drone3dCommandQueue.getCommandQueue().poll();
                     List<String> params = currentAnimationCommand.getParameters();
 
 
                     if(currentAnimationCommand.getInstruction() == TelloControlCommands.TAKEOFF) {
-
                         move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);  // 0,-1,0 should point upwards
-
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.DOWN) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.DOWN) {
                         move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.UP) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.UP) {
                         move(getUpwardsNormalVector(), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.LEFT) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.LEFT) {
                         move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.RIGHT) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.RIGHT) {
                         move(getRightNormalVector(), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.BACK) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.BACK) {
                         move(getOrientation().multiply(-1), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.FORWARD) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.FORWARD) {
                         move(getOrientation(), Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.CW) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.CW) {
                         rotate(Integer.parseInt(params.get(0)));
                     }
-                    if(currentAnimationCommand.getInstruction() == TelloControlCommands.CCW) {
-                        animationRunning = true;
+                    else if(currentAnimationCommand.getInstruction() == TelloControlCommands.CCW) {
                         rotate(-Integer.parseInt(params.get(0)));
                     }
                     // TODO
-
+                    lastTimerCall = now;
 
                 }
             }
