@@ -4,7 +4,6 @@ import javafx.scene.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import tellosimulator.TelloSimulator;
 
 
 public class Simulator3DScene extends SubScene {

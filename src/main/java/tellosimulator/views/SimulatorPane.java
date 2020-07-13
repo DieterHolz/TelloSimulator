@@ -5,7 +5,6 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import tellosimulator.TelloSimulator;
 
 public class SimulatorPane extends BorderPane {
     private final Stage stage;
@@ -48,7 +47,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        Group droneGroup = drone.getGroupDrone3d();
+        Group droneGroup = drone.getDrone();
 
         Room3d room3d = new Room3d(Simulator3DScene.ROOM_WIDTH,Simulator3DScene.ROOM_HEIGHT,Simulator3DScene.ROOM_DEPTH,Simulator3DScene.WALL_DEPTH);
         Group roomGroup = room3d.getRoom3d();

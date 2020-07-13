@@ -18,25 +18,23 @@ import tellosimulator.network.UDPCommandConnection;
 import java.util.List;
 
 public class Drone3d {
-    
-    private final double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
 
+    private static final int DRONE_WIDTH = 18;
+    private static final int DRONE_HEIGHT = 5;
+    private static final int DRONE_DEPTH = 16;
+
+    static double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
+    static double INITIAL_Y_POSITION = -DRONE_HEIGHT/2;
+    static double INITIAL_Z_POSITION = Math.min(Simulator3DScene.ROOM_DEPTH /5, 500);
 
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
 
-    private Group GroupDrone3d;
-    private Drone3dCommandQueue drone3dCommandQueue;
+    private Group drone;
+    private Drone3dCommandQueue commandQueue;
     private AnimationTimer animationTimer;
     Command3d currentAnimationCommand = null;
     boolean animationRunning;
-    
-    private Point3D position;
-    private Point3D orientation; // y is always 0..
-    private int yawAngle;
-    private int rollAngle;
-    private int pitchAngle;
-    private int speed;
 
     enum Rotation {
         YAW,
@@ -46,63 +44,80 @@ public class Drone3d {
 
     private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
 
-    private final DoubleProperty xPosition = new SimpleDoubleProperty();
+    private final DoubleProperty xPosition = new SimpleDoubleProperty(); // needed? we have translateXProperty
     private final DoubleProperty yPosition = new SimpleDoubleProperty();
     private final DoubleProperty zPosition = new SimpleDoubleProperty();
+    private final DoubleProperty xOrientation = new SimpleDoubleProperty();
+    private final DoubleProperty yOrientation = new SimpleDoubleProperty();
+    private final DoubleProperty zOrientation = new SimpleDoubleProperty();
+    private final DoubleProperty yawAngle = new SimpleDoubleProperty();
+    private final DoubleProperty rollAngle = new SimpleDoubleProperty();
+    private final DoubleProperty pitchAngle = new SimpleDoubleProperty();
+    private final DoubleProperty speed = new SimpleDoubleProperty();
 
 
-    public Drone3d(double width, double height, double depth) {
-
-        drone3dCommandQueue = new Drone3dCommandQueue();
-        GroupDrone3d = new Group();
-
-        PhongMaterial lightskyblue = new PhongMaterial();
-        lightskyblue.setDiffuseColor(Color.LIGHTSKYBLUE);
-        Box box = new Box(width, height, depth);
-        box.setMaterial(lightskyblue);
-
-        GroupDrone3d = new Group();
-        GroupDrone3d.getChildren().add(box);
-
-        // move 3d Drone to starting position
-        GroupDrone3d.translateXProperty().set(INITIAL_X_POSITION);
-        setXPosition(INITIAL_X_POSITION);
-        GroupDrone3d.translateYProperty().set(-height/2);
-        setYPosition(-height/2);
-        GroupDrone3d.translateZProperty().set(Math.min(Simulator3DScene.ROOM_DEPTH /5, 500));
-        setZPosition(Math.min(Simulator3DScene.ROOM_DEPTH /5, 500));
-        
-        // set initial position parameter
-        Point3D initialPosition = new Point3D(getXPosition(), getYPosition(), getZPosition());
-        setPosition(initialPosition);
-
-        // set initial orientation to z-axis (into the screen)
-        setOrientation(new Point3D(0, 0 , 1));
-        setYawAngle(0);
-        setRollAngle(0);
-        setPitchAngle(0);
-        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
+    public Drone3d() {
+        initCommandQueue();
+        buildDrone();
+        setInititalValues();
 
         animationRunning = false;
+
+        setupEventHandlers();
         setupValueChangedListeners();
+        setupBindings();
+
         createAnimationLoop();
-
-
     }
 
     //TODO: add initialize methods like in oop2 / cue
 
+    private void initCommandQueue() {
+        commandQueue = new Drone3dCommandQueue();
+    }
+
+    private void buildDrone() {
+        drone = new Group();
+        PhongMaterial lightskyblue = new PhongMaterial();
+        lightskyblue.setDiffuseColor(Color.LIGHTSKYBLUE);
+        Box box = new Box(DRONE_WIDTH, DRONE_HEIGHT, DRONE_DEPTH);
+        box.setMaterial(lightskyblue);
+        drone.getChildren().add(box);
+    }
+
+    private void setInititalValues() {
+        // move 3d Drone to starting position
+        drone.setTranslateX(INITIAL_X_POSITION);
+        drone.setTranslateY(INITIAL_Y_POSITION);
+        drone.setTranslateZ(INITIAL_Z_POSITION);
+
+        // set initial orientation to z-axis (into the screen)
+        setxOrientation(0);
+        setyOrientation(0);
+        setzOrientation(1);
+        setYawAngle(0);
+        setRollAngle(0);
+        setPitchAngle(0);
+        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
+    }
+
+    private void setupEventHandlers() {
+    }
+
     private void setupValueChangedListeners() {
+    }
+
+    private void setupBindings() {
     }
 
 
     private void rotate(int angle, Rotation axis) {
         if (axis == Rotation.YAW) {
-            double x1 = getOrientation().getX();
-            double z1 = getOrientation().getZ();
+            double x1 = getCurrentOrientation().getX();
+            double z1 = getCurrentOrientation().getZ();
             double x2 = Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1;
             double z2 = Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1;
-            orientation = new Point3D(x2, 0, z2);
+            // orientation = new Point3D(x2, 0, z2);
             setYawAngle(getYawAngle() + angle);
         } else if (axis == Rotation.ROLL) {
             setRollAngle(getRollAngle() + angle);
@@ -110,7 +125,7 @@ public class Drone3d {
             setPitchAngle(getPitchAngle() + angle);
         }
         Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
-        Animation animation = createRotateAnimation(duration, axis);
+        Animation animation = createRotateAnimation(axis, duration);
         animation.setOnFinished(event -> animationRunning = false);
         animation.play();
     }
@@ -120,13 +135,13 @@ public class Drone3d {
      * @param target the position vector/coordinates of the target
      */
     private void move (Point3D target){
-        double xPos = GroupDrone3d.getTranslateX();
-        double yPos = GroupDrone3d.getTranslateY();
-        double zPos = GroupDrone3d.getTranslateZ();
+        double xPos = drone.getTranslateX();
+        double yPos = drone.getTranslateY();
+        double zPos = drone.getTranslateZ();
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = target;
         Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
-        Animation animation = createTimeline(to, duration);
+        Animation animation = createMoveAnimation(to, duration);
         animation.setOnFinished(event -> {
             animationRunning = false;
             // trigger next ?
@@ -140,13 +155,10 @@ public class Drone3d {
      * @param distance the distance (in cm)
      */
     private void move (Point3D directionVector, double distance){
-        double xPos = GroupDrone3d.getTranslateX(); //???
-        double yPos = GroupDrone3d.getTranslateY();
-        double zPos = GroupDrone3d.getTranslateZ();
-        Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
+        Point3D from = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());   // get p1
         Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
         Duration duration = Duration.seconds(distance / getSpeed());
-        Animation animation = createTimeline(to, duration);
+        Animation animation = createMoveAnimation(to, duration);
         animation.setOnFinished(event -> {
             animationRunning = false;
             // trigger next ?
@@ -156,29 +168,29 @@ public class Drone3d {
 
     }
 
-    private Timeline createTimeline(Point3D target, Duration duration){
+    private Timeline createMoveAnimation(Point3D target, Duration duration){
         Timeline timeline = new Timeline();
 
-        KeyValue keyX = new KeyValue(GroupDrone3d.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
-        KeyValue keyY = new KeyValue(GroupDrone3d.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
-        KeyValue keyZ = new KeyValue(GroupDrone3d.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
+        KeyValue keyX = new KeyValue(drone.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
+        KeyValue keyY = new KeyValue(drone.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
+        KeyValue keyZ = new KeyValue(drone.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
 
         KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
         timeline.getKeyFrames().add(keyFrame);
         return timeline;
     }
 
-    private Timeline createRotateAnimation(Duration duration, Rotation rotation){
+    private Timeline createRotateAnimation(Rotation rotation, Duration duration){
         KeyValue key = null;
         if(rotation == Rotation.YAW) {
-            GroupDrone3d.setRotationAxis(getUpwardsNormalVector());
-            key = new KeyValue(GroupDrone3d.rotateProperty(), getYawAngle());
+            drone.setRotationAxis(getUpwardsNormalVector());
+            key = new KeyValue(drone.rotateProperty(), getYawAngle());
         } else if(rotation == Rotation.ROLL) {
-            GroupDrone3d.setRotationAxis(getOrientation());
-            key = new KeyValue(GroupDrone3d.rotateProperty(), getRollAngle());
+            drone.setRotationAxis(getCurrentOrientation());
+            key = new KeyValue(drone.rotateProperty(), getRollAngle());
         } else if (rotation == Rotation.PITCH) {
-            GroupDrone3d.setRotationAxis(getLeftNormalVector());
-            key = new KeyValue(GroupDrone3d.rotateProperty(), getPitchAngle());
+            drone.setRotationAxis(getLeftNormalVector());
+            key = new KeyValue(drone.rotateProperty(), getPitchAngle());
         }
         KeyFrame keyFrame = new KeyFrame(duration, key);
         Timeline timeline = new Timeline();
@@ -196,12 +208,12 @@ public class Drone3d {
 
     private Point3D getLeftNormalVector(){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return new Point3D(-getOrientation().getZ(), getOrientation().getY(), getOrientation().getX());
+        return new Point3D(-getCurrentOrientation().getZ(), getCurrentOrientation().getY(), getCurrentOrientation().getX());
     }
 
     private Point3D getRightNormalVector(){
         //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return new Point3D(getOrientation().getZ(), getOrientation().getY(), -getOrientation().getX());
+        return new Point3D(getCurrentOrientation().getZ(), getCurrentOrientation().getY(), -getCurrentOrientation().getX());
     }
 
     private Point3D getUpwardsNormalVector(){
@@ -210,6 +222,10 @@ public class Drone3d {
 
     private Point3D getDownwardsNormalVector(){
         return new Point3D(0,1,0);
+    }
+
+    private Point3D getCurrentOrientation(){
+        return new Point3D(getxOrientation(), getyOrientation(), getzOrientation());
     }
 
 
@@ -221,9 +237,9 @@ public class Drone3d {
             @Override
             public void handle(long now) {  // called in every frame!
 
-                if(drone3dCommandQueue.getCommandQueue().size() > 0 && !animationRunning) {
+                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning) {
                     animationRunning = true;
-                    currentAnimationCommand = drone3dCommandQueue.getCommandQueue().poll();
+                    currentAnimationCommand = commandQueue.getCommandQueue().poll();
                     List<String> params = currentAnimationCommand.getParameters();
 
                     switch(currentAnimationCommand.getInstruction()) {
@@ -249,11 +265,11 @@ public class Drone3d {
                             break;
 
                         case TelloControlCommands.BACK:
-                            move(getOrientation().multiply(-1), Integer.parseInt(params.get(0)));
+                            move(getCurrentOrientation().multiply(-1), Integer.parseInt(params.get(0)));
                             break;
 
                         case TelloControlCommands.FORWARD:
-                            move(getOrientation(), Integer.parseInt(params.get(0)));
+                            move(getCurrentOrientation(), Integer.parseInt(params.get(0)));
                             break;
 
                         case TelloControlCommands.CW:
@@ -284,7 +300,7 @@ public class Drone3d {
                             }
                             break;
 
-                        // TODO
+                        // TODO: handle other commands
                     }
                     lastTimerCall = now;
 
@@ -387,41 +403,16 @@ public class Drone3d {
         return accelerationZ;
     }
 
-    public Group getGroupDrone3d() {
-        return GroupDrone3d;
+    public Group getDrone() {
+        return drone;
     }
 
-    public Drone3dCommandQueue getDrone3dCommandQueue() {
-        return drone3dCommandQueue;
+    public Drone3dCommandQueue getCommandQueue() {
+        return commandQueue;
     }
 
-    public void setDrone3dCommandQueue(Drone3dCommandQueue drone3dCommandQueue) {
-        this.drone3dCommandQueue = drone3dCommandQueue;
-    }
-
-    public Point3D getPosition() {
-        return position;
-    }
-
-    public void setPosition(Point3D position) {
-        this.position = position;
-    }
-
-    public Point3D getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(Point3D orientation) {
-        this.orientation = orientation;
-    }
-
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setCommandQueue(Drone3dCommandQueue commandQueue) {
+        this.commandQueue = commandQueue;
     }
 
     public void startAnimationLoop() {
@@ -464,27 +455,88 @@ public class Drone3d {
         this.zPosition.set(zPosition);
     }
 
-    public int getYawAngle() {
+    public double getxOrientation() {
+        return xOrientation.get();
+    }
+
+    public DoubleProperty xOrientationProperty() {
+        return xOrientation;
+    }
+
+    public void setxOrientation(double xOrientation) {
+        this.xOrientation.set(xOrientation);
+    }
+
+    public double getyOrientation() {
+        return yOrientation.get();
+    }
+
+    public DoubleProperty yOrientationProperty() {
+        return yOrientation;
+    }
+
+    public void setyOrientation(double yOrientation) {
+        this.yOrientation.set(yOrientation);
+    }
+
+    public double getzOrientation() {
+        return zOrientation.get();
+    }
+
+    public DoubleProperty zOrientationProperty() {
+        return zOrientation;
+    }
+
+    public void setzOrientation(double zOrientation) {
+        this.zOrientation.set(zOrientation);
+    }
+
+    public double getYawAngle() {
+        return yawAngle.get();
+    }
+
+    public DoubleProperty yawAngleProperty() {
         return yawAngle;
     }
 
-    public void setYawAngle(int yawAngle) {
-        this.yawAngle = yawAngle;
+    public void setYawAngle(double yawAngle) {
+        this.yawAngle.set(yawAngle);
     }
 
-    public int getRollAngle() {
+    public double getRollAngle() {
+        return rollAngle.get();
+    }
+
+    public DoubleProperty rollAngleProperty() {
         return rollAngle;
     }
 
-    public void setRollAngle(int rollAngle) {
-        this.rollAngle = rollAngle;
+    public void setRollAngle(double rollAngle) {
+        this.rollAngle.set(rollAngle);
     }
 
-    public int getPitchAngle() {
+    public double getPitchAngle() {
+        return pitchAngle.get();
+    }
+
+    public DoubleProperty pitchAngleProperty() {
         return pitchAngle;
     }
 
-    public void setPitchAngle(int pitchAngle) {
-        this.pitchAngle = pitchAngle;
+    public void setPitchAngle(double pitchAngle) {
+        this.pitchAngle.set(pitchAngle);
     }
+
+    public double getSpeed() {
+        return speed.get();
+    }
+
+    public DoubleProperty speedProperty() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed.set(speed);
+    }
+
 }

@@ -13,7 +13,7 @@ public class TelloSimulator extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Drone3d telloDrone = new Drone3d(18, 5, 16);
+        Drone3d telloDrone = new Drone3d();
         Region rootPanel = new SimulatorPane(primaryStage, telloDrone);
 
         Scene scene = new Scene(rootPanel);

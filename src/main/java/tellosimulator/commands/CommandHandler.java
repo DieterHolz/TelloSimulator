@@ -43,7 +43,7 @@ public class CommandHandler {
 
 				case TelloControlCommands.TAKEOFF:
                     Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, params,PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(takeoffCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(takeoffCommand3d);
 					break;
 
 				case TelloControlCommands.LAND:
@@ -73,63 +73,63 @@ public class CommandHandler {
 					int xUp = Integer.parseInt(params.get(0));
 					validateUp(xUp);
                     Command3d upCommand3d = new Command3d(TelloControlCommands.UP, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(upCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(upCommand3d);
 					break;
 
 				case TelloControlCommands.DOWN:
 					int xDown = Integer.parseInt(params.get(0));
 					validateDown(xDown);
                     Command3d downCommand3d = new Command3d(TelloControlCommands.DOWN, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(downCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(downCommand3d);
 					break;
 
 				case TelloControlCommands.LEFT:
 					int xLeft = Integer.parseInt(params.get(0));
 					validateLeft(xLeft);
                     Command3d leftCommand3d = new Command3d(TelloControlCommands.LEFT, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(leftCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(leftCommand3d);
 					break;
 
 				case TelloControlCommands.RIGHT:
 					int xRight = Integer.parseInt(params.get(0));
 					validateRight(xRight);
                     Command3d rightCommand3d = new Command3d(TelloControlCommands.RIGHT, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(rightCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(rightCommand3d);
 					break;
 
 				case TelloControlCommands.FORWARD:
 					int xForward = Integer.parseInt(params.get(0));
 					validateForward(xForward);
                     Command3d forwardCommand3d = new Command3d(TelloControlCommands.FORWARD, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(forwardCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(forwardCommand3d);
 					break;
 
 				case TelloControlCommands.BACK:
 					int xBack = Integer.parseInt(params.get(0));
 					validateBack(xBack);
                     Command3d backCommand3d = new Command3d(TelloControlCommands.BACK, params, PRIORITY_NORMAL);
-                    drone3d.getDrone3dCommandQueue().getCommandQueue().add(backCommand3d);
+                    drone3d.getCommandQueue().getCommandQueue().add(backCommand3d);
 					break;
 
 				case TelloControlCommands.CW:
 					int xCw = Integer.parseInt(params.get(0));
 					validateCw(xCw);
 					Command3d cwCommand3d = new Command3d(TelloControlCommands.CW, params, PRIORITY_NORMAL);
-					drone3d.getDrone3dCommandQueue().getCommandQueue().add(cwCommand3d);
+					drone3d.getCommandQueue().getCommandQueue().add(cwCommand3d);
 					break;
 
 				case TelloControlCommands.CCW:
 					int xCcw = Integer.parseInt(params.get(0));
 					validateCcw(xCcw);
 					Command3d ccwCommand3d = new Command3d(TelloControlCommands.CCW, params, PRIORITY_NORMAL);
-					drone3d.getDrone3dCommandQueue().getCommandQueue().add(ccwCommand3d);
+					drone3d.getCommandQueue().getCommandQueue().add(ccwCommand3d);
 					break;
 
 				case TelloControlCommands.FLIP:
 					String xFlip = params.get(0);
 					validateFlip(xFlip);
 					Command3d flipCommand3d = new Command3d(TelloControlCommands.FLIP, params, PRIORITY_NORMAL);
-					drone3d.getDrone3dCommandQueue().getCommandQueue().add(flipCommand3d);
+					drone3d.getCommandQueue().getCommandQueue().add(flipCommand3d);
 					break;
 
 				case TelloControlCommands.GO:
