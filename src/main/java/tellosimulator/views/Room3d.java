@@ -17,8 +17,6 @@ public class Room3d {
                 prepareBox(wallDepth, height, depth, Color.GREEN, 0, -height/2, depth/2), //wallLeft
                 prepareBox(width, wallDepth, depth, Color.YELLOW, width/2, -height, depth/2), //ceiling
                 prepareBox(width, wallDepth, depth, Color.BLACK, width/2, 0, depth/2)); //floor
-        room3D.translateXProperty().set(width/2);
-        room3D.translateYProperty().set(-height/2);
     }
 
     public Group getRoom3d() {

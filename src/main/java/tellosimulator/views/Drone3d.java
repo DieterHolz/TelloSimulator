@@ -11,17 +11,15 @@ import javafx.scene.shape.Box;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tellosimulator.TelloSimulator;
 import tellosimulator.commands.TelloControlCommands;
 import tellosimulator.commands.TelloDefaultValues;
 import tellosimulator.network.UDPCommandConnection;
 
-import java.security.Key;
 import java.util.List;
 
 public class Drone3d {
     
-    private final double INITIAL_X_POSITION = TelloSimulator.ROOM_WIDTH /2;
+    private final double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
 
 
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
@@ -68,11 +66,14 @@ public class Drone3d {
 
         // move 3d Drone to starting position
         GroupDrone3d.translateXProperty().set(INITIAL_X_POSITION);
+        setXPosition(INITIAL_X_POSITION);
         GroupDrone3d.translateYProperty().set(-height/2);
-        GroupDrone3d.translateZProperty().set(Math.min(TelloSimulator.ROOM_DEPTH /5, 500));
+        setYPosition(-height/2);
+        GroupDrone3d.translateZProperty().set(Math.min(Simulator3DScene.ROOM_DEPTH /5, 500));
+        setZPosition(Math.min(Simulator3DScene.ROOM_DEPTH /5, 500));
         
         // set initial position parameter
-        Point3D initialPosition = new Point3D(INITIAL_X_POSITION, -height/2, Math.min(TelloSimulator.ROOM_DEPTH /5, 500));
+        Point3D initialPosition = new Point3D(getXPosition(), getYPosition(), getZPosition());
         setPosition(initialPosition);
 
         // set initial orientation to z-axis (into the screen)
@@ -439,11 +440,11 @@ public class Drone3d {
         this.xPosition.set(xPosition);
     }
 
-    public double getyPosition() {
+    public double getYPosition() {
         return yPosition.get();
     }
 
-    public DoubleProperty yPositionProperty() {
+    public DoubleProperty YPositionProperty() {
         return yPosition;
     }
 
