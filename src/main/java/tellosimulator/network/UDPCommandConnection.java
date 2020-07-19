@@ -26,7 +26,7 @@ public class UDPCommandConnection extends Thread {
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
-			InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 			//TODO: uncomment to set timeout in final version
 			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
@@ -49,7 +49,7 @@ public class UDPCommandConnection extends Thread {
 				String received = readString();
 				LOGGER.info("Received command: " + received);
 
-				InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+				InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 				int port = TelloSDKValues.OP_COMMAND_PORT;
 
 				if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {

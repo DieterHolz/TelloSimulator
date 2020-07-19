@@ -16,11 +16,14 @@
 
 package tellosimulator.network;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.regex.Pattern;
 
 public class TelloSDKValues {
+
+    public static final StringProperty operatorIpAddress = new SimpleStringProperty("127.0.0.1");
 
     public static final String OP_IP_ADDRESS = "127.0.0.1";
     public static final int OP_COMMAND_PORT = 8889;
@@ -44,5 +47,19 @@ public class TelloSDKValues {
     public static final int VIDEO_HEIGHT = 720;
 
     public static final Pattern COMMAND_REPLY_PATTERN = Pattern.compile("[\\w. ;:\"]+");
+
+
+    public static String getOperatorIpAddress() {
+        return operatorIpAddress.get();
+    }
+
+    public StringProperty operatorIpAddressProperty() {
+        return operatorIpAddress;
+    }
+
+    public void setOperatorIpAddress(String operatorIpAddress) {
+        this.operatorIpAddress.set(operatorIpAddress);
+    }
+
 
 }

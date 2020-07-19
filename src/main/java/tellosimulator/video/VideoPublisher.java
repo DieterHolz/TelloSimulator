@@ -1,13 +1,11 @@
 package tellosimulator.video;
 
+import javafx.scene.Scene;
 import org.bytedeco.ffmpeg.global.avcodec;
-import org.bytedeco.javacv.FFmpegFrameRecorder;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.FrameRecorder.Exception;
-import org.bytedeco.javacv.OpenCVFrameConverter;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.bytedeco.opencv.opencv_core.Mat;
+import org.opencv.videoio.VideoCapture;
 
 import static org.bytedeco.opencv.global.opencv_imgproc.resize;
 
@@ -27,6 +25,7 @@ public class VideoPublisher extends Thread implements TelloVideoConstants {
 
         while (running){
             final OpenCVFrameGrabber camGrabber;
+            final JavaFXFrameConverter frameConverter;
 
             try {
                 camGrabber = OpenCVFrameGrabber.createDefault(WEBCAM_DEVICE_INDEX);

@@ -26,7 +26,7 @@ public class UDPStateConnection extends Thread {
 
         try {
             stateSocket = new DatagramSocket(TelloSDKValues.SIM_STATE_PORT);
-            InetAddress address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+            InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
             //commandSocket.setSoTimeout(TelloSDKValues.STATE_SOCKET_TIMEOUT);
             stateSocket.connect(address, TelloSDKValues.OP_STATE_PORT);
 
@@ -40,7 +40,7 @@ public class UDPStateConnection extends Thread {
         running = true;
         InetAddress address = null;
         try {
-            address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+            address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 
             while (running) {
                 try {

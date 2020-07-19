@@ -14,7 +14,7 @@ public class UDPVideoConnection extends Thread {
 	private boolean running = false;
 	private int bufferSize = 2048;
 	private int port = TelloSDKValues.OP_STREAM_PORT;
-	private String host = TelloSDKValues.OP_IP_ADDRESS;
+	private String host = TelloSDKValues.getOperatorIpAddress();
 
 	public boolean isRunning() {
 		return running;
@@ -41,7 +41,7 @@ public class UDPVideoConnection extends Thread {
 
 		InetAddress address = null;
 		try {
-			address = InetAddress.getByName(TelloSDKValues.OP_IP_ADDRESS);
+			address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
