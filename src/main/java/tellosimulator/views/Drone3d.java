@@ -50,9 +50,10 @@ public class Drone3d {
     private final DoubleProperty xOrientation = new SimpleDoubleProperty();
     private final DoubleProperty yOrientation = new SimpleDoubleProperty();
     private final DoubleProperty zOrientation = new SimpleDoubleProperty();
+
     private final DoubleProperty yawAngle = new SimpleDoubleProperty();
-    private final DoubleProperty rollAngle = new SimpleDoubleProperty();
-    private final DoubleProperty pitchAngle = new SimpleDoubleProperty();
+    private final DoubleProperty rollAngle = new SimpleDoubleProperty(); //TODO: do we need these?
+    private final DoubleProperty pitchAngle = new SimpleDoubleProperty(); //TODO: do we need these?
     private final DoubleProperty speed = new SimpleDoubleProperty();
 
 
@@ -69,9 +70,7 @@ public class Drone3d {
 
         createAnimationLoop();
     }
-
-    //TODO: add initialize methods like in oop2 / cue
-
+    
     private void initCommandQueue() {
         commandQueue = new Drone3dCommandQueue();
     }
@@ -110,24 +109,33 @@ public class Drone3d {
     private void setupBindings() {
     }
 
+    private void animateUI() {
+
+    }
+
+    private void updateUI() {
+
+    }
+
 
     private void rotate(int angle, Rotation axis) {
+        double x1 = getxOrientation();
+        double y1 = getyOrientation();
+        double z1 = getzOrientation();
         if (axis == Rotation.YAW) {
-            double x1 = getCurrentOrientation().getX();
-            double z1 = getCurrentOrientation().getZ();
             double x2 = Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1;
             double z2 = Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1;
-            // orientation = new Point3D(x2, 0, z2);
+            setxOrientation(x2);
+            setyOrientation(0);
+            setzOrientation(z2);
             setYawAngle(getYawAngle() + angle);
         } else if (axis == Rotation.ROLL) {
-            setRollAngle(getRollAngle() + angle);
+            setRollAngle(angle);
         } else if (axis == Rotation.PITCH) {
-            setPitchAngle(getPitchAngle() + angle);
+            setPitchAngle(angle);
         }
         Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
-        Animation animation = createRotateAnimation(axis, duration);
-        animation.setOnFinished(event -> animationRunning = false);
-        animation.play();
+        animate(createRotateAnimation(axis, duration));
     }
 
     /**
@@ -141,12 +149,16 @@ public class Drone3d {
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = target;
         Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
-        Animation animation = createMoveAnimation(to, duration);
-        animation.setOnFinished(event -> {
+        animate(createMoveAnimation(to, duration));
+
+    }
+
+    private void animate(Timeline timeline) {
+        timeline.setOnFinished(event -> {
             animationRunning = false;
-            // trigger next ?
         });
-        animation.play();
+        animationRunning = true;
+        timeline.play();
     }
 
     /**
@@ -158,14 +170,7 @@ public class Drone3d {
         Point3D from = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());   // get p1
         Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
         Duration duration = Duration.seconds(distance / getSpeed());
-        Animation animation = createMoveAnimation(to, duration);
-        animation.setOnFinished(event -> {
-            animationRunning = false;
-            // trigger next ?
-        });
-        animationRunning = true;
-        animation.play();
-
+        animate(createMoveAnimation(to, duration));
     }
 
     private Timeline createMoveAnimation(Point3D target, Duration duration){
@@ -187,10 +192,10 @@ public class Drone3d {
             key = new KeyValue(drone.rotateProperty(), getYawAngle());
         } else if(rotation == Rotation.ROLL) {
             drone.setRotationAxis(getCurrentOrientation());
-            key = new KeyValue(drone.rotateProperty(), getRollAngle());
+            key = new KeyValue(drone.rotateProperty(), getRollAngle());  //TODO fix this, rotateProperty is already changed
         } else if (rotation == Rotation.PITCH) {
             drone.setRotationAxis(getLeftNormalVector());
-            key = new KeyValue(drone.rotateProperty(), getPitchAngle());
+            key = new KeyValue(drone.rotateProperty(), getPitchAngle()); //TODO fix this, rotateProperty is already changed
         }
         KeyFrame keyFrame = new KeyFrame(duration, key);
         Timeline timeline = new Timeline();
@@ -538,5 +543,6 @@ public class Drone3d {
     public void setSpeed(double speed) {
         this.speed.set(speed);
     }
+
 
 }
