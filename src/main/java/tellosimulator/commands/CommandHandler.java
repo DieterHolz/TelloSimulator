@@ -42,12 +42,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.TAKEOFF:
-                    Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, params,PRIORITY_NORMAL);
+                    Command3d takeoffCommand3d = new Command3d(TelloControlCommands.TAKEOFF, params, PRIORITY_NORMAL);
                     drone3d.getCommandQueue().getCommandQueue().add(takeoffCommand3d);
 					break;
 
 				case TelloControlCommands.LAND:
-                    //TODO: Auto landing.
+                    Command3d landCommand3d = new Command3d(TelloControlCommands.LAND, params, PRIORITY_NORMAL);
+                    drone3d.getCommandQueue().getCommandQueue().add(landCommand3d);
 					break;
 
 				case TelloControlCommands.STREAMON:

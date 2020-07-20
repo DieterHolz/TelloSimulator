@@ -256,6 +256,10 @@ public class Drone3d {
                             move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
                             break;
 
+                        case TelloControlCommands.LAND:
+                            move(getDownwardsNormalVector(), -drone.getTranslateY()+INITIAL_Y_POSITION);
+                            break;
+
                         case TelloControlCommands.DOWN:
                             move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
                             break;
