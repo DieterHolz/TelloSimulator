@@ -5,9 +5,11 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +33,8 @@ public class Drone3d {
     private double barometer, accelerationX, accelerationY, accelerationZ;
 
     private Group drone;
+    private Group pitchContainer;
+    private Group rollContainer;
     private Drone3dCommandQueue commandQueue;
     private AnimationTimer animationTimer;
     Command3d currentAnimationCommand = null;
@@ -77,11 +81,15 @@ public class Drone3d {
 
     private void buildDrone() {
         drone = new Group();
+        pitchContainer = new Group();
+        rollContainer = new Group();
         PhongMaterial lightskyblue = new PhongMaterial();
         lightskyblue.setDiffuseColor(Color.LIGHTSKYBLUE);
         Box box = new Box(DRONE_WIDTH, DRONE_HEIGHT, DRONE_DEPTH);
         box.setMaterial(lightskyblue);
-        drone.getChildren().add(box);
+        pitchContainer.getChildren().add(box);
+        rollContainer.getChildren().add(pitchContainer);
+        drone.getChildren().add(rollContainer);
     }
 
     private void setInititalValues() {
@@ -120,23 +128,34 @@ public class Drone3d {
 
     private void rotate(int angle, Rotation axis) {
         double x1 = getxOrientation();
-        double y1 = getyOrientation();
         double z1 = getzOrientation();
-        if (axis == Rotation.YAW) {
-            double x2 = Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1;
-            double z2 = Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1;
-            setxOrientation(x2);
-            setyOrientation(0);
-            setzOrientation(z2);
-            setYawAngle(getYawAngle() + angle);
-        } else if (axis == Rotation.ROLL) {
-            setRollAngle(angle);
-        } else if (axis == Rotation.PITCH) {
-            setPitchAngle(angle);
-        }
+
+        RotateTransition rotateTransition = new RotateTransition();
         Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
-        animate(createRotateAnimation(axis, duration));
+        rotateTransition.setDuration(duration);
+        rotateTransition.setByAngle(angle);
+
+        if (axis == Rotation.YAW) {
+            setxOrientation(Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1);
+            setzOrientation(Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1);
+            rotateTransition.setAxis(getUpwardsNormalVector());
+            rotateTransition.setNode(drone);
+
+        } else if (axis == Rotation.ROLL) {
+            rotateTransition.setAxis(getCurrentOrientation());
+            rotateTransition.setNode(rollContainer);
+
+        } else if (axis == Rotation.PITCH) {
+            rotateTransition.setAxis(getLeftNormalVector());
+            rotateTransition.setNode(pitchContainer);
+        }
+
+        rotateTransition.setOnFinished(event -> {
+            animationRunning = false;
+        });
+        rotateTransition.play();
     }
+
 
     /**
      * Moves the drone to the given target coordinates.
@@ -156,6 +175,8 @@ public class Drone3d {
     private void animate(Timeline timeline) {
         timeline.setOnFinished(event -> {
             animationRunning = false;
+            drone.setRotationAxis(getUpwardsNormalVector());
+            //drone.setRotate(getYawAngle());
         });
         animationRunning = true;
         timeline.play();
@@ -185,24 +206,6 @@ public class Drone3d {
         return timeline;
     }
 
-    private Timeline createRotateAnimation(Rotation rotation, Duration duration){
-        KeyValue key = null;
-        if(rotation == Rotation.YAW) {
-            drone.setRotationAxis(getUpwardsNormalVector());
-            key = new KeyValue(drone.rotateProperty(), getYawAngle());
-        } else if(rotation == Rotation.ROLL) {
-            drone.setRotationAxis(getCurrentOrientation());
-            key = new KeyValue(drone.rotateProperty(), getRollAngle());  //TODO fix this, rotateProperty is already changed
-        } else if (rotation == Rotation.PITCH) {
-            drone.setRotationAxis(getLeftNormalVector());
-            key = new KeyValue(drone.rotateProperty(), getPitchAngle()); //TODO fix this, rotateProperty is already changed
-        }
-        KeyFrame keyFrame = new KeyFrame(duration, key);
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add(keyFrame);
-        return timeline;
-    }
-
 
     // vector calculations
 
@@ -213,12 +216,12 @@ public class Drone3d {
 
     private Point3D getLeftNormalVector(){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return new Point3D(-getCurrentOrientation().getZ(), getCurrentOrientation().getY(), getCurrentOrientation().getX());
+        return getUpwardsNormalVector().crossProduct(getCurrentOrientation());
     }
 
     private Point3D getRightNormalVector(){
         //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return new Point3D(getCurrentOrientation().getZ(), getCurrentOrientation().getY(), -getCurrentOrientation().getX());
+        return getCurrentOrientation().crossProduct(getUpwardsNormalVector());
     }
 
     private Point3D getUpwardsNormalVector(){

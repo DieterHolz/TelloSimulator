@@ -1,4 +1,4 @@
-package tellosimulator.commands;
+/*package tellosimulator.commands;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -72,4 +72,4 @@ class CommandHandlerTest {
 //        assertTrue(actualMessage.contains(expectedMessage));
     }
 
-}
+}*/
