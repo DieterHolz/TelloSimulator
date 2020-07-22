@@ -18,15 +18,12 @@ public class TelloSimulator extends Application {
 
         Scene scene = new Scene(rootPanel);
 
+
         primaryStage.setTitle("Simulator Tello Drohne");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        UDPCommandConnection commandConnection = new UDPCommandConnection(telloDrone);
-        commandConnection.start();
 
-        UDPStateConnection stateConnection = new UDPStateConnection(telloDrone);
-        stateConnection.start();
     }
 
     public static void main(String[] args) throws Exception { launch(args); }

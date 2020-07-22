@@ -6,7 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tellosimulator.network.TelloSDKValues;
+import tellosimulator.network.UDPCommandConnection;
+import tellosimulator.network.UDPStateConnection;
 
+import java.awt.*;
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class SimulatorPane extends BorderPane {
@@ -17,7 +21,8 @@ public class SimulatorPane extends BorderPane {
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
 
-    public SimulatorPane(Stage stage, Drone3d drone) throws UnknownHostException {
+
+    public SimulatorPane(Stage stage, Drone3d drone) throws IOException {
         this.stage = stage;
         this.drone = drone;
         initializeParts();
@@ -28,10 +33,10 @@ public class SimulatorPane extends BorderPane {
     }
 
 
-    private void initializeParts() throws UnknownHostException {
+    private void initializeParts() throws IOException {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
         simulatorControls = new SimulatorControls(drone);
-        networkControls = new NetworkControls(new TelloSDKValues());
+        networkControls = new NetworkControls(drone, new TelloSDKValues(), new UDPCommandConnection(drone), new UDPStateConnection(drone));
     }
 
     private void layoutParts() {

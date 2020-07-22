@@ -7,10 +7,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import tellosimulator.commands.TelloDefaultValues;
 
+import java.util.Locale;
+
 public class SimulatorControls extends GridPane {
     private final Drone3d drone;
 
     private static final String NUMBER_FORMAT = "%.1f";
+    private static final Locale LOCALE_CH = new Locale("de", "CH");
 
     private Button resetButton;
     private Label xPositionLabel;
@@ -38,25 +41,36 @@ public class SimulatorControls extends GridPane {
         setHgap(10);
         setVgap(5);
         setPadding(new Insets(4,4,4,4));
-        setMinWidth(150);
+        setMinWidth(200);
     }
 
     private void initializeParts() {
         resetButton = new Button("Reset drone");
-        xPositionLabel = new Label("Translate X:");
+        xPositionLabel = new Label("X:");
         xPositionText = new Text();
 
-        yawAngleLabel = new Label("Rotate :");
+        yPositionLabel = new Label("Y:");
+        yPositionText = new Text();
+
+        zPositionLabel = new Label("Z:");
+        zPositionText = new Text();
+
+        yawAngleLabel = new Label("Rotate:");
         yawAngleText = new Text();
         //TODO: init all other values
     }
 
     private void layoutParts() {
         add(resetButton, 1, 0);
+
         add(xPositionLabel, 1,1);
         add(xPositionText, 2, 1);
-        add(yawAngleLabel, 1, 2);
-        add(yawAngleText, 2, 2);
+        add(yPositionLabel, 1, 2);
+        add(yPositionText, 2, 2);
+        add(zPositionLabel, 1, 3);
+        add(zPositionText, 2, 3);
+        add(yawAngleLabel, 1, 5);
+        add(yawAngleText, 2, 5);
         //TODO: add all other values to grid
     }
 
@@ -79,9 +93,11 @@ public class SimulatorControls extends GridPane {
     }
 
     private void setupBindings() {
-        xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(NUMBER_FORMAT));
+        xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        zPositionText.textProperty().bind(drone.getDrone().translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
-        yawAngleText.textProperty().bind(drone.getDrone().rotateProperty().asString(NUMBER_FORMAT));
+        yawAngleText.textProperty().bind(drone.getDrone().rotateProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         //TODO: bind other values
     }
 }

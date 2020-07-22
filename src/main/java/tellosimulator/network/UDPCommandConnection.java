@@ -95,4 +95,12 @@ public class UDPCommandConnection extends Thread {
 		if (TelloSDKValues.DEBUG) System.out.println("[IN ] " + str.trim());
 		return str;
 	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
 }
