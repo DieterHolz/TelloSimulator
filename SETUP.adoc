@@ -1,0 +1,47 @@
+= Setup
+
+Die Applikation kann wahlweise via Kommandozeile oder IntelliJ IDE gestartet werden. Andere Varianten sind auch möglich, zwecks Effizienz wurde die Anleitung nur auf diese beiden Varieanten ausgelegt. Voraussetzungen sind ein installiertes Java JDK 11.0.8 mit JavaFX.
+
+== Installation Java JDK:
+
+Damit alle benötigten JavaFX Komponenten enthalten sind, empfehlen wir die Verwendung folgender JDK:
+https://bell-sw.com/pages/downloads/#/java-11-lts[Liberica Java JDK Download,role=external,window=_blank]
+Bei Verwendung von IntelliJ kann die JDK auch direkt via IntelliJ heruntergeladen werden.
+
+
+== Start mit IntelliJ
+
+*Schritt 1:* Intellij starten und 'Get from Version Control' auswählen. (Alternativ File -> New -> Project from Version Control)
+
+//screenshot 1
+
+*Schritt 2:* Repository URL und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
+
+//screenshot 2
+
+*Schritt 3:* Optional GitHub Credentials angeben
+
+//screenshot 3
+
+*Schritt 4:* File -> Project Structure öffnen
+
+//screenshot 5
+
+*Schritt 5:* Java SDK auf liberica-11 setzen. Falls nicht vorhanden auf das "+" klicken und 'Add New SDK'.
+
+//screenshot 7
+
+*Schritt 6:* JDK via IntelliJ downloaden. Vendor: Bellosoft Liberica JDK, Version: 11.0.8, Location: dir überlassen
+
+//screeenshot 8
+
+
+== Start via Kommandozeile
+
+*Schritt 1:* Repository an gewünschten Ort klonen
+
+*Schritt 2:* cmd im TelloSimulator Verzeichnis öffnen
+
+*Schritt 3:* 'gradlew run' ausführen
+
+(Achtung: Gradle verwendet die im JAVA_HOME gesetzte Version. JAVA_HOME muss daher auf das installierte Liberica JDK zeigen. Version prüfbar mit 'java -version' bzw. aktuelles JAVA_HOME mit 'echo %JAVA_HOME%')
