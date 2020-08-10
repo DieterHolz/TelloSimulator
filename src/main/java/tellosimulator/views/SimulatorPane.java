@@ -1,17 +1,20 @@
 package tellosimulator.views;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import tellosimulator.log.Level;
+import tellosimulator.log.Log;
+import tellosimulator.log.Logger;
 import tellosimulator.network.TelloSDKValues;
 import tellosimulator.network.UDPCommandConnection;
 import tellosimulator.network.UDPStateConnection;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 public class SimulatorPane extends BorderPane {
     private final Stage stage;
@@ -21,10 +24,14 @@ public class SimulatorPane extends BorderPane {
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
 
+    private Log log;
+    private LogViewer logViewer;
 
-    public SimulatorPane(Stage stage, Drone3d drone) throws IOException {
+
+    public SimulatorPane(Stage stage, Drone3d drone, Log log) throws IOException {
         this.stage = stage;
         this.drone = drone;
+        this.log = log;
         initializeParts();
         layoutParts();
         setupValueChangeListeners();
@@ -37,6 +44,7 @@ public class SimulatorPane extends BorderPane {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
         simulatorControls = new SimulatorControls(drone);
         networkControls = new NetworkControls(drone, new TelloSDKValues(), new UDPCommandConnection(drone), new UDPStateConnection(drone));
+        logViewer = new LogViewer(log);
     }
 
     private void layoutParts() {
@@ -44,6 +52,7 @@ public class SimulatorPane extends BorderPane {
         setCenter(simulator3DScene);
         setLeft(simulatorControls);
         setRight(networkControls);
+        setBottom(logViewer);
     }
 
 

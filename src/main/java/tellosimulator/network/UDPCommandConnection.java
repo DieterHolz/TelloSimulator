@@ -1,9 +1,9 @@
 package tellosimulator.network;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import tellosimulator.TelloSimulator;
 import tellosimulator.commands.CommandHandler;
 import tellosimulator.commands.TelloControlCommands;
+import tellosimulator.log.Logger;
 import tellosimulator.views.Drone3d;
 
 import java.io.IOException;
@@ -11,7 +11,9 @@ import java.net.*;
 import java.util.Arrays;
 
 public class UDPCommandConnection extends Thread {
-	private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
+	// private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
+
+	Logger logger = new Logger(TelloSimulator.SIM_LOG, "UDPCommandConnection");
 
 	DatagramSocket commandSocket;
 	Drone3d telloDrone;
@@ -32,7 +34,7 @@ public class UDPCommandConnection extends Thread {
 			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
 		} catch (IOException ex) {
 			//TODO: throw custom exception instead
-			LOGGER.error("Command server error: " + ex.getMessage());
+			logger.error("Command server error: " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
@@ -45,9 +47,9 @@ public class UDPCommandConnection extends Thread {
 		while (running) {
 
 			try {
-				LOGGER.info("Waiting for commands...");
+				logger.info("Waiting for commands...");
 				String received = readString();
-				LOGGER.info("Received command: " + received);
+				logger.info("Received command: " + received);
 
 				InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 				int port = TelloSDKValues.OP_COMMAND_PORT;
@@ -62,15 +64,15 @@ public class UDPCommandConnection extends Thread {
 
 				if (sdkModeInitiated) {
 					String response = commandHandler.handle(received);
-					LOGGER.debug("vom CommandHandler erhaltene Antwort: "+response);
+					logger.debug("vom CommandHandler erhaltene Antwort: "+response);
 					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 					commandSocket.send(responsePacket);
 					continue;
 				}
 
 			} catch (SocketTimeoutException ex) {
-				LOGGER.error("Timeout error: " + ex.getMessage());
-				LOGGER.warn("Safety feature triggerd: Tello will land automatically");
+				logger.error("Timeout error: " + ex.getMessage());
+				logger.warn("Safety feature triggerd: Tello will land automatically");
 				// TODO: land the drone
 				running = false;
 				ex.printStackTrace();

@@ -1,8 +1,8 @@
 package tellosimulator.commands;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import tellosimulator.TelloSimulator;
 import tellosimulator.exception.TelloIllegalArgumentException;
+import tellosimulator.log.Logger;
 import tellosimulator.network.UDPVideoConnection;
 import tellosimulator.video.VideoPublisher;
 import tellosimulator.views.Command3d;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandler {
-	private static final Logger LOGGER = LogManager.getLogger(CommandHandler.class);
+	private Logger logger = new Logger(TelloSimulator.SIM_LOG, "CommandHandler");
 
 	public static final int PRIORITY_NORMAL = 50;
 	public static final int PRIORITY_HIGH = 1;
@@ -35,7 +35,7 @@ public class CommandHandler {
 				params = data.subList(1, data.size());
 			}
 
-			LOGGER.debug("handling command: " + command);
+			logger.info("handling command: " + command);
 			switch(command) {
 
 				case TelloControlCommands.COMMAND:
@@ -256,10 +256,11 @@ public class CommandHandler {
 	}
 
 	//validate methods
-
+	// TODO: return String instead of throwing exceptions and log
 	private void validateUp(int x) {
 		if(x<-500 || x>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommands.UP, "x", String.valueOf(x), "20-500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.UP+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
+			throw new TelloIllegalArgumentException(TelloControlCommands.UP, "x", String.valueOf(x), "20-500"); //TODO: remvoe exception
 		}
 	}
 
