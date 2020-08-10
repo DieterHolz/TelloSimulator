@@ -20,7 +20,7 @@ public class UDPCommandConnection extends Thread {
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
-	private byte[] buffer = new byte[512]; // TODO: how much buffer do we need?
+	private byte[] buffer = new byte[512];
 
 	public UDPCommandConnection(Drone3d telloDrone) throws SocketException {
 
@@ -31,7 +31,6 @@ public class UDPCommandConnection extends Thread {
 			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 			//TODO: uncomment to set timeout in final version
 			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
-			commandSocket.connect(address, TelloSDKValues.OP_COMMAND_PORT);
 		} catch (IOException ex) {
 			//TODO: throw custom exception instead
 			logger.error("Command server error: " + ex.getMessage());
@@ -48,11 +47,13 @@ public class UDPCommandConnection extends Thread {
 
 			try {
 				logger.info("Waiting for commands...");
-				String received = readString();
+				DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
+				commandSocket.receive(receivedPacket);
+				String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());				// String received = readString();
 				logger.info("Received command: " + received);
 
-				InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
-				int port = TelloSDKValues.OP_COMMAND_PORT;
+				InetAddress address = receivedPacket.getAddress();
+				int port = receivedPacket.getPort();
 
 				if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
 					sdkModeInitiated = true;
@@ -64,7 +65,7 @@ public class UDPCommandConnection extends Thread {
 
 				if (sdkModeInitiated) {
 					String response = commandHandler.handle(received);
-					logger.debug("vom CommandHandler erhaltene Antwort: "+response);
+					logger.debug("Vom CommandHandler erhaltene Antwort: "+response);
 					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 					commandSocket.send(responsePacket);
 					continue;
