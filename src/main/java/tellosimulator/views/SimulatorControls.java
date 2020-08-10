@@ -1,5 +1,7 @@
 package tellosimulator.views;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -55,8 +57,8 @@ public class SimulatorControls extends GridPane {
         zPositionLabel = new Label("Z:");
         zPositionText = new Text();
 
-        yawAngleLabel = new Label("Rotate:");
-        yawAngleText = new Text();
+        yawAngleLabel = new Label("Rotation (yaw angle):");
+        yawAngleText = new Text("0");
         //TODO: init all other values
     }
 
@@ -90,14 +92,16 @@ public class SimulatorControls extends GridPane {
     }
 
     private void setupValueChangedListeners() {
+        drone.getDrone().rotateProperty().addListener((observable, oldValue, newValue) -> {
+            yawAngleText.textProperty().setValue(String.valueOf(Math.round(newValue.doubleValue() % 360)));
+        });
     }
 
-    private void setupBindings() {
+    private void     setupBindings() {
         xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         yPositionText.textProperty().bind(drone.getDrone().translateYProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         zPositionText.textProperty().bind(drone.getDrone().translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
-        yawAngleText.textProperty().bind(drone.getDrone().rotateProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         //TODO: bind other values
     }
 }

@@ -128,25 +128,24 @@ public class Drone3d {
 
 
     private void rotate(int angle, Rotation axis) {
-        double x1 = getxOrientation();
-        double z1 = getzOrientation();
 
-        Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
-        rotateTransition.setDuration(duration);
         rotateTransition.setByAngle(angle);
 
         if (axis == Rotation.YAW) {
-            setxOrientation(Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1);
-            setzOrientation(Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1);
+            setxOrientation(Math.cos(angle * Math.PI / 180) * getxOrientation() - Math.sin(angle * Math.PI / 180) * getzOrientation());
+            setzOrientation(Math.sin(angle * Math.PI / 180) * getxOrientation() + Math.cos(angle * Math.PI / 180) * getzOrientation());
             rotateTransition.setAxis(getUpwardsNormalVector());
+            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360));
             rotateTransition.setNode(drone);
 
         } else if (axis == Rotation.ROLL) {
             rotateTransition.setAxis(new Point3D(0,0,1));
+            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.FLIP_DURATION));
             rotateTransition.setNode(rollContainer);
 
         } else if (axis == Rotation.PITCH) {
             rotateTransition.setAxis(new Point3D(1,0,0));
+            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.FLIP_DURATION));
             rotateTransition.setNode(pitchContainer);
         }
 
