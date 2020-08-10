@@ -7,7 +7,6 @@ import javafx.scene.PointLight;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Translate;
 
 import java.awt.*;
@@ -63,7 +62,7 @@ public class Room3d {
         pointLight.getTransforms().add(new Translate(width/2,-height+wallDepth,depth/2));
 
         AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setColor(Color.rgb(100,100,100));
+        ambientLight.setColor(Color.grayRgb(80));
 
         return new Node[]{pointLight, ambientLight};
     }

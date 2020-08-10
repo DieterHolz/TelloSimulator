@@ -51,11 +51,11 @@ public class SimulatorControls extends GridPane {
         xPositionLabel = new Label("X:");
         xPositionText = new Text();
 
-        yPositionLabel = new Label("Y:");
-        yPositionText = new Text();
-
         zPositionLabel = new Label("Z:");
         zPositionText = new Text();
+
+        yPositionLabel = new Label("Höhe:");
+        yPositionText = new Text();
 
         yawAngleLabel = new Label("Rotation (yaw angle):");
         yawAngleText = new Text("0");
@@ -99,7 +99,7 @@ public class SimulatorControls extends GridPane {
 
     private void     setupBindings() {
         xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().add(Drone3d.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
         zPositionText.textProperty().bind(drone.getDrone().translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         //TODO: bind other values

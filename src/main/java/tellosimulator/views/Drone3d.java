@@ -19,9 +19,9 @@ import java.util.List;
 
 public class Drone3d {
 
-    private static final int DRONE_WIDTH = 18;
-    private static final int DRONE_HEIGHT = 5;
-    private static final int DRONE_DEPTH = 16;
+    static final int DRONE_WIDTH = 18;
+    static final int DRONE_HEIGHT = 5;
+    static final int DRONE_DEPTH = 16;
 
     static double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
     static double INITIAL_Y_POSITION = -DRONE_HEIGHT/2;
@@ -35,8 +35,9 @@ public class Drone3d {
     private Group rollContainer;
     private Drone3dCommandQueue commandQueue;
     private AnimationTimer animationTimer;
-    private RotateTransition rotateTransition = new RotateTransition();
     private Timeline timeline = new Timeline();
+    private RotateTransition rotateTransition = new RotateTransition();
+
     Command3d currentAnimationCommand = null;
     boolean animationRunning;
     boolean emergency = false;
@@ -132,8 +133,11 @@ public class Drone3d {
         rotateTransition.setByAngle(angle);
 
         if (axis == Rotation.YAW) {
-            setxOrientation(Math.cos(angle * Math.PI / 180) * getxOrientation() - Math.sin(angle * Math.PI / 180) * getzOrientation());
-            setzOrientation(Math.sin(angle * Math.PI / 180) * getxOrientation() + Math.cos(angle * Math.PI / 180) * getzOrientation());
+            double x1 = getxOrientation();
+            double z1 = getzOrientation();
+
+            setxOrientation(Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1);
+            setzOrientation(Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1);
             rotateTransition.setAxis(getUpwardsNormalVector());
             rotateTransition.setDuration(Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360));
             rotateTransition.setNode(drone);
