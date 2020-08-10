@@ -67,7 +67,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommands.EMERGENCY:
-                    //TODO: Stop motors immediately.
+                    drone3d.emergency();
 					break;
 
 				case TelloControlCommands.UP:

@@ -5,11 +5,9 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,8 +35,11 @@ public class Drone3d {
     private Group rollContainer;
     private Drone3dCommandQueue commandQueue;
     private AnimationTimer animationTimer;
+    private RotateTransition rotateTransition = new RotateTransition();
+    private Timeline timeline = new Timeline();
     Command3d currentAnimationCommand = null;
     boolean animationRunning;
+    boolean emergency = false;
 
     enum Rotation {
         YAW,
@@ -130,7 +131,6 @@ public class Drone3d {
         double x1 = getxOrientation();
         double z1 = getzOrientation();
 
-        RotateTransition rotateTransition = new RotateTransition();
         Duration duration = Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360);
         rotateTransition.setDuration(duration);
         rotateTransition.setByAngle(angle);
@@ -142,11 +142,11 @@ public class Drone3d {
             rotateTransition.setNode(drone);
 
         } else if (axis == Rotation.ROLL) {
-            rotateTransition.setAxis(getCurrentOrientation());
+            rotateTransition.setAxis(new Point3D(0,0,1));
             rotateTransition.setNode(rollContainer);
 
         } else if (axis == Rotation.PITCH) {
-            rotateTransition.setAxis(getLeftNormalVector());
+            rotateTransition.setAxis(new Point3D(1,0,0));
             rotateTransition.setNode(pitchContainer);
         }
 
@@ -178,7 +178,9 @@ public class Drone3d {
             drone.setRotationAxis(getUpwardsNormalVector());
             //drone.setRotate(getYawAngle());
         });
-        animationRunning = true;
+        if(!emergency) {
+            animationRunning = true;
+        }
         timeline.play();
     }
 
@@ -195,8 +197,6 @@ public class Drone3d {
     }
 
     private Timeline createMoveAnimation(Point3D target, Duration duration){
-        Timeline timeline = new Timeline();
-
         KeyValue keyX = new KeyValue(drone.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
         KeyValue keyY = new KeyValue(drone.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
         KeyValue keyZ = new KeyValue(drone.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
@@ -206,8 +206,32 @@ public class Drone3d {
         return timeline;
     }
 
+    public void emergency() {
+        emergency = true;
+        if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
+            rotateTransition.stop();
+        }
+        if(timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.stop();
+        }
+        animationRunning = false;
+/*
+        Point3D to = new Point3D(0, INITIAL_Y_POSITION, 0);
+        Duration duration = Duration.seconds(drone.getTranslateY()+INITIAL_Y_POSITION / TelloDefaultValues.DEFAULT_SPEED_OF_FALL);
 
-    // vector calculations
+        KeyValue keyX = new KeyValue(drone.translateXProperty(), to.getX(), Interpolator.EASE_IN);
+        KeyValue keyY = new KeyValue(drone.translateYProperty(), to.getY(), Interpolator.EASE_IN);
+        KeyValue keyZ = new KeyValue(drone.translateZProperty(), to.getZ(), Interpolator.EASE_IN);
+
+        KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
+        timeline.getKeyFrames().add(keyFrame);
+        animate(timeline);*/
+
+        LOGGER.fatal("emergency!!!!");
+    }
+
+
+    // vector calculations-
 
     private double calculateDistance(Point3D from, Point3D to) {
         //TODO : calculate distance between two given points/ortsvektoren
@@ -245,7 +269,7 @@ public class Drone3d {
             @Override
             public void handle(long now) {  // called in every frame!
 
-                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning) {
+                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning && !emergency) {
                     animationRunning = true;
                     currentAnimationCommand = commandQueue.getCommandQueue().poll();
                     List<String> params = currentAnimationCommand.getParameters();
@@ -294,20 +318,20 @@ public class Drone3d {
 
                         case TelloControlCommands.FLIP:
                             switch(params.get(0)) {
-                                case "l":
-                                    rotate(-360, Rotation.ROLL);
-                                    break;
-
                                 case "r":
                                     rotate(360, Rotation.ROLL);
                                     break;
 
+                                case "l":
+                                    rotate(-360, Rotation.ROLL);
+                                    break;
+
                                 case "f":
-                                    rotate(-360, Rotation.PITCH);
+                                    rotate(360, Rotation.PITCH);
                                     break;
 
                                 case "b":
-                                    rotate(360, Rotation.PITCH);
+                                    rotate(-360, Rotation.PITCH);
                                     break;
                             }
                             break;
