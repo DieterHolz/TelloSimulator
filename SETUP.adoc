@@ -1,3 +1,5 @@
+:imagesdir: assets
+
 = Setup
 
 Die Applikation kann wahlweise via Kommandozeile oder IntelliJ IDE gestartet werden. Andere Varianten sind auch möglich, zwecks Effizienz wurde die Anleitung nur auf diese beiden Varieanten ausgelegt. Voraussetzungen sind ein installiertes Java JDK 11.0.8 mit JavaFX.
@@ -6,16 +8,16 @@ Die Applikation kann wahlweise via Kommandozeile oder IntelliJ IDE gestartet wer
 
 Damit alle benötigten JavaFX Komponenten enthalten sind, empfehlen wir die Verwendung folgender JDK:
 https://bell-sw.com/pages/downloads/#/java-11-lts[Liberica Java JDK Download,role=external,window=_blank]
-Bei Verwendung von IntelliJ kann das JDK auch direkt via IntelliJ heruntergeladen werden.
+Neuere Versionen können auch funktionieren. Mit IntelliJ IDEA 2020.1 oder neuer können JDKs auch direkt via IntelliJ heruntergeladen werden.
 
 
 == Start mit IntelliJ IDEA
 
-*Schritt 1:* IntelliJ starten und 'Get from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
+*Schritt 1:* IntelliJ starten und 'Get from Version Control' oder 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
 
 //screenshot 1
 
-*Schritt 2:* Repository URL und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
+*Schritt 2:* Repository URL (https://github.com/DieterHolz/TelloSimulator) und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
 
 //screenshot 2
 
@@ -32,7 +34,7 @@ Falls diese noch nicht vorhanden ist auf das "+" klicken -> 'Add New SDK' -> Spe
 
 //screenshot 7
 
-Alternativ kann man die JDK auch via IntelliJ downloaden.
+Alternativ kann man die JDK auch via IntelliJ downloaden (IntelliJ IDEA 2020.1 oder neuer benötigt).
 Vendor: Bellosoft Liberica JDK, Version: 11.0.8, Location: Speicherort für deine JDKs
 
 //screeenshot 8
@@ -41,14 +43,17 @@ Vendor: Bellosoft Liberica JDK, Version: 11.0.8, Location: Speicherort für dein
 
 *Schritt 7:* Rechtsklick auf die Klasse "TelloSimulator" -> Run...
 
+Falls es nicht läuft -> Rechts auf "Gradle" klicken -> Elefant auswählen -> 'gradle clean build' ausführen -> 'gradle run' ausführen
+Dann in der Run Configuration die Gradle 'run' Configuration auswählen zum die Applikation starten.
+
 == Start via Kommandozeile
 
 *Schritt 1:* Repository an gewünschten Ort klonen (z.B. mit Git Bash).
 
 *Schritt 2:* Kommandozeile im TelloSimulator Verzeichnis öffnen.
 
-*Schritt 3:* 'gradlew run' ausführen.
+*Schritt 3:* 'gradlew run' ausführen. ('./gradlew run' auf Linux / MacOS)
 
-(Achtung: der Gradle Wrapper verwendet die im JAVA_HOME gesetzte Version. JAVA_HOME muss daher auf das installierte Liberica JDK zeigen. Version prüfbar mit 'java -version' bzw. aktuelles JAVA_HOME mit 'echo %JAVA_HOME%')
+(Achtung: der Gradle Wrapper verwendet die im JAVA_HOME gesetzte Version. Version prüfbar mit 'java -version' bzw. aktuelles JAVA_HOME mit 'echo %JAVA_HOME%')
 JAVA_HOME ändern:
 https://javatutorial.net/set-java-home-windows-10
