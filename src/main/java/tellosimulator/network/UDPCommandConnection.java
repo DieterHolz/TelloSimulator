@@ -39,38 +39,40 @@ public class UDPCommandConnection extends Thread {
 	}
 
 	public void run() {
-		//running = true;
 		sdkModeInitiated = false;
 		CommandHandler commandHandler = new CommandHandler(telloDrone);
 
 		while (running) {
 
 			try {
-				logger.info("Waiting for commands...");
 				DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
+				logger.info("Waiting for commands...");
 				commandSocket.receive(receivedPacket);
-				String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());				// String received = readString();
-				logger.info("Received command: " + received);
+				if (running){ // check needed if drone is turned off during receiving
+					String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());				// old: String received = readString();
+					logger.info("Received command: " + received);
 
-				InetAddress address = receivedPacket.getAddress();
-				int port = receivedPacket.getPort();
+					InetAddress address = receivedPacket.getAddress();
+					int port = receivedPacket.getPort();
 
-				if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
-					initiateStateConnection(address);
-					sdkModeInitiated = true;
-					String ok = TelloControlCommands.OK;
-					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
-					commandSocket.send(responsePacket);
-					continue;
+					if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
+						initiateStateConnection(address);
+						sdkModeInitiated = true;
+						String ok = TelloControlCommands.OK;
+						DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
+						commandSocket.send(responsePacket);
+						continue;
+					}
+
+					if (sdkModeInitiated) {
+						String response = commandHandler.handle(received);
+						logger.debug("Vom CommandHandler erhaltene Antwort: "+response);
+						DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
+						commandSocket.send(responsePacket);
+						continue;
+					}
 				}
 
-				if (sdkModeInitiated) {
-					String response = commandHandler.handle(received);
-					logger.debug("Vom CommandHandler erhaltene Antwort: "+response);
-					DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
-					commandSocket.send(responsePacket);
-					continue;
-				}
 
 			} catch (SocketTimeoutException ex) {
 				logger.error("Timeout error: " + ex.getMessage());
