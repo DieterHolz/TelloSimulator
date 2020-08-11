@@ -200,6 +200,8 @@ public class Drone3d {
     }
 
     private Timeline createMoveAnimation(Point3D target, Duration duration){
+        timeline.getKeyFrames().clear();
+
         KeyValue keyX = new KeyValue(drone.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
         KeyValue keyY = new KeyValue(drone.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
         KeyValue keyZ = new KeyValue(drone.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
@@ -210,7 +212,7 @@ public class Drone3d {
     }
 
     public void emergency() {
-        emergency = true;
+        /*emergency = true;
         if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
             rotateTransition.stop();
         }
@@ -218,7 +220,7 @@ public class Drone3d {
             timeline.stop();
         }
         animationRunning = false;
-/*
+*//*
         Point3D to = new Point3D(0, INITIAL_Y_POSITION, 0);
         Duration duration = Duration.seconds(drone.getTranslateY()+INITIAL_Y_POSITION / TelloDefaultValues.DEFAULT_SPEED_OF_FALL);
 
@@ -228,9 +230,9 @@ public class Drone3d {
 
         KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
         timeline.getKeyFrames().add(keyFrame);
-        animate(timeline);*/
+        animate(timeline);*//*
 
-        LOGGER.fatal("emergency!!!!");
+        LOGGER.fatal("emergency!!!!");*/
     }
 
 
