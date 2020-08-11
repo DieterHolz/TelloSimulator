@@ -63,10 +63,13 @@ public class NetworkControls extends VBox {
         startButton.setOnAction(event -> {
             if (startButton.isSelected()){
                 try {
-                    commandConnection = new UDPCommandConnection(drone);
-                    stateConnection = new UDPStateConnection(drone);
-                    commandConnection.start();
-                    stateConnection.start();
+                    if (commandConnection == null || !commandConnection.isAlive()){
+                        commandConnection = new UDPCommandConnection(drone);
+                        stateConnection = new UDPStateConnection(drone);
+                        commandConnection.start();
+                        stateConnection.start();
+                    }
+
                     commandConnection.setRunning(true);
                     stateConnection.setRunning(true);
                 } catch (SocketException e) {
