@@ -53,12 +53,12 @@ public class TelloSDKValues {
         return operatorIpAddress.get();
     }
 
-    public StringProperty operatorIpAddressProperty() {
+    public static StringProperty operatorIpAddressProperty() {
         return operatorIpAddress;
     }
 
-    public void setOperatorIpAddress(String operatorIpAddress) {
-        this.operatorIpAddress.set(operatorIpAddress);
+    public static void setOperatorIpAddress(String operatorIpAddress) {
+        TelloSDKValues.operatorIpAddress.set(operatorIpAddress);
     }
 
 

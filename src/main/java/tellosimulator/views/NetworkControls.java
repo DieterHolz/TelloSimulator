@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import tellosimulator.TelloSimulator;
-import tellosimulator.network.TelloSDKValues;
+import tellosimulator.log.Logger;
 import tellosimulator.network.UDPCommandConnection;
 import tellosimulator.network.UDPStateConnection;
 
@@ -12,27 +12,22 @@ import java.io.IOException;
 import java.net.*;
 
 public class NetworkControls extends VBox {
+    private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "NetworkControls");
     private final Drone3d drone;
-    private final TelloSDKValues sdkValues;
 
     private UDPCommandConnection commandConnection;
     private UDPStateConnection stateConnection;
     private String myIp;
 
-    private ToggleButton connectButton;
+    private ToggleButton startButton;
     private Label simulatorIpLabel;
     private TextField simulatorIpField;
-    private Label operatorIpLabel;
-    private TextField operatorIpField;
 
-    public NetworkControls(Drone3d drone, TelloSDKValues sdkValues, UDPCommandConnection commandConnection, UDPStateConnection stateConnection) throws IOException {
+    public NetworkControls(Drone3d drone) throws IOException {
         this.drone = drone;
-        this.sdkValues = sdkValues;
-        this.commandConnection = commandConnection;
-        this.stateConnection = stateConnection;
-        Socket s = new Socket("www.google.com", 80);
-        myIp = s.getLocalAddress().getHostAddress();
-        s.close();
+
+        getExternalIPAddress();
+
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -41,33 +36,48 @@ public class NetworkControls extends VBox {
         setupBindings();
     }
 
+    private void getExternalIPAddress() throws IOException {
+        Socket s = new Socket("www.google.com", 80);
+        myIp = s.getLocalAddress().getHostAddress();
+        s.close();
+    }
+
     private void initializeSelf() {
         setPadding(new Insets(4,4,4,4));
         setMinWidth(150);
     }
 
     private void initializeParts() throws UnknownHostException {
-        connectButton = new ToggleButton("Verbinden (TODO)");
+        startButton = new ToggleButton("Start Drone");
         simulatorIpLabel = new Label("Simulator IP Adresse");
         simulatorIpField = new TextField(myIp);
         simulatorIpField.setEditable(false);
-        operatorIpLabel = new Label("Operator IP Adresse");
-        operatorIpField = new TextField();
+        simulatorIpField.setDisable(true);
     }
 
     private void layoutParts() {
-        getChildren().addAll(connectButton, simulatorIpLabel, simulatorIpField, operatorIpLabel, operatorIpField);
+        getChildren().addAll(startButton, simulatorIpLabel, simulatorIpField);
     }
 
     private void setupEventHandlers() {
-        connectButton.setOnAction(event -> {
-            if (connectButton.isSelected()){
-                commandConnection.start();
-                stateConnection.start();
+        startButton.setOnAction(event -> {
+            if (startButton.isSelected()){
+                try {
+                    commandConnection = new UDPCommandConnection(drone);
+                    stateConnection = new UDPStateConnection(drone);
+                    commandConnection.start();
+                    stateConnection.start();
+                    commandConnection.setRunning(true);
+                    stateConnection.setRunning(true);
+                } catch (SocketException e) {
+                    logger.error(e.getMessage());
+                }
+                logger.debug("Drone turned on");
 
             } else {
                 commandConnection.setRunning(false);
                 stateConnection.setRunning(false);
+                logger.debug("Drone turned off");
             }
         });
     }
@@ -76,6 +86,5 @@ public class NetworkControls extends VBox {
     }
 
     private void setupBindings() {
-        operatorIpField.textProperty().bindBidirectional(sdkValues.operatorIpAddressProperty());
     }
 }

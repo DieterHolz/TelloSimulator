@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class UDPCommandConnection extends Thread {
 	// private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
 
-	Logger logger = new Logger(TelloSimulator.SIM_LOG, "UDPCommandConnection");
+	Logger logger = new Logger(TelloSimulator.MAIN_LOG, "UDPCommandConnection");
 
 	DatagramSocket commandSocket;
 	Drone3d telloDrone;
@@ -39,7 +39,7 @@ public class UDPCommandConnection extends Thread {
 	}
 
 	public void run() {
-		running = true;
+		//running = true;
 		sdkModeInitiated = false;
 		CommandHandler commandHandler = new CommandHandler(telloDrone);
 
@@ -56,6 +56,7 @@ public class UDPCommandConnection extends Thread {
 				int port = receivedPacket.getPort();
 
 				if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
+					initiateStateConnection(address);
 					sdkModeInitiated = true;
 					String ok = TelloControlCommands.OK;
 					DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
@@ -82,6 +83,9 @@ public class UDPCommandConnection extends Thread {
 			}
 		}
 		commandSocket.close(); //todo: should maybe in a "finally" section
+	}
+
+	private void initiateStateConnection(InetAddress address) {
 	}
 
 

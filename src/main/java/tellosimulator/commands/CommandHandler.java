@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandler {
-	private Logger logger = new Logger(TelloSimulator.SIM_LOG, "CommandHandler");
+	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
 
 	public static final int PRIORITY_NORMAL = 50;
 	public static final int PRIORITY_HIGH = 1;

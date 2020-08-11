@@ -6,27 +6,30 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
+import tellosimulator.network.UDPCommandConnection;
+import tellosimulator.network.UDPStateConnection;
 import tellosimulator.views.Drone3d;
 import tellosimulator.views.SimulatorPane;
 
 public class TelloSimulator extends Application {
 
-    public static final Log SIM_LOG = new Log();
-    Logger mainLogger = new Logger(SIM_LOG, "TelloSimulator");
+    public static final Log MAIN_LOG = new Log();
+    private final Logger logger = new Logger(MAIN_LOG, "TelloSimulator");
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Drone3d telloDrone = new Drone3d();
-        Region rootPanel = new SimulatorPane(primaryStage, telloDrone, SIM_LOG);
 
+        Region rootPanel = new SimulatorPane(primaryStage, telloDrone, MAIN_LOG);
         Scene scene = new Scene(rootPanel);
+
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());
 
         primaryStage.setTitle("Simulator Tello Drohne");
         primaryStage.setScene(scene);
         primaryStage.show();
-        mainLogger.debug("Application started.");
 
+        logger.debug("Welcome to TelloSimulator.");
     }
 
     public static void main(String[] args) throws Exception { launch(args); }

@@ -20,6 +20,7 @@ public class SimulatorPane extends BorderPane {
     private final Stage stage;
     private final Drone3d drone;
 
+
     private Simulator3DScene simulator3DScene;
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
@@ -43,7 +44,7 @@ public class SimulatorPane extends BorderPane {
     private void initializeParts() throws IOException {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
         simulatorControls = new SimulatorControls(drone);
-        networkControls = new NetworkControls(drone, new TelloSDKValues(), new UDPCommandConnection(drone), new UDPStateConnection(drone));
+        networkControls = new NetworkControls(drone);
         logViewer = new LogViewer(log);
     }
 

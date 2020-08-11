@@ -47,23 +47,24 @@ public class SimulatorControls extends GridPane {
     }
 
     private void initializeParts() {
-        resetButton = new Button("Reset drone");
         xPositionLabel = new Label("X:");
         xPositionText = new Text();
 
         zPositionLabel = new Label("Z:");
         zPositionText = new Text();
 
-        yPositionLabel = new Label("Höhe:");
+        yPositionLabel = new Label("Height:");
         yPositionText = new Text();
 
-        yawAngleLabel = new Label("Rotation (yaw angle):");
+        yawAngleLabel = new Label("Rotation (Yaw Angle):");
         yawAngleText = new Text("0");
         //TODO: init all other values
+
+        resetButton = new Button("Reset Drone Position");
+
     }
 
     private void layoutParts() {
-        add(resetButton, 1, 0);
 
         add(xPositionLabel, 1,1);
         add(xPositionText, 2, 1);
@@ -74,6 +75,9 @@ public class SimulatorControls extends GridPane {
         add(yawAngleLabel, 1, 5);
         add(yawAngleText, 2, 5);
         //TODO: add all other values to grid
+
+        add(resetButton, 1, 7);
+
     }
 
     private void setupEventHandlers() {
@@ -81,6 +85,7 @@ public class SimulatorControls extends GridPane {
             drone.getDrone().setTranslateX(Drone3d.INITIAL_X_POSITION);
             drone.getDrone().setTranslateY(Drone3d.INITIAL_Y_POSITION);
             drone.getDrone().setTranslateZ(Drone3d.INITIAL_Z_POSITION);
+            drone.getDrone().setRotate(0);
             drone.setxOrientation(0);
             drone.setyOrientation(0);
             drone.setzOrientation(1);
