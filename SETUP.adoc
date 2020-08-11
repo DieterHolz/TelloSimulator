@@ -11,13 +11,32 @@ https://bell-sw.com/pages/downloads/#/java-11-lts[Liberica Java JDK 11.0.8,role=
 Neuere Versionen können auch funktionieren. Ab IntelliJ IDEA 2020.1 können JDKs auch direkt via IntelliJ heruntergeladen werden.
 
 
+=== Schnellstart via Kommandozeile
+
+*Schritt 1:* Repository gewünschtes lokales Verzeichnis klonen (z.B. mit Git Bash
+
+`git clone \https://github.com/DieterHolz/TelloSimulator`).
+
+
+*Schritt 2:* Kommandozeile im TelloSimulator Verzeichnis öffnen.
+
+`cd TelloSimulator`
+
+*Schritt 3:* Start via Gradle Wrapper.
+
+`gradlew run` bzw. `./gradlew run` auf Linux / MacOS)
+
+(Achtung: der Gradle Wrapper verwendet die im JAVA_HOME gesetzte Version. Version prüfbar mit `java -version` bzw. aktuelles JAVA_HOME mit `echo %JAVA_HOME%`). Eventuell muss dies geändert werden.
+JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10
+
+
 === Start mit IntelliJ IDEA
 
 *Schritt 1:* IntelliJ starten und 'Get from Version Control' bzw. 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
 
 image::screenshot1.PNG[]
 
-*Schritt 2:* Repository URL https://github.com/DieterHolz/TelloSimulator und lokales Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
+*Schritt 2:* Repository URL `\https://github.com/DieterHolz/TelloSimulator` und lokales Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
 
 image::screenshot2.PNG[]
 
@@ -41,21 +60,9 @@ image::screenshot8.PNG[]
 
 *Schritt 6:* In Project Structure -> Project die Project SDK auf das Liberica JDK 11 setzen.
 
-*Schritt 7:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen -> 'gradlew clean build' ausführen ->  nach dem build 'gradlew run' ausführen.
+*Schritt 7:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen -> `gradlew clean build` ausführen ->  nach dem build `gradlew run` ausführen.
 
 Für weitere Starts sollte dann in der Run Configuration die Gradle 'run' Configuration zur Verfügung stehen.
-
-=== Start via Kommandozeile
-
-*Schritt 1:* Repository an gewünschten Ort klonen (z.B. mit Git Bash).
-
-*Schritt 2:* Kommandozeile im TelloSimulator Verzeichnis öffnen.
-
-*Schritt 3:* 'gradlew run' ausführen. ('./gradlew run' auf Linux / MacOS)
-
-(Achtung: der Gradle Wrapper verwendet die im JAVA_HOME gesetzte Version. Version prüfbar mit 'java -version' bzw. aktuelles JAVA_HOME mit 'echo %JAVA_HOME%')
-JAVA_HOME ändern:
-https://javatutorial.net/set-java-home-windows-10
 
 
 == TelloDemoCommander Setup
@@ -66,7 +73,7 @@ Der TelloDemoCommander ist das Gegenstück zum Simulator. Er wird benötigt um K
 
 *Schritt 1:* IntelliJ starten und 'Get from Version Control' oder 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
 
-*Schritt 2:* Repository URL (https://github.com/danielobrist/TelloDemoCommander) und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
+*Schritt 2:* Repository URL `\https://github.com/danielobrist/TelloDemoCommander` und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
 
 *Schritt 3:* Falls nötig GitHub Credentials angeben.
 
