@@ -49,8 +49,10 @@ public class LogViewer extends VBox {
         filterLevel.getSelectionModel().select(Level.DEBUG);
 
         showTimestamp = new ToggleButton("Show Timestamp");
+        showTimestamp.setSelected(true);
 
         tail = new ToggleButton("Tail");
+        tail.setSelected(true);
 
         rate = new Slider(0.1, 60, 60);
 
