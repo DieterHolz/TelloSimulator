@@ -25,6 +25,7 @@ public class TelloSDKValues {
 
     public static final StringProperty operatorIpAddress = new SimpleStringProperty("127.0.0.1");
 
+    public static final String SIM_LOCAL_ADDRESS = "127.0.0.1";
     public static final String OP_IP_ADDRESS = "127.0.0.1";
     public static final int OP_COMMAND_PORT = 8889;
     public static final int SIM_COMMAND_PORT = 8879;

@@ -46,14 +46,14 @@ public class UDPCommandConnection extends Thread {
 
 			try {
 				DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
-				logger.info("Waiting for commands...");
+				logger.debug("Waiting for commands on port " + TelloSDKValues.SIM_COMMAND_PORT);
 				commandSocket.receive(receivedPacket);
 				if (running){ // check needed if drone is turned off during receiving
 					String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());				// old: String received = readString();
-					logger.info("Received command: " + received);
-
 					InetAddress address = receivedPacket.getAddress();
 					int port = receivedPacket.getPort();
+					logger.info("Received command: '" + received + "' from " + address.getCanonicalHostName() + ":" + port);
+
 
 					if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
 						initiateStateConnection(address);
@@ -61,14 +61,15 @@ public class UDPCommandConnection extends Thread {
 						String ok = TelloControlCommands.OK;
 						DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
 						commandSocket.send(responsePacket);
+						logger.debug("Sent response: '" + ok + "' to " + address.getCanonicalHostName() + ":" + port);
 						continue;
 					}
 
 					if (sdkModeInitiated) {
 						String response = commandHandler.handle(received);
-						logger.debug("Vom CommandHandler erhaltene Antwort: "+response);
 						DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
 						commandSocket.send(responsePacket);
+						logger.debug("Sent response: '" + response + "' to " + address.getCanonicalHostName() + ":" + port);
 						continue;
 					}
 				}

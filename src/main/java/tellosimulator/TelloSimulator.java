@@ -25,11 +25,11 @@ public class TelloSimulator extends Application {
 
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());
 
-        primaryStage.setTitle("Simulator Tello Drohne");
+        primaryStage.setTitle("Tello Simulator");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        logger.debug("Welcome to TelloSimulator.");
+        logger.debug("Welcome. Start the virtual drone and connect to it with your Application.");
     }
 
     public static void main(String[] args) throws Exception { launch(args); }
