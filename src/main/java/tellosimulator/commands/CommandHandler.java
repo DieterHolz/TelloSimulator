@@ -246,6 +246,7 @@ public class CommandHandler {
 					break;
 
 				default:
+					logger.error("Invalid command:" + command + ". Command unknown - please check for typos.");  //TODO: we could check for similar commands with levenstein?
 					throw new IllegalArgumentException("invalid command");
 			}
 
@@ -266,48 +267,56 @@ public class CommandHandler {
 
 	private void validateDown(int x) {
         if(x<-500 || x>500) {
+        	logger.error("Illegal Argument. Command: "+TelloControlCommands.DOWN+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
 			throw new TelloIllegalArgumentException(TelloControlCommands.DOWN, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateLeft(int x) {
         if(x<-500 || x>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.LEFT+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
 			throw new TelloIllegalArgumentException(TelloControlCommands.LEFT, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateRight(int x) {
         if(x<-500 || x>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.RIGHT+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
 			throw new TelloIllegalArgumentException(TelloControlCommands.RIGHT, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateForward(int x) {
         if(x<-500 || x>500) {
+        	logger.error("Illegal Argument. Command: "+TelloControlCommands.FORWARD+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
 			throw new TelloIllegalArgumentException(TelloControlCommands.FORWARD, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateBack(int x) {
         if(x<-500 || x>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.BACK+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20-500");
 			throw new TelloIllegalArgumentException(TelloControlCommands.BACK, "x", String.valueOf(x), "20-500");
 		}
 	}
 
 	private void validateCw(int x) {
         if(x<-500 || x>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.CW+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"1-360");
 			throw new TelloIllegalArgumentException(TelloControlCommands.CW, "x", String.valueOf(x), "1-360");
 		}
 	}
 
 	private void validateCcw(int x) {
         if(x<-500 || x>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.CCW+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"1-360");
 			throw new TelloIllegalArgumentException(TelloControlCommands.CCW, "x", String.valueOf(x), "1-360");
 		}
 	}
 
 	private void validateFlip(String x) {
 		if(!(x.equals("l") || x.equals("r") || x.equals("f") || x.equals("b"))) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommands.FLIP+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid values: "+"l, r, f or b");
 			throw new TelloIllegalArgumentException(TelloControlCommands.FLIP, "x", String.valueOf(x), "l, r, f or b");
 		}
 	}
