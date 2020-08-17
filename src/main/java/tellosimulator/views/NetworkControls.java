@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import tellosimulator.TelloSimulator;
 import tellosimulator.log.Logger;
+import tellosimulator.network.TelloSDKValues;
 import tellosimulator.network.UDPCommandConnection;
 import tellosimulator.network.UDPStateConnection;
 
@@ -20,8 +21,17 @@ public class NetworkControls extends VBox {
     private String myIp;
 
     private ToggleButton startButton;
-    private Label simulatorIpLabel;
-    private TextField simulatorIpField;
+    private Label simulatorExternalIpLabel;
+    private TextField simulatorExternalIpField;
+    private Label simulatorLocalIpLabel;
+    private TextField simulatorLocalIpField;
+    private Label portsLabel;
+    private Label commandPortLabel;
+    private TextField commandPortField;
+    private Label statePortLabel;
+    private TextField statePortField;
+    private Label videoPortLabel;
+    private TextField videoPortField;
 
     public NetworkControls(Drone3d drone) throws IOException {
         this.drone = drone;
@@ -48,15 +58,39 @@ public class NetworkControls extends VBox {
     }
 
     private void initializeParts() throws UnknownHostException {
-        startButton = new ToggleButton("Start Drone");
-        simulatorIpLabel = new Label("Simulator IP Adresse");
-        simulatorIpField = new TextField(myIp);
-        simulatorIpField.setEditable(false);
-        simulatorIpField.setDisable(true);
+        startButton = new ToggleButton("Start Virtual Drone");
+        simulatorExternalIpLabel = new Label("External IP Address:");
+        simulatorExternalIpField = new TextField(myIp);
+        simulatorExternalIpField.setEditable(false);
+
+        simulatorLocalIpLabel = new Label("Local IP Address:");
+        simulatorLocalIpField = new TextField(TelloSDKValues.SIM_LOCAL_ADDRESS);
+        simulatorLocalIpField.setEditable(false);
+
+        portsLabel = new Label("Connect to the following ports:");
+        commandPortLabel = new Label("Command Port:");
+        commandPortField = new TextField(String.valueOf(TelloSDKValues.SIM_COMMAND_PORT));
+
+        statePortLabel = new Label("State Port:");
+        statePortField = new TextField(String.valueOf(TelloSDKValues.SIM_STATE_PORT));
+
+        //TODO: video label and field
+
     }
 
     private void layoutParts() {
-        getChildren().addAll(startButton, simulatorIpLabel, simulatorIpField);
+        getChildren().addAll(
+                startButton,
+                simulatorExternalIpLabel,
+                simulatorExternalIpField,
+                simulatorLocalIpLabel,
+                simulatorLocalIpField,
+                portsLabel,
+                commandPortLabel,
+                commandPortField,
+                statePortLabel,
+                statePortField
+        );
     }
 
     private void setupEventHandlers() {
@@ -75,12 +109,12 @@ public class NetworkControls extends VBox {
                 } catch (SocketException e) {
                     logger.error(e.getMessage());
                 }
-                logger.debug("Drone turned on");
+                logger.debug("Drone turned ON");
 
             } else {
                 commandConnection.setRunning(false);
                 stateConnection.setRunning(false);
-                logger.debug("Drone turned off");
+                logger.debug("Drone turned OFF");
             }
         });
     }

@@ -7,7 +7,7 @@
 }
 
 .log-view .list-cell:debug {
-    -fx-text-fill: gray;
+    -fx-text-fill: black;
 }
 
 .log-view .list-cell:info {

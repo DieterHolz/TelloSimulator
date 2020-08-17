@@ -49,10 +49,8 @@ public class LogViewer extends VBox {
         filterLevel.getSelectionModel().select(Level.DEBUG);
 
         showTimestamp = new ToggleButton("Show Timestamp");
-        showTimestamp.setSelected(true);
 
-        tail = new ToggleButton("Tail");
-        tail.setSelected(true);
+        tail = new ToggleButton("Autoscroll to Tail");
 
         rate = new Slider(0.1, 60, 60);
 
@@ -77,7 +75,7 @@ public class LogViewer extends VBox {
 
     private void layoutParts() {
         logView.setPrefWidth(400);
-        logView.setPrefHeight(100);
+        logView.setPrefHeight(200);
 
         rateLayout.setAlignment(Pos.CENTER);
 
@@ -85,7 +83,7 @@ public class LogViewer extends VBox {
 
         VBox.setVgrow(logView, Priority.ALWAYS);
 
-        getChildren().addAll(controls, logView);
+        getChildren().addAll(layout);
     }
 
     private void setupValueChangeListeners() {

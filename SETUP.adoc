@@ -2,7 +2,7 @@
 
 == 1. TelloSimulator Setup
 
-Der TelloSimulator kann wahlweise via Kommandozeile oder IntelliJ IDE gestartet werden. Andere Varianten sind auch möglich. Zwecks Effizienz wurde die Anleitung nur auf diese beiden Varianten ausgelegt. Voraussetzungen sind ein installiertes Java JDK 11.0.8 mit JavaFX.
+Willkommen zur Installation des TelloSimulators. Die Applikation benutzt Gradle und kann daher wahlweise via Kommandozeile oder IntelliJ IDE gestartet werden. Andere Varianten sind auch möglich. Zwecks Effizienz wurde die Anleitung nur auf diese beiden Varianten ausgelegt. Voraussetzungen sind ein installiertes Java JDK 11.0.8 mit JavaFX.
 
 === Installation Java JDK:
 
@@ -25,8 +25,8 @@ Neuere Versionen können auch funktionieren. Ab IntelliJ IDEA 2020.1 können JDK
 
 `./gradlew run` bzw. `gradlew run`
 
-(Bei Problemen mit der Java Version: Die Version ist prüfbar mit `java -version` bzw. aktuelles JAVA_HOME mit `echo %JAVA_HOME%`). Eventuell muss die JAVA_HOME Variable auf das Liberica Java JDK 11.0.8 geändert werden.
-JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10 oder https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux
+(Bei Problemen mit der Java Version: Die Version ist prüfbar mit `java -version` bzw. aktuelles JAVA_HOME mit `echo %JAVA_HOME%`. Eventuell muss die JAVA_HOME Variable auf das Liberica Java JDK 11.0.8 geändert werden.
+JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10 oder https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux)
 
 
 
