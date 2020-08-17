@@ -1,6 +1,6 @@
 :imagesdir: assets
 
-== 1. TelloSimulator Setup
+= TelloSimulator Setup
 
 Willkommen zur Installation des TelloSimulators. Die Applikation benutzt Gradle und kann daher wahlweise via Kommandozeile oder IntelliJ IDE gestartet werden. Andere Varianten sind auch möglich. Zwecks Effizienz wurde die Anleitung nur auf diese beiden Varianten ausgelegt. Voraussetzungen sind ein installiertes Java JDK 11.0.8 mit JavaFX.
 
@@ -34,8 +34,7 @@ JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10 oder https:
 
 *Schritt 1:* IntelliJ starten und 'Get from Version Control' bzw. 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
 
-//TODO: cut left side of picture
-image::screenshot1.PNG[]
+image::screenshot1.1.PNG[]
 
 *Schritt 2:* Repository URL `\https://github.com/DieterHolz/TelloSimulator` und lokales Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
 
@@ -45,54 +44,28 @@ image::screenshot2.PNG[]
 
 *Schritt 4:* File -> Project Structure öffnen.
 
-//TODO: replace this, image too big for browser?
-image::screenshot5.PNG[]
+image::screenshot5.1.PNG[]
 
 *Schritt 5:* Unter Platform Settings -> SDKs die Java SDK auf das installierte Liberica JDK 11 setzen.
 Falls dieses noch nicht vorhanden ist auf das '+' klicken -> 'Add New SDK' -> Speicherort des heruntergeladenen Liberica JDK 11 angeben.
 
-//TODO: replace this, image too big for browser?
-image::screenshot7.PNG[]
+image::screenshot7.1.PNG[]
 
 Alternativ kann man das JDK auch via IntelliJ downloaden (IntelliJ IDEA 2020.1 oder neuer benötigt).
 Vendor: Bellsoft Liberica JDK, Version: 11.0.8, Location: Speicherort für deine JDKs
 
-//TODO: replace this, image too big for browser?
-image::screenshot8.PNG[]
+image::screenshot8.1.PNG[]
 
 *Schritt 6:* In Project Structure -> Project die Project SDK auf das Liberica JDK 11 setzen.
 
-//TODO: add screenshot
+image::screenshot10.1.PNG[]
 
 *Schritt 7:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen -> `gradlew clean build` ausführen ->  nach dem build `gradlew run` ausführen.
 
-//TODO: add screenshot
+image::screenshot11.PNG[]
+image::screenshot12.PNG[]
+image::screenshot13.PNG[]
 
 Für weitere Starts sollte dann in der Run Configuration die Gradle 'run' Configuration zur Verfügung stehen.
 
-//TODO: add screenshot
-
-== 2. TelloDemoCommander Setup
-
-Der TelloDemoCommander ist das Gegenstück zum Simulator. Er wird benötigt um Kommandos an die Drohne oder (in unserem Fall) den TelloSimulator schicken. Im finalen Use Case würde anstatt dieser Applikation die Implementierungen der Studenten verwendet werden, um die Drohne / den Simulator anzusteuern.
-
-=== Start mit IntelliJ IDEA
-
-*Schritt 1:* IntelliJ starten und 'Get from Version Control' oder 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
-
-//TODO: add screenshot
-
-
-*Schritt 2:* Repository URL `\https://github.com/danielobrist/TelloDemoCommander` und Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
-
-//TODO: add screenshot
-
-*Schritt 3:* Falls nötig GitHub Credentials angeben.
-
-*Schritt 4:* src -> main -> java -> TelloOperaor main-Klasse öffnen und ab Zeile 60 den Flight Plan der Drohne definieren. Einige commands sind schon vorhanden, können aber beliebig ersetzt werden.
-
-//TODO: add screenshot
-
-*Schritt 5:* main-Klasse starten (Rechtsklick auf Klasse -> Run...). Falls der TelloSimulator zuvor noch nie eingeschaltet wurde, wird hier eine Exception geworfen. Es muss zuerst die Drohne / der Simulator gestartet werden, bevor die Commands geschickt werden können.
-
-//TODO: add screenshot
+image::screenshot14.PNG[]
