@@ -2,56 +2,49 @@
 
 Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtuellen Tello Drohne. Die Applikation
 bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
-und verfügt über ein UI mit 3D-Welt, in welcher die Software-Drohne fliegt.
+und verfügt über ein UI mit 3D-Welt, in welcher die virtuelle Drohne fliegt.
 
-== Installationsanleitung für Testzwecke:
+== Installationsanleitung:
 
-Um den Simulator zu testen, wird ein Programm benötigt, welches dem Simulator Kommandos schickt. Hierfür steht unter
-https://github.com/danielobrist/TelloDemoCommander eine Applikation zur Verfügung. Nachdem sowohl der TelloSimulator als
-auch der TelloDemoCommander ausgegeckt wurden und lokal startbar sind, können folgende Schritte ausgeführt werden:
+Eine detaillierte Installationsanleitung ist im link:SETUP.adoc[SETUP.adoc] zu finden.
 
-1. In der Main-Klasse des TelloDemoCommander den gewünschten Flight-Plan definieren.
+Um den Simulator zu testen, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und somit auch den Simulator ansteuern kann. Für Testzwecke steht hierzu unter
+https://github.com/danielobrist/TelloDemoCommander eine Demo-Applikation zur Verfügung.
 
-2. TelloSimulator starten.
 
-3. TelloDemoCommander starten.
-
-Der definierte Flight-Plan sollte anschliessend auf der Konsole des TelloSimulators ausgegeben werden.
-
-== Verbinden mit dem Simulator-API:
+== Operator-Programm mit der Simulator-API verbinden:
 
 //TODO: Anforderungsänderung "muss im WLAN funktionieren" --> TelloSDKValues / Verbindung mit anderen IPs erklären
-Im Gegensatz zur echten Drohne hat der TelloSimulator keine eigene IP-Adresse. Er verwendet die
-localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
-Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
+Die Verbindung mit dem Simulator ist sehr ähnlich wie mit der echten Drohne. Allerdings gibt es systembedingt ein paar Unterschiede. Falls der Simulator auf dem gleichen Gerät wie der Operator läuft, verwendet er
+die localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
+Folgende Anpassungen im *Operator-Programm* sind deshalb für den Verbindungsaufbau zum Simulator nötig:
 
-*Schritt 1:* Port des DatagramSockets von 8889 auf 8879 umstellen.
+*Schritt 1:* Port des DatagramSockets von *8889* (Default Tello Command Port) auf *8879* (Simulator Command Port) umstellen.
 
-`ds = new DatagramSocket(8889);`
+`ds = new DatagramSocket(8879);`
 
-*Schritt 2:* Statt auf 192.168.10.1 auf 127.0.0.1 verbinden.
+*Schritt 2:*
+
+(Falls der Simulator auf dem gleichen Gerät wie der Operator läuft):
+
+Statt auf *192.168.10.1* (Tello Drohne IP) auf *127.0.0.1* (localhost) verbinden.
 
 `ds.connect(127.0.0.1);`
+
+(Falls der Simulator auf einem anderen Gerät wie der Operator läuft):
+
+Statt auf *192.168.10.1* (Tello Drohne IP) auf *<IP-Adresse des Simulators>* verbinden. (Aktuelle IP ersichtlich im Simulator UI)
+
+`ds.connect(<IP-Adresse des Simulators>);`
+
 
 *Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
 
 
+Eine detailliere Dokumentation
+
 == Literaturverzeichnis
+//TODO:
 JavaFX 3D Tutorial: https://www.youtube.com/watch?v=nBjwBmH8OhQ
 
 ---
-
-package tellosimulator;
-
-/**
-* Beispiel wie Code in adoc integriert werden kann
-*/
-public class SomeClass {
-
-    // tag::someMethod[]
-    public int someMethod(){
-        return 42;
-    }
-    // end::someMethod[]
-
-}
