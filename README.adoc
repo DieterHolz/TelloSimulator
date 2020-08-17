@@ -25,13 +25,13 @@ Im Gegensatz zur echten Drohne hat der TelloSimulator keine eigene IP-Adresse. E
 localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
 Folgende Schritte sind deshalb für den Verbindungsaufbau nötig:
 
-*Schritt 1:* DatagramSocket auf Port 8889 erstellen.
+*Schritt 1:* Port des DatagramSockets von 8889 auf 8879 umstellen.
 
 `ds = new DatagramSocket(8889);`
 
-*Schritt 2:* Mit 127.0.01 auf Port 8880 verbinden.
+*Schritt 2:* Statt auf 192.168.10.1 auf 127.0.0.1 verbinden.
 
-`ds.connect(127.0.0.1, 8880);`
+`ds.connect(127.0.0.1);`
 
 *Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
 
