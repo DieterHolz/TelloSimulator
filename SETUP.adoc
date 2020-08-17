@@ -34,38 +34,38 @@ JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10 oder https:
 
 *Schritt 1:* IntelliJ starten und 'Get from Version Control' bzw. 'Check out from Version Control' auswählen. (Alternativ: File -> New -> Project from Version Control)
 
-image::screenshot01.PNG[]
+image::screenshot01.PNG[width=400]
 
 *Schritt 2:* Repository URL `\https://github.com/DieterHolz/TelloSimulator` und lokales Directory definieren. Mit 'Clone' den Klon-Vorgang starten.
 
-image::screenshot02.PNG[]
+image::screenshot02.PNG[width=600]
 
 *Schritt 3:* Falls nötig GitHub Credentials angeben.
 
 *Schritt 4:* File -> Project Structure öffnen.
 
-image::screenshot05.PNG[]
+image::screenshot05.PNG[width=300]
 
 *Schritt 5:* Unter Platform Settings -> SDKs die Java SDK auf das installierte Liberica JDK 11 setzen.
 Falls dieses noch nicht vorhanden ist auf das '+' klicken -> 'Add New SDK' -> Speicherort des heruntergeladenen Liberica JDK 11 angeben.
 
-image::screenshot07.PNG[]
+image::screenshot07.PNG[width=720]
 
 Alternativ kann man das JDK auch via IntelliJ downloaden (IntelliJ IDEA 2020.1 oder neuer benötigt).
 Vendor: Bellsoft Liberica JDK, Version: 11.0.8, Location: Speicherort für deine JDKs
 
-image::screenshot8.PNG[]
+image::screenshot8.PNG[width=400]
 
 *Schritt 6:* In Project Structure -> Project die Project SDK auf das Liberica JDK 11 setzen.
 
-image::screenshot10.PNG[]
+image::screenshot10.PNG[width=720]
 
 *Schritt 7:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen -> `gradlew clean build` ausführen ->  nach dem build `gradlew run` ausführen.
 
-image::screenshot11.PNG[]
-image::screenshot12.PNG[]
-image::screenshot13.PNG[]
+image::screenshot11.PNG[width=720]
+image::screenshot12.PNG[width=720]
+image::screenshot13.PNG[width=720]
 
 Für weitere Starts sollte dann in der Run Configuration die Gradle 'run' Configuration zur Verfügung stehen.
 
-image::screenshot14.PNG[]
+image::screenshot14.PNG[width=300]
