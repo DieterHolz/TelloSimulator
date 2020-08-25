@@ -89,9 +89,6 @@ public class SimulatorControls extends GridPane {
             drone.setxOrientation(0);
             drone.setyOrientation(0);
             drone.setzOrientation(1);
-            drone.setYawAngle(0);
-            drone.setRollAngle(0);
-            drone.setPitchAngle(0);
             drone.setSpeed(TelloDefaultValues.DEFAULT_SPEED);
         });
     }

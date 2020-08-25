@@ -49,26 +49,14 @@ public class Drone3d {
         PITCH
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
-
-    private final DoubleProperty xPosition = new SimpleDoubleProperty(); // needed? we have translateXProperty
-    private final DoubleProperty yPosition = new SimpleDoubleProperty();
-    private final DoubleProperty zPosition = new SimpleDoubleProperty();
     private final DoubleProperty xOrientation = new SimpleDoubleProperty();
     private final DoubleProperty yOrientation = new SimpleDoubleProperty();
     private final DoubleProperty zOrientation = new SimpleDoubleProperty();
-
-    private final DoubleProperty yawAngle = new SimpleDoubleProperty();
-    private final DoubleProperty rollAngle = new SimpleDoubleProperty(); //TODO: do we need these?
-    private final DoubleProperty pitchAngle = new SimpleDoubleProperty(); //TODO: do we need these?
-
     private final DoubleProperty speed = new SimpleDoubleProperty();
     private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
-
-
 
 
     public Drone3d() {
@@ -112,11 +100,8 @@ public class Drone3d {
         setxOrientation(0);
         setyOrientation(0);
         setzOrientation(1);
-        setYawAngle(0);
-        setRollAngle(0);
-        setPitchAngle(0);
-        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
 
+        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
     }
 
     private void setupEventHandlers() {
@@ -127,15 +112,6 @@ public class Drone3d {
 
     private void setupBindings() {
     }
-
-    private void animateUI() {
-
-    }
-
-    private void updateUI() {
-
-    }
-
 
     private void rotate(int angle, Rotation axis) {
 
@@ -245,7 +221,7 @@ public class Drone3d {
     }
 
 
-    // vector calculations-
+    // vector calculations
 
     private double calculateDistance(Point3D from, Point3D to) {
         //TODO : calculate distance between two given points/ortsvektoren
@@ -280,9 +256,9 @@ public class Drone3d {
      */
     private void updateRcPosition() {
         Point3D oldPos = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
-        Point3D forward = getCurrentOrientation().multiply(getForwardBackwardDiff());
-        Point3D right = getRightNormalVector().multiply(getLeftRightDiff());
-        Point3D up = getUpwardsNormalVector().multiply(getUpDownDiff());
+        Point3D forward = getCurrentOrientation().multiply(getForwardBackwardDiff()/100);
+        Point3D right = getRightNormalVector().multiply(getLeftRightDiff()/100);
+        Point3D up = getUpwardsNormalVector().multiply(getUpDownDiff()/100);
         Point3D moveDirectionVector = forward.add(right).add(up);
         Point3D newPos = oldPos.add(moveDirectionVector.multiply(getSpeed() / FRAMES_PER_SECOND));
 
@@ -496,46 +472,6 @@ public class Drone3d {
         this.commandQueue = commandQueue;
     }
 
-    public void startAnimationLoop() {
-    }
-
-
-    public double getXPosition() {
-        return xPosition.get();
-    }
-
-    public DoubleProperty xPositionProperty() {
-        return xPosition;
-    }
-
-    public void setXPosition(double xPosition) {
-        this.xPosition.set(xPosition);
-    }
-
-    public double getYPosition() {
-        return yPosition.get();
-    }
-
-    public DoubleProperty YPositionProperty() {
-        return yPosition;
-    }
-
-    public void setYPosition(double yPosition) {
-        this.yPosition.set(yPosition);
-    }
-
-    public double getZPosition() {
-        return zPosition.get();
-    }
-
-    public DoubleProperty zPositionProperty() {
-        return zPosition;
-    }
-
-    public void setZPosition(double zPosition) {
-        this.zPosition.set(zPosition);
-    }
-
     public double getxOrientation() {
         return xOrientation.get();
     }
@@ -570,42 +506,6 @@ public class Drone3d {
 
     public void setzOrientation(double zOrientation) {
         this.zOrientation.set(zOrientation);
-    }
-
-    public double getYawAngle() {
-        return yawAngle.get();
-    }
-
-    public DoubleProperty yawAngleProperty() {
-        return yawAngle;
-    }
-
-    public void setYawAngle(double yawAngle) {
-        this.yawAngle.set(yawAngle);
-    }
-
-    public double getRollAngle() {
-        return rollAngle.get();
-    }
-
-    public DoubleProperty rollAngleProperty() {
-        return rollAngle;
-    }
-
-    public void setRollAngle(double rollAngle) {
-        this.rollAngle.set(rollAngle);
-    }
-
-    public double getPitchAngle() {
-        return pitchAngle.get();
-    }
-
-    public DoubleProperty pitchAngleProperty() {
-        return pitchAngle;
-    }
-
-    public void setPitchAngle(double pitchAngle) {
-        this.pitchAngle.set(pitchAngle);
     }
 
     public double getSpeed() {
