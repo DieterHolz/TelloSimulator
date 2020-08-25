@@ -18,6 +18,7 @@ import tellosimulator.network.UDPCommandConnection;
 import java.util.List;
 
 public class Drone3d {
+    private final int FRAMES_PER_SECOND = 60;
 
     static final int DRONE_WIDTH = 18;
     static final int DRONE_HEIGHT = 5;
@@ -60,7 +61,14 @@ public class Drone3d {
     private final DoubleProperty yawAngle = new SimpleDoubleProperty();
     private final DoubleProperty rollAngle = new SimpleDoubleProperty(); //TODO: do we need these?
     private final DoubleProperty pitchAngle = new SimpleDoubleProperty(); //TODO: do we need these?
+
     private final DoubleProperty speed = new SimpleDoubleProperty();
+    private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(0);
+    private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
+    private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
+    private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
+
+
 
 
     public Drone3d() {
@@ -108,6 +116,7 @@ public class Drone3d {
         setRollAngle(0);
         setPitchAngle(0);
         setSpeed(TelloDefaultValues.DEFAULT_SPEED);
+
     }
 
     private void setupEventHandlers() {
@@ -265,6 +274,34 @@ public class Drone3d {
         return new Point3D(getxOrientation(), getyOrientation(), getzOrientation());
     }
 
+    /**
+     * Updates the drone position every frame depending on the currently set rc values forward/backward, left/right,
+     * up/down depending on the current speed.
+     */
+    private void updateRcPosition() {
+        Point3D oldPos = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
+        Point3D forward = getCurrentOrientation().multiply(getForwardBackwardDiff());
+        Point3D right = getRightNormalVector().multiply(getLeftRightDiff());
+        Point3D up = getUpwardsNormalVector().multiply(getUpDownDiff());
+        Point3D moveDirectionVector = forward.add(right).add(up);
+        Point3D newPos = oldPos.add(moveDirectionVector.multiply(getSpeed() / FRAMES_PER_SECOND));
+
+        drone.setTranslateX(newPos.getX());
+        drone.setTranslateY(newPos.getY());
+        drone.setTranslateZ(newPos.getZ());
+    }
+
+    /**
+     * Updates the drone rotation every frame depending on the currently set rc value of yaw.
+     */
+    private void updateRcYaw() {
+        drone.setRotationAxis(getUpwardsNormalVector());
+        double oldRotate = drone.getRotate();
+        double newRotate = oldRotate + (360/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000)))*(getYawDiff()/100);
+
+        drone.setRotate(newRotate);
+    }
+
 
     private void createAnimationLoop() {
 
@@ -273,6 +310,9 @@ public class Drone3d {
 
             @Override
             public void handle(long now) {  // called in every frame!
+
+                updateRcPosition();
+                updateRcYaw();
 
                 if(commandQueue.getCommandQueue().size() > 0 && !animationRunning && !emergency) {
                     animationRunning = true;
@@ -580,5 +620,51 @@ public class Drone3d {
         this.speed.set(speed);
     }
 
+    public double getForwardBackwardDiff() {
+        return forwardBackwardDiff.get();
+    }
 
+    public DoubleProperty forwardBackwardDiffProperty() {
+        return forwardBackwardDiff;
+    }
+
+    public void setForwardBackwardDiff(double forwardBackwardDiff) {
+        this.forwardBackwardDiff.set(forwardBackwardDiff);
+    }
+
+    public double getLeftRightDiff() {
+        return leftRightDiff.get();
+    }
+
+    public DoubleProperty leftRightDiffProperty() {
+        return leftRightDiff;
+    }
+
+    public void setLeftRightDiff(double leftRightDiff) {
+        this.leftRightDiff.set(leftRightDiff);
+    }
+
+    public double getUpDownDiff() {
+        return upDownDiff.get();
+    }
+
+    public DoubleProperty upDownDiffProperty() {
+        return upDownDiff;
+    }
+
+    public void setUpDownDiff(double upDownDiff) {
+        this.upDownDiff.set(upDownDiff);
+    }
+
+    public double getYawDiff() {
+        return yawDiff.get();
+    }
+
+    public DoubleProperty yawDiffProperty() {
+        return yawDiff;
+    }
+
+    public void setYawDiff(double yawDiff) {
+        this.yawDiff.set(yawDiff);
+    }
 }
