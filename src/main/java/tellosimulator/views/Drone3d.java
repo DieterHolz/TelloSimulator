@@ -53,10 +53,11 @@ public class Drone3d {
     private final DoubleProperty yOrientation = new SimpleDoubleProperty();
     private final DoubleProperty zOrientation = new SimpleDoubleProperty();
     private final DoubleProperty speed = new SimpleDoubleProperty();
-    private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(0);
+
+    private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(50);
     private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
-    private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
-    private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
+    private final DoubleProperty upDownDiff = new SimpleDoubleProperty(20);
+    private final DoubleProperty yawDiff = new SimpleDoubleProperty(5);
 
 
     public Drone3d() {
@@ -273,9 +274,10 @@ public class Drone3d {
     private void updateRcYaw() {
         drone.setRotationAxis(getUpwardsNormalVector());
         double oldRotate = drone.getRotate();
-        double newRotate = oldRotate + (360/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000)))*(getYawDiff()/100);
-
-        drone.setRotate(newRotate);
+        double rotateAngle = (360/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000F)))*(getYawDiff()/100);
+        drone.setRotate(oldRotate + rotateAngle);
+        setxOrientation(Math.cos(rotateAngle * Math.PI / 180) * getxOrientation() - Math.sin(rotateAngle * Math.PI / 180) * getzOrientation());
+        setzOrientation(Math.sin(rotateAngle * Math.PI / 180) * getxOrientation() + Math.cos(rotateAngle * Math.PI / 180) * getzOrientation());
     }
 
 
