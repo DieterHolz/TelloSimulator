@@ -2,6 +2,7 @@ package tellosimulator.views;
 
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -11,10 +12,13 @@ import javafx.scene.shape.Box;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tellosimulator.commands.CommandHandler;
 import tellosimulator.commands.TelloControlCommands;
 import tellosimulator.commands.TelloDefaultValues;
+import tellosimulator.network.CommandPackage;
 import tellosimulator.network.UDPCommandConnection;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Drone3d {
@@ -25,7 +29,7 @@ public class Drone3d {
     static final int DRONE_DEPTH = 16;
 
     static double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
-    static double INITIAL_Y_POSITION = -DRONE_HEIGHT/2;
+    public static double INITIAL_Y_POSITION = -DRONE_HEIGHT/2;
     static double INITIAL_Z_POSITION = Math.min(Simulator3DScene.ROOM_DEPTH /5, 500);
 
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
@@ -34,13 +38,13 @@ public class Drone3d {
     private Group drone;
     private Group pitchContainer;
     private Group rollContainer;
-    private Drone3dCommandQueue commandQueue;
     private AnimationTimer animationTimer;
     private Timeline timeline = new Timeline();
     private RotateTransition rotateTransition = new RotateTransition();
 
-    Command3d currentAnimationCommand = null;
-    boolean animationRunning;
+    private boolean animationRunning;
+    private CommandHandler commandHandler;
+    private CommandPackage commandPackage;
     boolean emergency = false;
 
     enum Rotation {
@@ -54,14 +58,13 @@ public class Drone3d {
     private final DoubleProperty zOrientation = new SimpleDoubleProperty();
     private final DoubleProperty speed = new SimpleDoubleProperty();
 
-    private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(50);
+    private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
-    private final DoubleProperty upDownDiff = new SimpleDoubleProperty(20);
-    private final DoubleProperty yawDiff = new SimpleDoubleProperty(5);
+    private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
+    private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
 
 
     public Drone3d() {
-        initCommandQueue();
         buildDrone();
         setInititalValues();
 
@@ -72,10 +75,6 @@ public class Drone3d {
         setupBindings();
 
         createAnimationLoop();
-    }
-    
-    private void initCommandQueue() {
-        commandQueue = new Drone3dCommandQueue();
     }
 
     private void buildDrone() {
@@ -141,6 +140,12 @@ public class Drone3d {
 
         rotateTransition.setOnFinished(event -> {
             animationRunning = false;
+            commandPackage.setResponse("ok");
+            try {
+                returnResponseStringToCommandHandler();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         rotateTransition.play();
     }
@@ -165,7 +170,12 @@ public class Drone3d {
         timeline.setOnFinished(event -> {
             animationRunning = false;
             drone.setRotationAxis(getUpwardsNormalVector());
-            //drone.setRotate(getYawAngle());
+            commandPackage.setResponse("ok");
+            try {
+                returnResponseStringToCommandHandler();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         if(!emergency) {
             animationRunning = true;
@@ -292,82 +302,106 @@ public class Drone3d {
                 updateRcPosition();
                 updateRcYaw();
 
-                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning && !emergency) {
-                    animationRunning = true;
-                    currentAnimationCommand = commandQueue.getCommandQueue().poll();
-                    List<String> params = currentAnimationCommand.getParameters();
-
-                    switch(currentAnimationCommand.getInstruction()) {
-
-                        case TelloControlCommands.TAKEOFF:
-                            move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
-                            break;
-
-                        case TelloControlCommands.LAND:
-                            move(getDownwardsNormalVector(), -drone.getTranslateY()+INITIAL_Y_POSITION);
-                            break;
-
-                        case TelloControlCommands.DOWN:
-                            move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.UP:
-                            move(getUpwardsNormalVector(), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.LEFT:
-                            move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.RIGHT:
-                            move(getRightNormalVector(), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.BACK:
-                            move(getCurrentOrientation().multiply(-1), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.FORWARD:
-                            move(getCurrentOrientation(), Integer.parseInt(params.get(0)));
-                            break;
-
-                        case TelloControlCommands.CW:
-                            rotate(Integer.parseInt(params.get(0)), Rotation.YAW);
-                            break;
-
-                        case TelloControlCommands.CCW:
-                            rotate(-Integer.parseInt(params.get(0)), Rotation.YAW);
-                            break;
-
-                        case TelloControlCommands.FLIP:
-                            switch(params.get(0)) {
-                                case "r":
-                                    rotate(360, Rotation.ROLL);
-                                    break;
-
-                                case "l":
-                                    rotate(-360, Rotation.ROLL);
-                                    break;
-
-                                case "f":
-                                    rotate(360, Rotation.PITCH);
-                                    break;
-
-                                case "b":
-                                    rotate(-360, Rotation.PITCH);
-                                    break;
-                            }
-                            break;
-
-                        // TODO: handle other commands
-                    }
-                    lastTimerCall = now;
-
-                }
+//                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning && !emergency) {
+//                    animationRunning = true;
+//                    currentAnimationCommand = commandQueue.getCommandQueue().poll();
+//                    List<String> params = currentAnimationCommand.getParameters();
+//
+//                    switch(currentAnimationCommand.getInstruction()) {
+//
+//                        case TelloControlCommands.TAKEOFF:
+//                            move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
+//                            break;
+//
+//                        case TelloControlCommands.LAND:
+//                            move(getDownwardsNormalVector(), -drone.getTranslateY()+INITIAL_Y_POSITION);
+//                            break;
+//
+//                        case TelloControlCommands.DOWN:
+//                            move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.UP:
+//                            move(getUpwardsNormalVector(), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.LEFT:
+//                            move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.RIGHT:
+//                            move(getRightNormalVector(), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.BACK:
+//                            move(getCurrentOrientation().multiply(-1), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.FORWARD:
+//                            move(getCurrentOrientation(), Integer.parseInt(params.get(0)));
+//                            break;
+//
+//                        case TelloControlCommands.CW:
+//                            rotate(Integer.parseInt(params.get(0)), Rotation.YAW);
+//                            break;
+//
+//                        case TelloControlCommands.CCW:
+//                            rotate(-Integer.parseInt(params.get(0)), Rotation.YAW);
+//                            break;
+//
+//                        case TelloControlCommands.FLIP:
+//                            switch(params.get(0)) {
+//                                case "r":
+//                                    rotate(360, Rotation.ROLL);
+//                                    break;
+//
+//                                case "l":
+//                                    rotate(-360, Rotation.ROLL);
+//                                    break;
+//
+//                                case "f":
+//                                    rotate(360, Rotation.PITCH);
+//                                    break;
+//
+//                                case "b":
+//                                    rotate(-360, Rotation.PITCH);
+//                                    break;
+//                            }
+//                            break;
+//
+//                        // TODO: handle other commands
+//                    }
+//                    lastTimerCall = now;
+//
+//                }
             }
         };
 
         animationTimer.start();
+    }
+
+    public void takeoff(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
+    }
+
+    public void land(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        move(getDownwardsNormalVector(), -getDrone().getTranslateY()+INITIAL_Y_POSITION);
+    }
+
+    public void forward(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getCurrentOrientation(), x);
+    }
+
+    public void back(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getCurrentOrientation().multiply(-1), x);
+    }
+
+    private void returnResponseStringToCommandHandler() throws IOException {
+        commandHandler.returnResponseStringtoUDPConncection(commandPackage);
     }
 
     public String getDroneState() {
@@ -466,14 +500,6 @@ public class Drone3d {
         return drone;
     }
 
-    public Drone3dCommandQueue getCommandQueue() {
-        return commandQueue;
-    }
-
-    public void setCommandQueue(Drone3dCommandQueue commandQueue) {
-        this.commandQueue = commandQueue;
-    }
-
     public double getxOrientation() {
         return xOrientation.get();
     }
@@ -568,5 +594,17 @@ public class Drone3d {
 
     public void setYawDiff(double yawDiff) {
         this.yawDiff.set(yawDiff);
+    }
+
+    public boolean isAnimationRunning() {
+        return animationRunning;
+    }
+
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+
+    public void setCommandHandler(CommandHandler commandHandler) {
+        this.commandHandler = commandHandler;
     }
 }

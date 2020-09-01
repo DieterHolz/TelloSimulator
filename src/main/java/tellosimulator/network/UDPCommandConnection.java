@@ -40,7 +40,8 @@ public class UDPCommandConnection extends Thread {
 
 	public void run() {
 		sdkModeInitiated = false;
-		CommandHandler commandHandler = new CommandHandler(telloDrone);
+		CommandHandler commandHandler = new CommandHandler(telloDrone, this);
+		telloDrone.setCommandHandler(commandHandler);
 
 		while (running) {
 
@@ -66,10 +67,8 @@ public class UDPCommandConnection extends Thread {
 					}
 
 					if (sdkModeInitiated) {
-						String response = commandHandler.handle(received);
-						DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	address, port);
-						commandSocket.send(responsePacket);
-						logger.debug("Sent response: '" + response + "' to " + address.getCanonicalHostName() + ":" + port);
+						CommandPackage commandPackage = new CommandPackage(received, address, port);
+						commandHandler.handle(commandPackage);
 						continue;
 					}
 				}
@@ -86,6 +85,12 @@ public class UDPCommandConnection extends Thread {
 			}
 		}
 		commandSocket.close(); //todo: should maybe in a "finally" section
+	}
+
+	public void returnResponseStringToOperator(CommandPackage commandPackage) throws IOException {
+		DatagramPacket responsePacket = new DatagramPacket(commandPackage.getResponse().getBytes(), commandPackage.getResponse().getBytes().length,	commandPackage.getAddress(), commandPackage.getPort());
+		commandSocket.send(responsePacket);
+		logger.debug("Sent response: '" + commandPackage.getResponse() + "' to " + commandPackage.getAddress().getCanonicalHostName() + ":" + commandPackage.getPort());
 	}
 
 	private void initiateStateConnection(InetAddress address) {
