@@ -173,10 +173,10 @@ public class CommandHandler {
 					int yGo = Integer.parseInt(params.get(1));
 					int zGo = Integer.parseInt(params.get(2));
 					int speedGo = Integer.parseInt(params.get(3));
-					String midGo = params.get(4);
+					//TODO: String midGo = params.get(4);
 
-					if(validateGo(xGo, yGo, zGo, speedGo, midGo)) {
-						drone3d.go(commandPackage, xGo, yGo, zGo, speedGo, midGo);
+					if(validateGo(xGo, yGo, zGo, speedGo)) {
+						drone3d.go(commandPackage, xGo, yGo, zGo, speedGo);
 					} else {
 						commandPackage.setResponse(errorString);
 						returnResponseStringToUDPConncection(commandPackage);
@@ -400,7 +400,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateGo(int x, int y, int z, int speed, String mid) {
+	private boolean validateGo(int x, int y, int z, int speed) {
         if(x<-500 || x>500) {
 			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x", String.valueOf(x), "-500-500");
 		}
@@ -416,11 +416,12 @@ public class CommandHandler {
 		if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
             throw new TelloIllegalArgumentException(TelloControlCommands.GO, "x, y and z", "x: "+String.valueOf(x)+", y: "+String.valueOf(y)+", z: "+String.valueOf(z), "x, y and z values can't be set between -20-20 simultaneously");
 		}
-		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
-			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "mid", mid, "m1-m8 or empty");
-		}
+//	    TODO: implement mission pad id in validate method
+//		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+//			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "mid", mid, "m1-m8 or empty");
+//		}
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateCurve(int x1, int x2, int y1, int y2, int z1, int z2, int speed, String mid) {
@@ -456,7 +457,7 @@ public class CommandHandler {
 		}
 		//todo: test that the arc radius is not within a range of 0.5-10 meters
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateJump(int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
@@ -480,7 +481,7 @@ public class CommandHandler {
 			throw new TelloIllegalArgumentException(TelloControlCommands.CURVE, "mid2", mid2, "m1-m8");
 		}
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
     }
 
 	private boolean validateSpeed(int x) {
@@ -488,7 +489,7 @@ public class CommandHandler {
 			throw new TelloIllegalArgumentException(TelloSetCommands.SPEED, "speed", String.valueOf(x), "10-100");
 		}
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateRc(int a, int b, int c, int d) {
@@ -505,13 +506,13 @@ public class CommandHandler {
 			throw new TelloIllegalArgumentException(TelloSetCommands.RC, "d", String.valueOf(d), "-100-100");
 		}
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateWifi(String ssidWifi, String passWifi) {
 		// todo: find out the valid values for ssid and pass (min length?)
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateMdirection(int x) {
@@ -519,13 +520,13 @@ public class CommandHandler {
 			throw new TelloIllegalArgumentException(TelloSetCommands.MDIRECTION, "x", String.valueOf(x), "0, 1 or 2");
 		}
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
 	private boolean validateAp(String ssidAp, String passAp) {
 		// todo: find out the valid values for ssid and pass (min length?)
 		//TODO: implement correct validateMethod
-		return false;
+		return true;
 	}
 
     public void returnResponseStringToUDPConncection(CommandPackage commandPackage) throws IOException {

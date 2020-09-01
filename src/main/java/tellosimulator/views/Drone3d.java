@@ -36,7 +36,7 @@ public class Drone3d {
     private Timeline timeline = new Timeline();
     private RotateTransition rotateTransition = new RotateTransition();
 
-    private boolean animationRunning = false;
+    private boolean animationRunning;
     private CommandHandler commandHandler;
     private CommandPackage commandPackage;
     boolean emergency = false;
@@ -61,6 +61,7 @@ public class Drone3d {
     public Drone3d() {
         buildDrone();
         setInititalValues();
+        animationRunning = false;
         setupEventHandlers();
         setupValueChangedListeners();
         setupBindings();
@@ -150,6 +151,7 @@ public class Drone3d {
         double zPos = drone.getTranslateZ();
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = target;
+        //TODO: generate correct duration with speed (cm/s)
         Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
         animate(createMoveAnimation(to, duration));
 
@@ -224,8 +226,7 @@ public class Drone3d {
     // vector calculations
 
     private double calculateDistance(Point3D from, Point3D to) {
-        //TODO : calculate distance between two given points/ortsvektoren
-        return 0;
+        return Math.sqrt(Math.pow(from.getX()-to.getX(), 2) + Math.pow(from.getY()-to.getY(), 2) + Math.pow(from.getZ()-to.getZ(), 2));
     }
 
     private Point3D getLeftNormalVector(){
@@ -365,8 +366,10 @@ public class Drone3d {
         }
     }
 
-    public void go(CommandPackage commandPackage, int x, int y, int z, int speed, String mid) {
-        //TODO: Fly to "x" "y" "z" at "speed" (cm/s).
+    public void go(CommandPackage commandPackage, int x, int y, int z, int speed) {
+        this.commandPackage = commandPackage;
+        move(new Point3D(x,y,z)); //TODO: implement speed
+        //TODO: Fly to missionpad
     }
 
     public void stop(CommandPackage commandPackage) {
