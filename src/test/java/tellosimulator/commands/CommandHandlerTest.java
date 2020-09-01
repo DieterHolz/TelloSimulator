@@ -1,19 +1,29 @@
-/*package tellosimulator.commands;
+package tellosimulator.commands;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tellosimulator.drone.TelloDrone;
-import tellosimulator.exception.TelloIllegalArgumentException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
+import tellosimulator.views.Drone3d;
 
-import static org.junit.jupiter.api.Assertions.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@ExtendWith(ApplicationExtension.class)
 class CommandHandlerTest {
 
-    TelloDrone telloDrone = new TelloDrone();
-    CommandHandler commandHandler = new CommandHandler(telloDrone);
+    Drone3d drone;
+    CommandHandler commandHandler;
+
+
+    @BeforeEach
+    void setUp() {
+        drone = new Drone3d();
+        commandHandler = new CommandHandler(drone);
+    }
 
     @Test
-    void testHandle() {
+    void testTakeoff() {
         //given
         String receivedValidCommand = TelloControlCommands.TAKEOFF;
         String receivedInvalidCommand = "takeofff";
@@ -28,48 +38,17 @@ class CommandHandlerTest {
     }
 
     @Test
-    void testValidateUp() {
-
+    void testForward() {
         //given
-        String receivedCommand1 = TelloControlCommands.UP + " -8568";
-        String receivedCommand2 = TelloControlCommands.UP + " -501";
-        String receivedCommand3 = TelloControlCommands.UP + " -500";
-        String receivedCommand4 = TelloControlCommands.UP + " -499";
-        String receivedCommand5 = TelloControlCommands.UP + " 10";
-        String receivedCommand6 = TelloControlCommands.UP + " 499";
-        String receivedCommand7 = TelloControlCommands.UP + " 500";
-        String receivedCommand8 = TelloControlCommands.UP + " 501";
-        String receivedCommand9 = TelloControlCommands.UP + " 2586";
+        String receivedValidCommand = TelloControlCommands.FORWARD + " 30";
+        String receivedInvalidCommand = "drawrof";
 
         //when
-        String response1 = commandHandler.handle(receivedCommand1);
-        String response2 = commandHandler.handle(receivedCommand2);
-        String response3 = commandHandler.handle(receivedCommand3);
-        String response4 = commandHandler.handle(receivedCommand4);
-        String response5 = commandHandler.handle(receivedCommand5);
-        String response6 = commandHandler.handle(receivedCommand6);
-        String response7 = commandHandler.handle(receivedCommand7);
-        String response8 = commandHandler.handle(receivedCommand8);
-        String response9 = commandHandler.handle(receivedCommand9);
+        String responseOk = commandHandler.handle(receivedValidCommand);
+        String responseError = commandHandler.handle(receivedInvalidCommand);
 
         //then
-
-        assertEquals("ok", response3);
-        assertEquals("ok", response4);
-        assertEquals("ok", response5);
-        assertEquals("ok", response6);
-        assertEquals("ok", response7);
-
-//        assertThrows(TelloIllegalArgumentException, response1);
-//
-//        Exception exception = assertThrows(TelloIllegalArgumentException.class, () -> {
-//            commandHandler.handle(receivedCommand9);
-//        });
-//
-//        String expectedMessage = "Illegal Argument. Command: ";
-//        String actualMessage = exception.getMessage();
-//
-//        assertTrue(actualMessage.contains(expectedMessage));
+        assertEquals("ok", responseOk);
+        assertEquals("error", responseError);
     }
-
-}*/
+}
