@@ -15,11 +15,8 @@ import java.util.List;
 
 public class CommandHandler {
 	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
-	private String successString = "ok";
 	private String errorString = "error";
-	private String errorMessage;
 	private UDPCommandConnection udpCommandConnection;
-
 
 	Drone3d drone3d;
 	VideoPublisher publisher;

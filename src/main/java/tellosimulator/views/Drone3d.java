@@ -335,7 +335,6 @@ public class Drone3d {
         setzOrientation(Math.sin(rotateAngle * Math.PI / 180) * getxOrientation() + Math.cos(rotateAngle * Math.PI / 180) * getzOrientation());
     }
 
-
     private void createAnimationLoop() {
 
         animationTimer = new AnimationTimer() {
@@ -343,82 +342,8 @@ public class Drone3d {
 
             @Override
             public void handle(long now) {  // called in every frame!
-
                 updateRcPosition();
                 updateRcYaw();
-
-//                if(commandQueue.getCommandQueue().size() > 0 && !animationRunning && !emergency) {
-//                    animationRunning = true;
-//                    currentAnimationCommand = commandQueue.getCommandQueue().poll();
-//                    List<String> params = currentAnimationCommand.getParameters();
-//
-//                    switch(currentAnimationCommand.getInstruction()) {
-//
-//                        case TelloControlCommands.TAKEOFF:
-//                            move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
-//                            break;
-//
-//                        case TelloControlCommands.LAND:
-//                            move(getDownwardsNormalVector(), -drone.getTranslateY()+INITIAL_Y_POSITION);
-//                            break;
-//
-//                        case TelloControlCommands.DOWN:
-//                            move(getDownwardsNormalVector(), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.UP:
-//                            move(getUpwardsNormalVector(), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.LEFT:
-//                            move(getLeftNormalVector(), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.RIGHT:
-//                            move(getRightNormalVector(), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.BACK:
-//                            move(getCurrentOrientation().multiply(-1), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.FORWARD:
-//                            move(getCurrentOrientation(), Integer.parseInt(params.get(0)));
-//                            break;
-//
-//                        case TelloControlCommands.CW:
-//                            rotate(Integer.parseInt(params.get(0)), Rotation.YAW);
-//                            break;
-//
-//                        case TelloControlCommands.CCW:
-//                            rotate(-Integer.parseInt(params.get(0)), Rotation.YAW);
-//                            break;
-//
-//                        case TelloControlCommands.FLIP:
-//                            switch(params.get(0)) {
-//                                case "r":
-//                                    rotate(360, Rotation.ROLL);
-//                                    break;
-//
-//                                case "l":
-//                                    rotate(-360, Rotation.ROLL);
-//                                    break;
-//
-//                                case "f":
-//                                    rotate(360, Rotation.PITCH);
-//                                    break;
-//
-//                                case "b":
-//                                    rotate(-360, Rotation.PITCH);
-//                                    break;
-//                            }
-//                            break;
-//
-//                        // TODO: handle other commands
-//                    }
-//                    lastTimerCall = now;
-//
-//                }
             }
         };
 
