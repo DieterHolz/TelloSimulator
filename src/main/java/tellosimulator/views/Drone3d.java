@@ -2,7 +2,6 @@ package tellosimulator.views;
 
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -10,16 +9,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.util.Duration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import tellosimulator.commands.CommandHandler;
-import tellosimulator.commands.TelloControlCommands;
 import tellosimulator.commands.TelloDefaultValues;
 import tellosimulator.network.CommandPackage;
-import tellosimulator.network.UDPCommandConnection;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Drone3d {
     private final int FRAMES_PER_SECOND = 60;
@@ -46,6 +40,57 @@ public class Drone3d {
     private CommandHandler commandHandler;
     private CommandPackage commandPackage;
     boolean emergency = false;
+
+    public void go(CommandPackage commandPackage, int xGo, int yGo, int zGo, int speedGo, String midGo) {
+        //TODO: Fly to "x" "y" "z" at "speed" (cm/s).
+    }
+
+    public void stop(CommandPackage commandPackage) {
+        //TODO: Hovers in the air
+    }
+
+    public void curve(CommandPackage commandPackage, int x1Curve, int x2Curve, int y1Curve, int y2Curve, int z1Curve, int z2Curve, int speedCurve, String midCurve) {
+        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+    }
+
+    public void jump(CommandPackage commandPackage, int xJump, int yJump, int zJump, int speedJump, int yawJump, String mid1Jump, String mid2Jump) {
+        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+    }
+
+    public void speed(CommandPackage commandPackage) {
+        //TODO: Set speed to "x" cm/s
+    }
+
+    public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
+        //TODO: Set remot controller control via four channels
+    }
+
+    public void wifi(CommandPackage commandPackage, String ssidWifi, String passWifi) {
+        //TODO: Set Wi-Fi password
+    }
+
+    public void mon(CommandPackage commandPackage) {
+        //TODO: Enable mission pad detection (both forward and downward detection).
+    }
+
+    public void moff(CommandPackage commandPackage) {
+        //TODO: Disable mission pad detection.
+    }
+
+    public void mdirection(CommandPackage commandPackage, int xMdirection) {
+        if (xMdirection == 0) {
+            //TODO: Enable downward detection only
+        } else if (xMdirection == 1) {
+            //TODO: Enable forward detection only
+        } else if (xMdirection == 2) {
+            //TODO: Enable both forward and downward detection
+        }
+    }
+
+    public void ap(CommandPackage commandPackage, String ssidAp, String passAp) {
+        //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
+    }
+
 
     enum Rotation {
         YAW,
@@ -390,6 +435,26 @@ public class Drone3d {
         move(getDownwardsNormalVector(), -getDrone().getTranslateY()+INITIAL_Y_POSITION);
     }
 
+    public void down(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getDownwardsNormalVector(), x);
+    }
+
+    public void up(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getUpwardsNormalVector(), x);
+    }
+
+    public void left(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getLeftNormalVector(), x);
+    }
+
+    public void right(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        move(getRightNormalVector(), x);
+    }
+
     public void forward(CommandPackage commandPackage, int x) {
         this.commandPackage = commandPackage;
         move(getCurrentOrientation(), x);
@@ -400,8 +465,39 @@ public class Drone3d {
         move(getCurrentOrientation().multiply(-1), x);
     }
 
+    public void cw(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        rotate(x, Rotation.YAW);
+    }
+
+    public void ccw(CommandPackage commandPackage, int x) {
+        this.commandPackage = commandPackage;
+        rotate(-x, Rotation.YAW);
+    }
+
+    public void flip(CommandPackage commandPackage, String x) {
+        this.commandPackage = commandPackage;
+        switch(x) {
+            case "r":
+                rotate(360, Rotation.ROLL);
+                break;
+
+            case "l":
+                rotate(-360, Rotation.ROLL);
+                break;
+
+            case "f":
+                rotate(360, Rotation.PITCH);
+                break;
+
+            case "b":
+                rotate(-360, Rotation.PITCH);
+                break;
+        }
+    }
+
     private void returnResponseStringToCommandHandler() throws IOException {
-        commandHandler.returnResponseStringtoUDPConncection(commandPackage);
+        commandHandler.returnResponseStringToUDPConncection(commandPackage);
     }
 
     public String getDroneState() {
