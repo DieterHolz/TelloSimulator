@@ -36,61 +36,10 @@ public class Drone3d {
     private Timeline timeline = new Timeline();
     private RotateTransition rotateTransition = new RotateTransition();
 
-    private boolean animationRunning;
+    private boolean animationRunning = false;
     private CommandHandler commandHandler;
     private CommandPackage commandPackage;
     boolean emergency = false;
-
-    public void go(CommandPackage commandPackage, int xGo, int yGo, int zGo, int speedGo, String midGo) {
-        //TODO: Fly to "x" "y" "z" at "speed" (cm/s).
-    }
-
-    public void stop(CommandPackage commandPackage) {
-        //TODO: Hovers in the air
-    }
-
-    public void curve(CommandPackage commandPackage, int x1Curve, int x2Curve, int y1Curve, int y2Curve, int z1Curve, int z2Curve, int speedCurve, String midCurve) {
-        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
-    }
-
-    public void jump(CommandPackage commandPackage, int xJump, int yJump, int zJump, int speedJump, int yawJump, String mid1Jump, String mid2Jump) {
-        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
-    }
-
-    public void speed(CommandPackage commandPackage) {
-        //TODO: Set speed to "x" cm/s
-    }
-
-    public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
-        //TODO: Set remot controller control via four channels
-    }
-
-    public void wifi(CommandPackage commandPackage, String ssidWifi, String passWifi) {
-        //TODO: Set Wi-Fi password
-    }
-
-    public void mon(CommandPackage commandPackage) {
-        //TODO: Enable mission pad detection (both forward and downward detection).
-    }
-
-    public void moff(CommandPackage commandPackage) {
-        //TODO: Disable mission pad detection.
-    }
-
-    public void mdirection(CommandPackage commandPackage, int xMdirection) {
-        if (xMdirection == 0) {
-            //TODO: Enable downward detection only
-        } else if (xMdirection == 1) {
-            //TODO: Enable forward detection only
-        } else if (xMdirection == 2) {
-            //TODO: Enable both forward and downward detection
-        }
-    }
-
-    public void ap(CommandPackage commandPackage, String ssidAp, String passAp) {
-        //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
-    }
-
 
     enum Rotation {
         YAW,
@@ -112,13 +61,9 @@ public class Drone3d {
     public Drone3d() {
         buildDrone();
         setInititalValues();
-
-        animationRunning = false;
-
         setupEventHandlers();
         setupValueChangedListeners();
         setupBindings();
-
         createAnimationLoop();
     }
 
@@ -136,12 +81,11 @@ public class Drone3d {
     }
 
     private void setInititalValues() {
-        // move 3d Drone to starting position
+
         drone.setTranslateX(INITIAL_X_POSITION);
         drone.setTranslateY(INITIAL_Y_POSITION);
         drone.setTranslateZ(INITIAL_Z_POSITION);
 
-        // set initial orientation to z-axis (into the screen)
         setxOrientation(0);
         setyOrientation(0);
         setzOrientation(1);
@@ -419,6 +363,56 @@ public class Drone3d {
                 rotate(-360, Rotation.PITCH);
                 break;
         }
+    }
+
+    public void go(CommandPackage commandPackage, int x, int y, int z, int speed, String mid) {
+        //TODO: Fly to "x" "y" "z" at "speed" (cm/s).
+    }
+
+    public void stop(CommandPackage commandPackage) {
+        //TODO: Hovers in the air
+    }
+
+    public void curve(CommandPackage commandPackage, int x1, int x2, int y1, int y2, int z1, int z2, int speed, String mid) {
+        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+    }
+
+    public void jump(CommandPackage commandPackage, int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
+        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+    }
+
+    public void speed(CommandPackage commandPackage) {
+        //TODO: Set speed to "x" cm/s
+    }
+
+    public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
+        //TODO: Set remot controller control via four channels
+    }
+
+    public void wifi(CommandPackage commandPackage, String ssidWifi, String passWifi) {
+        //TODO: Set Wi-Fi password
+    }
+
+    public void mon(CommandPackage commandPackage) {
+        //TODO: Enable mission pad detection (both forward and downward detection).
+    }
+
+    public void moff(CommandPackage commandPackage) {
+        //TODO: Disable mission pad detection.
+    }
+
+    public void mdirection(CommandPackage commandPackage, int x) {
+        if (x == 0) {
+            //TODO: Enable downward detection only
+        } else if (x == 1) {
+            //TODO: Enable forward detection only
+        } else if (x == 2) {
+            //TODO: Enable both forward and downward detection
+        }
+    }
+
+    public void ap(CommandPackage commandPackage, String ssid, String pass) {
+        //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
     }
 
     private void returnResponseStringToCommandHandler() throws IOException {
