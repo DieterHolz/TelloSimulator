@@ -1,4 +1,4 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
@@ -8,8 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Translate;
-
-import java.awt.*;
 
 public class Room3d {
 

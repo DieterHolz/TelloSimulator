@@ -1,11 +1,7 @@
-package tellosimulator.commands;
+package tellosimulator.command;
 
-public class TelloControlCommands {
+public class TelloControlCommand {
 
-	public static final String OK = "ok";
-	public static final String ERROR = "error";
-
-	//Control Commands
 	public static final String COMMAND = "command";
 	public static final String TAKEOFF = "takeoff";
 	public static final String LAND = "land";

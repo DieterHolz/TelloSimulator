@@ -1,13 +1,12 @@
-package tellosimulator.commands;
+package tellosimulator.command;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
-import tellosimulator.network.CommandPackage;
 import tellosimulator.network.TelloSDKValues;
-import tellosimulator.network.UDPCommandConnection;
-import tellosimulator.views.Drone3d;
+import tellosimulator.network.CommandConnection;
+import tellosimulator.view.Drone;
 
 
 import java.io.IOException;
@@ -21,20 +20,22 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @ExtendWith(ApplicationExtension.class)
 class CommandHandlerTest {
 
-    Drone3d drone;
+    Drone drone;
     CommandHandler commandHandler;
-    UDPCommandConnection commandConnection;
+    CommandConnection commandConnection;
     String command;
     CommandPackage commandPackage;
 
     @BeforeEach
     void setUp() throws SocketException, UnknownHostException {
-        drone = new Drone3d();
-        commandConnection = new UDPCommandConnection(drone);
+        drone = new Drone();
+        commandConnection = new CommandConnection(drone);
         commandHandler = new CommandHandler(drone, commandConnection);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
+
     }
 
+    //TODO: is this in the corret class? Maybe move to DroneTest
     @Test
     void testRcHandling() throws IOException {
         assertEquals(0, drone.getForwardBackwardDiff());
@@ -53,9 +54,11 @@ class CommandHandlerTest {
     /**
      * Command validation
      */
+    //TODO: update tests to new refactoring
+
     @Test
     void takeoffValid() throws IOException {
-        String validCommand = TelloControlCommands.TAKEOFF;
+        String validCommand = TelloControlCommand.TAKEOFF;
         computeResponse(validCommand);
         assertNotEquals("error", commandPackage.getResponse());
     }

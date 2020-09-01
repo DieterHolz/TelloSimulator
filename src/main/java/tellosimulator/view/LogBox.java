@@ -1,4 +1,4 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -14,10 +14,10 @@ import tellosimulator.log.Level;
 import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
 
-public class LogViewer extends VBox {
+public class LogBox extends VBox {
     Log log;
     Logger logger;
-    LogView logView;
+    LogListView logListView;
 
     ChoiceBox<Level> filterLevel;
     ToggleButton showTimestamp;
@@ -28,7 +28,7 @@ public class LogViewer extends VBox {
     HBox controls;
     VBox layout;
 
-    public LogViewer(Log log) {
+    public LogBox(Log log) {
         this.log = log;
         initializeParts();
         layoutParts();
@@ -39,7 +39,7 @@ public class LogViewer extends VBox {
 
     private void initializeParts() {
         logger = new Logger(log, "main");
-        logView = new LogView(logger);
+        logListView = new LogListView(logger);
 
         filterLevel = new ChoiceBox<>(
                 FXCollections.observableArrayList(
@@ -69,19 +69,19 @@ public class LogViewer extends VBox {
         layout = new VBox(
                 10,
                 controls,
-                logView
+                logListView
         );
     }
 
     private void layoutParts() {
-        logView.setPrefWidth(400);
-        logView.setPrefHeight(200);
+        logListView.setPrefWidth(400);
+        logListView.setPrefHeight(200);
 
         rateLayout.setAlignment(Pos.CENTER);
 
         controls.setMinHeight(HBox.USE_PREF_SIZE);
 
-        VBox.setVgrow(logView, Priority.ALWAYS);
+        VBox.setVgrow(logListView, Priority.ALWAYS);
 
         getChildren().addAll(layout);
     }
@@ -95,15 +95,15 @@ public class LogViewer extends VBox {
     }
 
     private void setupBindings() {
-        logView.filterLevelProperty().bind(
+        logListView.filterLevelProperty().bind(
                 filterLevel.getSelectionModel().selectedItemProperty()
         );
 
-        logView.showTimeStampProperty().bind(showTimestamp.selectedProperty());
+        logListView.showTimeStampProperty().bind(showTimestamp.selectedProperty());
 
-        logView.tailProperty().bind(tail.selectedProperty());
+        logListView.tailProperty().bind(tail.selectedProperty());
 
-        logView.refreshRateProperty().bind(rate.valueProperty());
+        logListView.refreshRateProperty().bind(rate.valueProperty());
 
         rateLabel.textProperty().bind(Bindings.format("Update: %.2f fps", rate.valueProperty()));
 

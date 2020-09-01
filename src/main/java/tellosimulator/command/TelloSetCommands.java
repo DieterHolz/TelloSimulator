@@ -1,4 +1,4 @@
-package tellosimulator.commands;
+package tellosimulator.command;
 
 public class TelloSetCommands {
 

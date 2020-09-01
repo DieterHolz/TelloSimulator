@@ -1,14 +1,14 @@
 package tellosimulator.network;
 
-import tellosimulator.views.Drone3d;
+import tellosimulator.view.Drone;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.concurrent.TimeUnit;
 
-public class UDPStateConnection extends Thread {
+public class StateConnection extends Thread {
     DatagramSocket stateSocket;
-    Drone3d telloDrone;
+    Drone telloDrone;
 
     private boolean running;
     private byte[] buffer = new byte[512];
@@ -20,7 +20,7 @@ public class UDPStateConnection extends Thread {
         this.running = running;
     }
 
-    public UDPStateConnection(Drone3d telloDrone) throws SocketException {
+    public StateConnection(Drone telloDrone) throws SocketException {
 
         this.telloDrone = telloDrone;
 

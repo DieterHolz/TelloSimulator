@@ -1,35 +1,27 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import tellosimulator.log.Level;
 import tellosimulator.log.Log;
-import tellosimulator.log.Logger;
-import tellosimulator.network.TelloSDKValues;
-import tellosimulator.network.UDPCommandConnection;
-import tellosimulator.network.UDPStateConnection;
 
 import java.io.IOException;
 
 public class SimulatorPane extends BorderPane {
     private final Stage stage;
-    private final Drone3d drone;
-
+    private final Drone drone;
 
     private Simulator3DScene simulator3DScene;
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
 
     private Log log;
-    private LogViewer logViewer;
+    private LogBox logBox;
 
 
-    public SimulatorPane(Stage stage, Drone3d drone, Log log) throws IOException {
+    public SimulatorPane(Stage stage, Drone drone, Log log) throws IOException {
         this.stage = stage;
         this.drone = drone;
         this.log = log;
@@ -45,7 +37,7 @@ public class SimulatorPane extends BorderPane {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
         simulatorControls = new SimulatorControls(drone);
         networkControls = new NetworkControls(drone);
-        logViewer = new LogViewer(log);
+        logBox = new LogBox(log);
     }
 
     private void layoutParts() {
@@ -53,7 +45,7 @@ public class SimulatorPane extends BorderPane {
         setCenter(simulator3DScene);
         setLeft(simulatorControls);
         setRight(networkControls);
-        setBottom(logViewer);
+        setBottom(logBox);
     }
 
 

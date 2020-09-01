@@ -8,7 +8,7 @@ import java.net.*;
 
 import javax.imageio.ImageIO;
 
-public class UDPVideoConnection extends Thread {
+public class VideoConnection extends Thread {
 	DatagramSocket videoSocket;
 
 	private boolean running = false;
@@ -24,7 +24,7 @@ public class UDPVideoConnection extends Thread {
 		this.running = running;
 	}
 
-	public UDPVideoConnection() throws SocketException {
+	public VideoConnection() throws SocketException {
 
 		try {
 			videoSocket = new DatagramSocket();

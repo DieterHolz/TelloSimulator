@@ -1,4 +1,4 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -17,7 +17,7 @@ import tellosimulator.log.Logger;
 
 import java.text.SimpleDateFormat;
 
-public class LogView extends ListView<LogRecord> {
+public class LogListView extends ListView<LogRecord> {
 
     private static final int MAX_ENTRIES = 10_000;
 
@@ -56,7 +56,7 @@ public class LogView extends ListView<LogRecord> {
         return refreshRate;
     }
 
-    public LogView(Logger logger){
+    public LogListView(Logger logger){
         getStyleClass().add("log-view");
         Timeline logTransfer = new Timeline(
                 new KeyFrame(

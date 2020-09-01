@@ -1,8 +1,7 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.scene.*;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 

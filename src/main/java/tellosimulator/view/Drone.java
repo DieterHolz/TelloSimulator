@@ -1,4 +1,4 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
@@ -9,13 +9,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.util.Duration;
-import tellosimulator.commands.CommandHandler;
-import tellosimulator.commands.TelloDefaultValues;
-import tellosimulator.network.CommandPackage;
+import tellosimulator.command.CommandHandler;
+import tellosimulator.command.TelloDefaultValues;
+import tellosimulator.command.CommandPackage;
+import tellosimulator.network.ResponseSender;
 
 import java.io.IOException;
 
-public class Drone3d {
+public class Drone {
     private final int FRAMES_PER_SECOND = 60;
 
     static final int DRONE_WIDTH = 18;
@@ -58,7 +59,7 @@ public class Drone3d {
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
 
 
-    public Drone3d() {
+    public Drone() {
         buildDrone();
         setInititalValues();
         animationRunning = false;
@@ -130,9 +131,8 @@ public class Drone3d {
 
         rotateTransition.setOnFinished(event -> {
             animationRunning = false;
-            commandPackage.setResponse("ok");
             try {
-                returnResponseStringToCommandHandler();
+                ResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -161,12 +161,12 @@ public class Drone3d {
         timeline.setOnFinished(event -> {
             animationRunning = false;
             drone.setRotationAxis(getUpwardsNormalVector());
-            commandPackage.setResponse("ok");
             try {
-                returnResponseStringToCommandHandler();
+                ResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         });
         if(!emergency) {
             animationRunning = true;
@@ -419,10 +419,6 @@ public class Drone3d {
 
     public void ap(CommandPackage commandPackage, String ssid, String pass) {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
-    }
-
-    public void returnResponseStringToCommandHandler() throws IOException {
-        commandHandler.returnResponseStringToUDPConncection(commandPackage);
     }
 
     public String getDroneState() {

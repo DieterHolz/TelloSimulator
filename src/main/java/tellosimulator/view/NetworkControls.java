@@ -1,4 +1,4 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -6,18 +6,18 @@ import javafx.scene.layout.VBox;
 import tellosimulator.TelloSimulator;
 import tellosimulator.log.Logger;
 import tellosimulator.network.TelloSDKValues;
-import tellosimulator.network.UDPCommandConnection;
-import tellosimulator.network.UDPStateConnection;
+import tellosimulator.network.CommandConnection;
+import tellosimulator.network.StateConnection;
 
 import java.io.IOException;
 import java.net.*;
 
 public class NetworkControls extends VBox {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "NetworkControls");
-    private final Drone3d drone;
+    private final Drone drone;
 
-    private UDPCommandConnection commandConnection;
-    private UDPStateConnection stateConnection;
+    private CommandConnection commandConnection;
+    private StateConnection stateConnection;
     private String myIp;
 
     private ToggleButton startButton;
@@ -33,7 +33,7 @@ public class NetworkControls extends VBox {
     private Label videoPortLabel;
     private TextField videoPortField;
 
-    public NetworkControls(Drone3d drone) throws IOException {
+    public NetworkControls(Drone drone) throws IOException {
         this.drone = drone;
 
         getExternalIPAddress();
@@ -98,8 +98,8 @@ public class NetworkControls extends VBox {
             if (startButton.isSelected()){
                 try {
                     if (commandConnection == null || !commandConnection.isAlive()){
-                        commandConnection = new UDPCommandConnection(drone);
-                        stateConnection = new UDPStateConnection(drone);
+                        commandConnection = new CommandConnection(drone);
+                        stateConnection = new StateConnection(drone);
                         commandConnection.start();
                         stateConnection.start();
                     }

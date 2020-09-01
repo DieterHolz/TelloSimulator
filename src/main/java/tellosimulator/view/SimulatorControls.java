@@ -1,18 +1,16 @@
-package tellosimulator.views;
+package tellosimulator.view;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import tellosimulator.commands.TelloDefaultValues;
+import tellosimulator.command.TelloDefaultValues;
 
 import java.util.Locale;
 
 public class SimulatorControls extends GridPane {
-    private final Drone3d drone;
+    private final Drone drone;
 
     private static final String NUMBER_FORMAT = "%.1f";
     private static final Locale LOCALE_CH = new Locale("de", "CH");
@@ -29,7 +27,7 @@ public class SimulatorControls extends GridPane {
     private Text yawAngleText;
     //TODO: add all other values
 
-    public SimulatorControls(Drone3d drone){
+    public SimulatorControls(Drone drone){
         this.drone = drone;
         initializeSelf();
         initializeParts();
@@ -82,9 +80,9 @@ public class SimulatorControls extends GridPane {
 
     private void setupEventHandlers() {
         resetButton.setOnAction(event -> {
-            drone.getDrone().setTranslateX(Drone3d.INITIAL_X_POSITION);
-            drone.getDrone().setTranslateY(Drone3d.INITIAL_Y_POSITION);
-            drone.getDrone().setTranslateZ(Drone3d.INITIAL_Z_POSITION);
+            drone.getDrone().setTranslateX(Drone.INITIAL_X_POSITION);
+            drone.getDrone().setTranslateY(Drone.INITIAL_Y_POSITION);
+            drone.getDrone().setTranslateZ(Drone.INITIAL_Z_POSITION);
             drone.getDrone().setRotate(0);
             drone.setxOrientation(0);
             drone.setyOrientation(0);
@@ -101,7 +99,7 @@ public class SimulatorControls extends GridPane {
 
     private void setupBindings() {
         xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().add(Drone3d.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().add(Drone.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
         zPositionText.textProperty().bind(drone.getDrone().translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         //TODO: bind other values

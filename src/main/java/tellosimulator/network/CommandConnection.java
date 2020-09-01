@@ -1,33 +1,35 @@
 package tellosimulator.network;
 
 import tellosimulator.TelloSimulator;
-import tellosimulator.commands.CommandHandler;
-import tellosimulator.commands.TelloControlCommands;
+import tellosimulator.command.CommandHandler;
+import tellosimulator.command.CommandPackage;
+import tellosimulator.command.TelloControlCommand;
 import tellosimulator.log.Logger;
-import tellosimulator.views.Drone3d;
+import tellosimulator.view.Drone;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
 
-public class UDPCommandConnection extends Thread {
+public class CommandConnection extends Thread {
 	// private static final Logger LOGGER = LogManager.getLogger(UDPCommandConnection.class);
 
 	Logger logger = new Logger(TelloSimulator.MAIN_LOG, "UDPCommandConnection");
 
 	DatagramSocket commandSocket;
-	Drone3d telloDrone;
+	Drone telloDrone;
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512];
 
-	public UDPCommandConnection(Drone3d telloDrone) throws SocketException {
+	public CommandConnection(Drone telloDrone) throws SocketException {
 
 		this.telloDrone = telloDrone;
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
+			ResponseSender.setSocket(commandSocket);
 			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 			//TODO: uncomment to set timeout in final version
 			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
@@ -55,19 +57,15 @@ public class UDPCommandConnection extends Thread {
 					int port = receivedPacket.getPort();
 					logger.info("Received command: '" + received + "' from " + address.getCanonicalHostName() + ":" + port);
 
-
-					if (!sdkModeInitiated && received.equals(TelloControlCommands.COMMAND)) {
+					CommandPackage commandPackage = new CommandPackage(received, address, port);
+					if (!sdkModeInitiated && received.equals(TelloControlCommand.COMMAND)) {
 						initiateStateConnection(address);
 						sdkModeInitiated = true;
-						String ok = TelloControlCommands.OK;
-						DatagramPacket responsePacket = new DatagramPacket(ok.getBytes(), ok.getBytes().length, address, port);
-						commandSocket.send(responsePacket);
-						logger.debug("Sent response: '" + ok + "' to " + address.getCanonicalHostName() + ":" + port);
+						ResponseSender.sendOk(commandPackage);
 						continue;
 					}
 
 					if (sdkModeInitiated) {
-						CommandPackage commandPackage = new CommandPackage(received, address, port);
 						commandHandler.handle(commandPackage);
 						continue;
 					}
@@ -87,15 +85,8 @@ public class UDPCommandConnection extends Thread {
 		commandSocket.close(); //todo: should maybe in a "finally" section
 	}
 
-	public void returnResponseStringToOperator(CommandPackage commandPackage) throws IOException {
-		DatagramPacket responsePacket = new DatagramPacket(commandPackage.getResponse().getBytes(), commandPackage.getResponse().getBytes().length,	commandPackage.getAddress(), commandPackage.getPort());
-		commandSocket.send(responsePacket);
-		logger.debug("Sent response: '" + commandPackage.getResponse() + "' to " + commandPackage.getAddress().getCanonicalHostName() + ":" + commandPackage.getPort());
-	}
-
 	private void initiateStateConnection(InetAddress address) {
 	}
-
 
 	private byte[] readBytes() throws IOException {
 		byte[] data = new byte[256];
