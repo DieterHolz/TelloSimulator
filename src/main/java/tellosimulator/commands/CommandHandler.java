@@ -228,9 +228,9 @@ public class CommandHandler {
 
 				case TelloSetCommands.RC:
 					int a = Integer.parseInt(params.get(0));
-					int b = Integer.parseInt(params.get(0));
-					int c = Integer.parseInt(params.get(0));
-					int d = Integer.parseInt(params.get(0));
+					int b = Integer.parseInt(params.get(1));
+					int c = Integer.parseInt(params.get(2));
+					int d = Integer.parseInt(params.get(3));
 
 					if(validateRc(a, b, c, d)) {
 						drone3d.rc(commandPackage, a, b, c, d);
@@ -307,8 +307,9 @@ public class CommandHandler {
 					break;
 
 				default:
+					commandPackage.setResponse(errorString);
+					returnResponseStringToUDPConncection(commandPackage);
 					logger.error("Invalid command:" + command + ". Command unknown - please check for typos.");  //TODO: we could check for similar commands with levenstein?
-					throw new IllegalArgumentException("invalid command");
 			}
 
         } else {

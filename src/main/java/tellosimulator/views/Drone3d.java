@@ -389,7 +389,10 @@ public class Drone3d {
     }
 
     public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
-        //TODO: Set remot controller control via four channels
+        setForwardBackwardDiff(a);
+        setLeftRightDiff(b);
+        setUpDownDiff(c);
+        setYawDiff(d);
     }
 
     public void wifi(CommandPackage commandPackage, String ssidWifi, String passWifi) {
@@ -418,7 +421,7 @@ public class Drone3d {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
     }
 
-    private void returnResponseStringToCommandHandler() throws IOException {
+    public void returnResponseStringToCommandHandler() throws IOException {
         commandHandler.returnResponseStringToUDPConncection(commandPackage);
     }
 
