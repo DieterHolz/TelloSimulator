@@ -12,7 +12,7 @@ import javafx.util.Duration;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.TelloDefaultValues;
 import tellosimulator.command.CommandPackage;
-import tellosimulator.network.ResponseSender;
+import tellosimulator.network.CommandResponseSender;
 
 import java.io.IOException;
 
@@ -132,7 +132,7 @@ public class Drone {
         rotateTransition.setOnFinished(event -> {
             animationRunning = false;
             try {
-                ResponseSender.sendOk(commandPackage);
+                CommandResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -162,7 +162,7 @@ public class Drone {
             animationRunning = false;
             drone.setRotationAxis(getUpwardsNormalVector());
             try {
-                ResponseSender.sendOk(commandPackage);
+                CommandResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

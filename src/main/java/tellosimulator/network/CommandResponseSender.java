@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public final class ResponseSender {
+public final class CommandResponseSender {
     static Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandResponseSender");
 
     private static DatagramSocket socket;
@@ -37,6 +37,6 @@ public final class ResponseSender {
     }
 
     public static void setSocket(DatagramSocket socket) {
-        ResponseSender.socket = socket;
+        CommandResponseSender.socket = socket;
     }
 }

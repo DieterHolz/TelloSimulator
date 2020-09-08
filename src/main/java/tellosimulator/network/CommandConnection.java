@@ -29,7 +29,7 @@ public class CommandConnection extends Thread {
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
-			ResponseSender.setSocket(commandSocket);
+			CommandResponseSender.setSocket(commandSocket);
 			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 			//TODO: uncomment to set timeout in final version
 			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
@@ -61,7 +61,7 @@ public class CommandConnection extends Thread {
 					if (!sdkModeInitiated && received.equals(TelloControlCommand.COMMAND)) {
 						initiateStateConnection(address);
 						sdkModeInitiated = true;
-						ResponseSender.sendOk(commandPackage);
+						CommandResponseSender.sendOk(commandPackage);
 						continue;
 					}
 

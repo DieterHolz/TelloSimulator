@@ -3,7 +3,7 @@ package tellosimulator.command;
 import tellosimulator.TelloSimulator;
 import tellosimulator.exception.TelloIllegalArgumentException;
 import tellosimulator.log.Logger;
-import tellosimulator.network.ResponseSender;
+import tellosimulator.network.CommandResponseSender;
 import tellosimulator.network.CommandConnection;
 import tellosimulator.network.VideoConnection;
 import tellosimulator.video.VideoPublisher;
@@ -76,7 +76,7 @@ public class CommandHandler {
 					if(validateUp(xUp)) {
 						drone.up(commandPackage, xUp);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -86,7 +86,7 @@ public class CommandHandler {
 					if(validateDown(xDown)) {
 						drone.down(commandPackage, xDown);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -96,7 +96,7 @@ public class CommandHandler {
 					if(validateLeft(xLeft)) {
 						drone.left(commandPackage, xLeft);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -105,7 +105,7 @@ public class CommandHandler {
 					if(validateRight(xRight)) {
 						drone.right(commandPackage, xRight);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -115,7 +115,7 @@ public class CommandHandler {
 					if(validateForward(xForward)) {
 						drone.forward(commandPackage, xForward);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -125,7 +125,7 @@ public class CommandHandler {
 					if(validateBack(xBack)) {
 						drone.back(commandPackage, xBack);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -135,7 +135,7 @@ public class CommandHandler {
 					if(validateCw(xCw)) {
 						drone.cw(commandPackage, xCw);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -145,7 +145,7 @@ public class CommandHandler {
 					if(validateCcw(xCcw)) {
 						drone.ccw(commandPackage, xCcw);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -155,7 +155,7 @@ public class CommandHandler {
 					if(validateFlip(xFlip)) {
 						drone.flip(commandPackage, xFlip);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -169,7 +169,7 @@ public class CommandHandler {
 					if(validateGo(xGo, yGo, zGo, speedGo)) {
 						drone.go(commandPackage, xGo, yGo, zGo, speedGo);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -190,7 +190,7 @@ public class CommandHandler {
 					if(validateCurve(x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve)) {
 						drone.curve(commandPackage, x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -206,7 +206,7 @@ public class CommandHandler {
 					if(validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump)) {
 						drone.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -223,7 +223,7 @@ public class CommandHandler {
 					if(validateRc(a, b, c, d)) {
 						drone.rc(commandPackage, a, b, c, d);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -234,7 +234,7 @@ public class CommandHandler {
 					if(validateWifi(ssidWifi, passWifi)) {
 						drone.wifi(commandPackage, ssidWifi, passWifi);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -252,7 +252,7 @@ public class CommandHandler {
 					if(validateMdirection(xMdirection)) {
 						drone.mdirection(commandPackage, xMdirection);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -262,7 +262,7 @@ public class CommandHandler {
 					if(validateAp(ssidAp, passAp)) {
 						drone.ap(commandPackage, ssidAp, passAp);
 					} else {
-						ResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -291,12 +291,12 @@ public class CommandHandler {
 					break;
 
 				default:
-					ResponseSender.sendError(commandPackage);
+					CommandResponseSender.sendError(commandPackage);
 					logger.error("Invalid command:" + command + ". Command unknown - please check for typos.");  //TODO: we could check for similar commands with levenstein?
 			}
 
         } else {
-			ResponseSender.sendErrorNotJoyStick(commandPackage);
+			CommandResponseSender.sendErrorNotJoyStick(commandPackage);
         }
 	}
 
