@@ -145,14 +145,13 @@ public class Drone {
      * Moves the drone to the given target coordinates.
      * @param target the position vector/coordinates of the target
      */
-    private void move (Point3D target){
+    private void moveToPoint(Point3D target, int speed){
         double xPos = drone.getTranslateX();
         double yPos = drone.getTranslateY();
         double zPos = drone.getTranslateZ();
         Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
         Point3D to = target;
-        //TODO: generate correct duration with speed (cm/s)
-        Duration duration = Duration.seconds(calculateDistance(from, to) / getSpeed());
+        Duration duration = Duration.seconds(calculateDistance(from, to) / speed);
         animate(createMoveAnimation(to, duration));
 
     }
@@ -368,7 +367,7 @@ public class Drone {
 
     public void go(CommandPackage commandPackage, int x, int y, int z, int speed) {
         this.commandPackage = commandPackage;
-        move(new Point3D(x,y,z)); //TODO: implement speed
+        moveToPoint(new Point3D(x,y,z), speed);
         //TODO: Fly to missionpad
     }
 
