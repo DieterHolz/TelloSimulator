@@ -304,7 +304,7 @@ public class CommandHandler {
 	// TODO: return String instead of throwing exceptions and log
 	private boolean validateUp(int x) {
 		if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.UP+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.UP+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
 			return true;
@@ -313,7 +313,7 @@ public class CommandHandler {
 
 	private boolean validateDown(int x) {
         if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.DOWN+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.DOWN+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
 			return true;
@@ -322,7 +322,7 @@ public class CommandHandler {
 
 	private boolean validateLeft(int x) {
         if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.LEFT+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.LEFT+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
 			return true;
@@ -331,7 +331,7 @@ public class CommandHandler {
 
 	private boolean validateRight(int x) {
         if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.RIGHT+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.RIGHT+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
 			return true;
@@ -340,7 +340,7 @@ public class CommandHandler {
 
 	private boolean validateForward(int x) {
         if(x<20 || x>500) {
-        	logger.error("Illegal Argument. Command: "+ TelloControlCommand.FORWARD+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+        	logger.error("Illegal Argument. Command: "+TelloControlCommand.FORWARD+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
         	return true;
@@ -349,7 +349,7 @@ public class CommandHandler {
 
 	private boolean validateBack(int x) {
         if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.BACK+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.BACK+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
 		} else {
 			return true;
@@ -358,7 +358,7 @@ public class CommandHandler {
 
 	private boolean validateCw(int x) {
         if(x<1 || x>360) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.CW+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"1 - 360");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CW+", param name: x, input value: "+String.valueOf(x)+", valid value: 1 - 360");
 			return false;
 		} else {
 			return true;
@@ -367,7 +367,7 @@ public class CommandHandler {
 
 	private boolean validateCcw(int x) {
         if(x<1 || x>360) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.CCW+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"1 - 360");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CCW+", param name: x, input value: "+String.valueOf(x)+", valid value: 1 - 360");
 			return false;
 		} else {
 			return true;
@@ -376,7 +376,7 @@ public class CommandHandler {
 
 	private boolean validateFlip(String x) {
 		if(!(x.equals("l") || x.equals("r") || x.equals("f") || x.equals("b"))) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.FLIP+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid values: "+"l, r, f or b");
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.FLIP+", param name: x, input value: "+String.valueOf(x)+", valid values: l, r, f or b");
 			return false;
 		} else {
 			return true;
@@ -385,62 +385,63 @@ public class CommandHandler {
 
 	private boolean validateGo(int x, int y, int z, int speed) {
         if(x<-500 || x>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.GO, "x", String.valueOf(x), "-500-500");
-		}
-        if(y<-500 || y>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.GO, "y", String.valueOf(y), "-500-500");
-		}
-        if(z<-500 || z>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.GO, "z", String.valueOf(z), "-500-500");
-		}
-		if(speed<10 || speed>100) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.GO, "speed", String.valueOf(speed), "-500-500");
-		}
-		if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
-            throw new TelloIllegalArgumentException(TelloControlCommand.GO, "x, y and z", "x: "+String.valueOf(x)+", y: "+String.valueOf(y)+", z: "+String.valueOf(z), "x, y and z values can't be set between -20-20 simultaneously");
-		}
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			return false;
+		} else if(y<-500 || y>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: y, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			return false;
+		} else if(z<-500 || z>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: z, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			return false;
+		} else if(speed<10 || speed>100) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: speed, input value: "+String.valueOf(x)+", valid value: 10 - 100");
+			return false;
+		} else if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, y and z, input value: x: "+String.valueOf(x)+", y: "+String.valueOf(y)+", z: "+String.valueOf(z)+"x, y and z values can't be set between -20 - 20 simultaneously");
+			return false;
+//		}
 //	    TODO: implement mission pad id in validate method
 //		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
 //			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "mid", mid, "m1-m8 or empty");
-//		}
-		//TODO: implement correct validateMethod
-		return true;
+		} else {
+			return true;
+		}
 	}
 
 	private boolean validateCurve(int x1, int x2, int y1, int y2, int z1, int z2, int speed, String mid) {
         if(x1<-500 || x1>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "x1", String.valueOf(x1), "-500-500");
-		}
-        if(x2<-500 || x2>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "x2", String.valueOf(x2), "-500-500");
-		}
-        if(y1<-500 || y1>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "y1", String.valueOf(y1), "-500-500");
-		}
-        if(y2<-500 || y2>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "y2", String.valueOf(y2), "-500-500");
-		}
-        if(z1<-500 || z1>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "z1", String.valueOf(z1), "-500-500");
-		}
-        if(z2<-500 || z2>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "z2", String.valueOf(z2), "-500-500");
-		}
-		if(speed<10 || speed>100) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "speed", String.valueOf(speed), "-500-500");
-		}
-		if(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20) {
-            throw new TelloIllegalArgumentException(TelloControlCommand.GO, "x1, y1 and z1", "x1: "+String.valueOf(x1)+", y1: "+String.valueOf(y1)+", z1: "+String.valueOf(z1), "x1, y1 and z1 values can't be set between -20-20 simultaneously");
-		}
-		if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
-            throw new TelloIllegalArgumentException(TelloControlCommand.GO, "x2, y2 and z2", "x2: "+String.valueOf(x2)+", y2: "+String.valueOf(y2)+", z2: "+String.valueOf(z2), "x2, y2 and z2 values can't be set between -20-20 simultaneously");
-		}
-		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: x1, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(x2<-500 || x2>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: x2, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(y1<-500 || y1>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: y1, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(y2<-500 || y2>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: y2, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(z1<-500 || z1>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: z1, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(z2<-500 || z2>500) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: z2, input value: "+String.valueOf(x1)+", valid value: -500 - 500");
+			return false;
+		} else if(speed<10 || speed>60) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE+", param name: speed, input value: "+String.valueOf(speed)+", valid value: 10 - 60");
+			return false;
+		} else if(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, y and z, input value: x: "+String.valueOf(x1)+", y: "+String.valueOf(y1)+", z: "+String.valueOf(z1)+"x, y and z values can't be set between -20 - 20 simultaneously");
+			return false;
+		} else if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, y and z, input value: x: "+String.valueOf(x2)+", y: "+String.valueOf(y2)+", z: "+String.valueOf(z2)+"x, y and z values can't be set between -20 - 20 simultaneously");
+			return false;
+		} else if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
 			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "mid", mid, "m1-m8");
+		} else {
+			return  true;
 		}
-		//todo: test that the arc radius is not within a range of 0.5-10 meters
-		//TODO: implement correct validateMethod
-		return true;
+		//todo: test that the arc radius is within a range of 0.5-10 meters
 	}
 
 	private boolean validateJump(int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
