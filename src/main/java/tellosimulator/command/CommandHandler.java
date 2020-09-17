@@ -15,26 +15,27 @@ import java.util.List;
 
 public class CommandHandler {
 	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
-	private String errorString = "error";
-	private CommandConnection commandConnection;
 
 	Drone drone;
 	VideoPublisher publisher;
+	List<String> commandParams;
+
+	public List<String> getCommandParams() {
+		return commandParams;
+	}
 
     public CommandHandler(Drone drone, CommandConnection commandConnection) {
         this.drone = drone;
-        this.commandConnection = commandConnection;
     }
 
     public void handle(CommandPackage commandPackage) throws IOException {
         String received = commandPackage.getCommand();
 		List<String> data = Arrays.asList(received.split(" "));
 		String command = data.get(0);
-		List<String> params = null;
 		VideoConnection videoConnection = new VideoConnection();
 
 		if (data.size() > 1) {
-			params = data.subList(1, data.size());
+			commandParams = data.subList(1, data.size());
 		}
 
 		logger.info("handling command: " + command);
@@ -45,11 +46,19 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.TAKEOFF:
-					drone.takeoff(commandPackage);
+					if (commandParams == null){
+						drone.takeoff(commandPackage);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloControlCommand.LAND:
-					drone.land(commandPackage);
+					if (commandParams == null){
+						drone.land(commandPackage);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloControlCommand.STREAMON:
@@ -71,17 +80,29 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.UP:
-					int xUp = Integer.parseInt(params.get(0));
+					double xUp;
+					if (commandParams != null && commandParams.size() == 1) {
+						xUp = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateUp(xUp)) {
 						drone.up(commandPackage, xUp);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
 				case TelloControlCommand.DOWN:
-					int xDown = Integer.parseInt(params.get(0));
+					double xDown;
+					if (commandParams != null && commandParams.size() == 1) {
+						xDown = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateDown(xDown)) {
 						drone.down(commandPackage, xDown);
@@ -91,7 +112,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LEFT:
-					int xLeft = Integer.parseInt(params.get(0));
+					int xLeft = Integer.parseInt(commandParams.get(0));
 
 					if(validateLeft(xLeft)) {
 						drone.left(commandPackage, xLeft);
@@ -101,7 +122,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.RIGHT:
-					int xRight = Integer.parseInt(params.get(0));
+					int xRight = Integer.parseInt(commandParams.get(0));
 					if(validateRight(xRight)) {
 						drone.right(commandPackage, xRight);
 					} else {
@@ -110,7 +131,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FORWARD:
-					int xForward = Integer.parseInt(params.get(0));
+					int xForward = Integer.parseInt(commandParams.get(0));
 
 					if(validateForward(xForward)) {
 						drone.forward(commandPackage, xForward);
@@ -120,7 +141,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.BACK:
-					int xBack = Integer.parseInt(params.get(0));
+					int xBack = Integer.parseInt(commandParams.get(0));
 
 					if(validateBack(xBack)) {
 						drone.back(commandPackage, xBack);
@@ -130,7 +151,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CW:
-					int xCw = Integer.parseInt(params.get(0));
+					int xCw = Integer.parseInt(commandParams.get(0));
 
 					if(validateCw(xCw)) {
 						drone.cw(commandPackage, xCw);
@@ -140,7 +161,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CCW:
-					int xCcw = Integer.parseInt(params.get(0));
+					int xCcw = Integer.parseInt(commandParams.get(0));
 
 					if(validateCcw(xCcw)) {
 						drone.ccw(commandPackage, xCcw);
@@ -150,7 +171,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FLIP:
-					String xFlip = params.get(0);
+					String xFlip = commandParams.get(0);
 
 					if(validateFlip(xFlip)) {
 						drone.flip(commandPackage, xFlip);
@@ -160,10 +181,10 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.GO:
-					int xGo = Integer.parseInt(params.get(0));
-					int yGo = Integer.parseInt(params.get(1));
-					int zGo = Integer.parseInt(params.get(2));
-					int speedGo = Integer.parseInt(params.get(3));
+					int xGo = Integer.parseInt(commandParams.get(0));
+					int yGo = Integer.parseInt(commandParams.get(1));
+					int zGo = Integer.parseInt(commandParams.get(2));
+					int speedGo = Integer.parseInt(commandParams.get(3));
 					//TODO: String midGo = params.get(4);
 
 					if(validateGo(xGo, yGo, zGo, speedGo)) {
@@ -178,14 +199,14 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CURVE:
-					int x1Curve = Integer.parseInt(params.get(0));
-					int x2Curve = Integer.parseInt(params.get(1));
-					int y1Curve = Integer.parseInt(params.get(2));
-					int y2Curve = Integer.parseInt(params.get(3));
-					int z1Curve = Integer.parseInt(params.get(4));
-					int z2Curve = Integer.parseInt(params.get(5));
-					int speedCurve = Integer.parseInt(params.get(6));
-					String midCurve = params.get(7);
+					int x1Curve = Integer.parseInt(commandParams.get(0));
+					int x2Curve = Integer.parseInt(commandParams.get(1));
+					int y1Curve = Integer.parseInt(commandParams.get(2));
+					int y2Curve = Integer.parseInt(commandParams.get(3));
+					int z1Curve = Integer.parseInt(commandParams.get(4));
+					int z2Curve = Integer.parseInt(commandParams.get(5));
+					int speedCurve = Integer.parseInt(commandParams.get(6));
+					String midCurve = commandParams.get(7);
 
 					if(validateCurve(x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve)) {
 						drone.curve(commandPackage, x1Curve, x2Curve, y1Curve, y2Curve, z1Curve, z2Curve, speedCurve, midCurve);
@@ -195,13 +216,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.JUMP:
-					int xJump = Integer.parseInt(params.get(0));
-					int yJump = Integer.parseInt(params.get(1));
-					int zJump = Integer.parseInt(params.get(2));
-					int speedJump = Integer.parseInt(params.get(3));
-					int yawJump = Integer.parseInt(params.get(4));
-					String mid1Jump = params.get(5);
-					String mid2Jump = params.get(6);
+					int xJump = Integer.parseInt(commandParams.get(0));
+					int yJump = Integer.parseInt(commandParams.get(1));
+					int zJump = Integer.parseInt(commandParams.get(2));
+					int speedJump = Integer.parseInt(commandParams.get(3));
+					int yawJump = Integer.parseInt(commandParams.get(4));
+					String mid1Jump = commandParams.get(5);
+					String mid2Jump = commandParams.get(6);
 
 					if(validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump)) {
 						drone.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
@@ -215,10 +236,10 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommands.RC:
-					int a = Integer.parseInt(params.get(0));
-					int b = Integer.parseInt(params.get(1));
-					int c = Integer.parseInt(params.get(2));
-					int d = Integer.parseInt(params.get(3));
+					int a = Integer.parseInt(commandParams.get(0));
+					int b = Integer.parseInt(commandParams.get(1));
+					int c = Integer.parseInt(commandParams.get(2));
+					int d = Integer.parseInt(commandParams.get(3));
 
 					if(validateRc(a, b, c, d)) {
 						drone.rc(commandPackage, a, b, c, d);
@@ -228,8 +249,8 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommands.WIFI:
-					String ssidWifi = params.get(0);
-					String passWifi = params.get(1);
+					String ssidWifi = commandParams.get(0);
+					String passWifi = commandParams.get(1);
 
 					if(validateWifi(ssidWifi, passWifi)) {
 						drone.wifi(commandPackage, ssidWifi, passWifi);
@@ -247,7 +268,7 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommands.MDIRECTION:
-					int xMdirection = Integer.parseInt(params.get(0));
+					int xMdirection = Integer.parseInt(commandParams.get(0));
 
 					if(validateMdirection(xMdirection)) {
 						drone.mdirection(commandPackage, xMdirection);
@@ -257,8 +278,8 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommands.AP:
-					String ssidAp = params.get(0);
-					String passAp = params.get(1);
+					String ssidAp = commandParams.get(0);
+					String passAp = commandParams.get(1);
 					if(validateAp(ssidAp, passAp)) {
 						drone.ap(commandPackage, ssidAp, passAp);
 					} else {
@@ -302,16 +323,16 @@ public class CommandHandler {
 
 	//validate methods
 	// TODO: return String instead of throwing exceptions and log
-	private boolean validateUp(int x) {
+	private boolean validateUp(double x) {
 		if(x<20 || x>500) {
-			logger.error("Illegal Argument. Command: "+ TelloControlCommand.UP+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
+			logger.error("Parameter out of allowed range. Command: "+ TelloControlCommand.UP+", param name: "+"x"+", input value: "+ x +", valid value: "+"20 - 500");
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	private boolean validateDown(int x) {
+	private boolean validateDown(double x) {
         if(x<20 || x>500) {
 			logger.error("Illegal Argument. Command: "+ TelloControlCommand.DOWN+", param name: "+"x"+", input value: "+String.valueOf(x)+", valid value: "+"20 - 500");
 			return false;

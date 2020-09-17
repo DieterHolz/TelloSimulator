@@ -305,12 +305,12 @@ public class Drone {
         move(getDownwardsNormalVector(), -getDrone().getTranslateY()+INITIAL_Y_POSITION);
     }
 
-    public void down(CommandPackage commandPackage, int x) {
+    public void down(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getDownwardsNormalVector(), x);
     }
 
-    public void up(CommandPackage commandPackage, int x) {
+    public void up(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getUpwardsNormalVector(), x);
     }

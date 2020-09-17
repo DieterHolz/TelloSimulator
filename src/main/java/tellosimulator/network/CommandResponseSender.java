@@ -32,6 +32,19 @@ public final class CommandResponseSender {
         logger.debug("Sent response: '" + TelloResponse.ERROR_NOT_JOYSTICK + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
     }
 
+    public static void sendUnknownCommand(CommandPackage commandPackage) throws  IOException {
+        String response = TelloResponse.UNKNOWN_COMMAND + commandPackage.getCommand();
+        DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+        socket.send(responsePacket);
+        logger.debug("Sent response: '" + response + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
+    }
+
+    public static void sendOutOfRange(CommandPackage commandPackage) throws  IOException {
+        DatagramPacket responsePacket = new DatagramPacket(TelloResponse.OUT_OF_RANGE.getBytes(), TelloResponse.OUT_OF_RANGE.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+        socket.send(responsePacket);
+        logger.debug("Sent response: '" + TelloResponse.OUT_OF_RANGE + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
+    }
+
     public DatagramSocket getSocket() {
         return socket;
     }
