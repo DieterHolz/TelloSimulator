@@ -9,11 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.util.Duration;
+import org.opencv.core.Point3;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.TelloDefaultValues;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.network.CommandResponseSender;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class Drone {
@@ -146,12 +148,9 @@ public class Drone {
      * @param target the position vector/coordinates of the target
      */
     private void moveToPoint(Point3D target, int speed){
-        double xPos = drone.getTranslateX();
-        double yPos = drone.getTranslateY();
-        double zPos = drone.getTranslateZ();
-        Point3D from = new Point3D(xPos, yPos, zPos);   // get p1
+        Point3D from = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
         Point3D to = target;
-        Duration duration = Duration.seconds(calculateDistance(from, to) / speed);
+        Duration duration = Duration.seconds(from.distance(to) / speed);
         animate(createMoveAnimation(to, duration));
 
     }
@@ -223,10 +222,6 @@ public class Drone {
 
 
     // vector calculations
-
-    private double calculateDistance(Point3D from, Point3D to) {
-        return Math.sqrt(Math.pow(from.getX()-to.getX(), 2) + Math.pow(from.getY()-to.getY(), 2) + Math.pow(from.getZ()-to.getZ(), 2));
-    }
 
     private Point3D getLeftNormalVector(){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
@@ -375,8 +370,13 @@ public class Drone {
         //TODO: Hovers in the air
     }
 
-    public void curve(CommandPackage commandPackage, int x1, int x2, int y1, int y2, int z1, int z2, int speed, String mid) {
+    public void curve(CommandPackage commandPackage, int x1, int y1, int z1, int x2, int y2, int z2, int speed) {
         //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+        //Point3D point1 = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
+        Point3D point1 = new Point3D(0,0,0);
+        Point3D point2 = new Point3D(x1,y1,z1);
+        Point3D point3 = new Point3D(x2,y2,z2);
+
     }
 
     public void jump(CommandPackage commandPackage, int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
