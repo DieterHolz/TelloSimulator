@@ -104,7 +104,7 @@ public class Drone {
     private void setupBindings() {
     }
 
-    private void rotate(int angle, Rotation axis) {
+    private void rotate(double angle, Rotation axis) {
 
         rotateTransition.setByAngle(angle);
 
@@ -314,32 +314,32 @@ public class Drone {
         move(getUpwardsNormalVector(), x);
     }
 
-    public void left(CommandPackage commandPackage, int x) {
+    public void left(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getLeftNormalVector(), x);
     }
 
-    public void right(CommandPackage commandPackage, int x) {
+    public void right(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getRightNormalVector(), x);
     }
 
-    public void forward(CommandPackage commandPackage, int x) {
+    public void forward(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getCurrentOrientation(), x);
     }
 
-    public void back(CommandPackage commandPackage, int x) {
+    public void back(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         move(getCurrentOrientation().multiply(-1), x);
     }
 
-    public void cw(CommandPackage commandPackage, int x) {
+    public void cw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         rotate(x, Rotation.YAW);
     }
 
-    public void ccw(CommandPackage commandPackage, int x) {
+    public void ccw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
         rotate(-x, Rotation.YAW);
     }

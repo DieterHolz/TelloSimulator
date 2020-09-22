@@ -88,7 +88,7 @@ public class CommandHandler {
 						break;
 					}
 
-					if(validateUp(xUp)) {
+					if(checkRange(command, xUp, 20, 500)) {
 						drone.up(commandPackage, xUp);
 					} else {
 						CommandResponseSender.sendOutOfRange(commandPackage);
@@ -104,7 +104,7 @@ public class CommandHandler {
 						break;
 					}
 
-					if(validateDown(xDown)) {
+					if(checkRange(command, xDown, 20, 500)) {
 						drone.down(commandPackage, xDown);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
@@ -112,7 +112,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LEFT:
-					int xLeft = Integer.parseInt(commandParams.get(0));
+					double xLeft;
+					if (commandParams != null && commandParams.size() == 1) {
+						xLeft = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateLeft(xLeft)) {
 						drone.left(commandPackage, xLeft);
@@ -122,7 +128,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.RIGHT:
-					int xRight = Integer.parseInt(commandParams.get(0));
+					double xRight;
+					if (commandParams != null && commandParams.size() == 1) {
+						xRight = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 					if(validateRight(xRight)) {
 						drone.right(commandPackage, xRight);
 					} else {
@@ -131,7 +143,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FORWARD:
-					int xForward = Integer.parseInt(commandParams.get(0));
+					double xForward;
+					if (commandParams != null && commandParams.size() == 1) {
+						xForward = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateForward(xForward)) {
 						drone.forward(commandPackage, xForward);
@@ -141,7 +159,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.BACK:
-					int xBack = Integer.parseInt(commandParams.get(0));
+					double xBack;
+					if (commandParams != null && commandParams.size() == 1) {
+						xBack = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateBack(xBack)) {
 						drone.back(commandPackage, xBack);
@@ -151,7 +175,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CW:
-					int xCw = Integer.parseInt(commandParams.get(0));
+					double xCw;
+					if (commandParams != null && commandParams.size() == 1) {
+						xCw = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateCw(xCw)) {
 						drone.cw(commandPackage, xCw);
@@ -161,8 +191,13 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CCW:
-					int xCcw = Integer.parseInt(commandParams.get(0));
-
+					double xCcw;
+					if (commandParams != null && commandParams.size() == 1) {
+						xCcw = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 					if(validateCcw(xCcw)) {
 						drone.ccw(commandPackage, xCcw);
 					} else {
@@ -321,8 +356,23 @@ public class CommandHandler {
         }
 	}
 
+	private boolean checkParams(List<String> commandParams, int expectedNumberOfParams) {
+		if (commandParams != null && commandParams.size() == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	//validate methods
-	// TODO: return String instead of throwing exceptions and log
+	private boolean checkRange(String command, double value, double min, double max) {
+		if (value >= min && value <= max) {
+			return true;
+		}
+		logger.error("Parameter value out of range *** command: "+ command +" *** input value: "+ value +"*** allowed values: " + min + " - " + max);
+		return false;
+	}
+
 	private boolean validateUp(double x) {
 		if(x<20 || x>500) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.UP+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
@@ -341,7 +391,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateLeft(int x) {
+	private boolean validateLeft(double x) {
         if(x<20 || x>500) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.LEFT+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
@@ -350,7 +400,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateRight(int x) {
+	private boolean validateRight(double x) {
         if(x<20 || x>500) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.RIGHT+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
@@ -359,7 +409,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateForward(int x) {
+	private boolean validateForward(double x) {
         if(x<20 || x>500) {
         	logger.error("Illegal Argument. Command: "+TelloControlCommand.FORWARD+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
@@ -368,7 +418,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateBack(int x) {
+	private boolean validateBack(double x) {
         if(x<20 || x>500) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.BACK+", param name: x, input value: "+String.valueOf(x)+", valid value: 20 - 500");
 			return false;
@@ -377,7 +427,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateCw(int x) {
+	private boolean validateCw(double x) {
         if(x<1 || x>360) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.CW+", param name: x, input value: "+String.valueOf(x)+", valid value: 1 - 360");
 			return false;
@@ -386,7 +436,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateCcw(int x) {
+	private boolean validateCcw(double x) {
         if(x<1 || x>360) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.CCW+", param name: x, input value: "+String.valueOf(x)+", valid value: 1 - 360");
 			return false;
