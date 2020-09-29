@@ -53,6 +53,7 @@ public class Drone {
     private final DoubleProperty xOrientation = new SimpleDoubleProperty();
     private final DoubleProperty yOrientation = new SimpleDoubleProperty();
     private final DoubleProperty zOrientation = new SimpleDoubleProperty();
+
     private final DoubleProperty speed = new SimpleDoubleProperty();
 
     private final DoubleProperty forwardBackwardDiff = new SimpleDoubleProperty(0);
@@ -111,11 +112,7 @@ public class Drone {
         rotateTransition.setByAngle(angle);
 
         if (axis == Rotation.YAW) {
-            double x1 = getxOrientation();
-            double z1 = getzOrientation();
-
-            setxOrientation(Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1);
-            setzOrientation(Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1);
+            updateOrientation(angle);
             rotateTransition.setAxis(getUpwardsNormalVector());
             rotateTransition.setDuration(Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360));
             rotateTransition.setNode(drone);
@@ -268,10 +265,17 @@ public class Drone {
     private void updateRcYaw() {
         drone.setRotationAxis(getUpwardsNormalVector());
         double oldRotate = drone.getRotate();
-        double rotateAngle = (360/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000F)))*(getYawDiff()/100);
-        drone.setRotate(oldRotate + rotateAngle);
-        setxOrientation(Math.cos(rotateAngle * Math.PI / 180) * getxOrientation() - Math.sin(rotateAngle * Math.PI / 180) * getzOrientation());
-        setzOrientation(Math.sin(rotateAngle * Math.PI / 180) * getxOrientation() + Math.cos(rotateAngle * Math.PI / 180) * getzOrientation());
+        double rotateAngle = (360F/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000F)))*(getYawDiff()/100);
+        drone.setRotate((oldRotate + rotateAngle)%360);
+
+        updateOrientation(rotateAngle);
+    }
+
+    private void updateOrientation(double rotateAngle) {
+        double x1 = getxOrientation();
+        double z1 = getzOrientation();
+        setxOrientation(Math.cos(rotateAngle * Math.PI / 180) * x1 - Math.sin(rotateAngle * Math.PI / 180) * z1);
+        setzOrientation(Math.sin(rotateAngle * Math.PI / 180) * x1 + Math.cos(rotateAngle * Math.PI / 180) * z1);
     }
 
     private void createAnimationLoop() {
