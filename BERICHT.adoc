@@ -1,1 +1,23 @@
 
+= 20FS_IMVS08: Tello Simulator
+v0.1 +
+6. Oktober 2020
+
+===== Autoren
+Daniel Obrist +
+Severin Peyer +
+
+===== Auftraggeber
+Fachhochschule Nordwestschweiz FHNW +
+vertreten durch Dieter Holz und Barbara Scheuner +
+Bahnhofstrasse 6 +
+5210 Windisch
+
+===== Betreuer
+Dieter Holz +
+Barbara Scheuner
+
+'''
+
+
+
