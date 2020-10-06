@@ -1,7 +1,11 @@
 
 = 20FS_IMVS08: Tello Simulator
+
+*Implementierung eines Simulator für die Tello Drohne*
+
+IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz
 v0.1 +
-6. Oktober 2020
+Brugg, 6. Oktober 2020
 
 ===== Autoren
 Daniel Obrist +
@@ -18,6 +22,24 @@ Dieter Holz +
 Barbara Scheuner
 
 '''
-
-
-
+== Impressum
+== Inhaltsverzeichnis
+== Management Summary
+== Einleitung
+=== Ausgangslage
+=== Problem
+=== Anforderungen
+=== Lösung
+=== Zielpublikum
+== Theoretischer Teil
+=== Beschreibung der Anwendungsdomäne
+=== Beschreibung der verwendeten Methoden
+== Praktischer Teil
+=== Architektur
+=== Skalierbarkeit
+== Fazit
+== Danksagung
+== Referenzen
+=== Literaturverzeichnis
+=== Abbildungsverzeichnis
+== Ehrlichkeitserklärung
