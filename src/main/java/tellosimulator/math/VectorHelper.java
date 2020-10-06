@@ -2,6 +2,8 @@ package tellosimulator.math;
 
 import javafx.geometry.Point3D;
 
+import java.math.BigDecimal;
+
 public class VectorHelper {
     private static Point3D normalVectorOfAPlane(Point3D point1, Point3D point2, Point3D point3) {
         return ((point2.subtract(point1)).crossProduct(point3.subtract(point1)));
@@ -24,11 +26,15 @@ public class VectorHelper {
         double r = ((g) * (h) - (e) * (i)) / det;
         double s = ((d) * (i) - (f) * (h)) / det;
 
-        if(midPointAB.getZ()+r*directionVectorOfBisectionAB.getZ() == midPointAC.getZ()+s*directionVectorOfBisectionAC.getZ()) {
-            System.out.println("schnittpunkt existiert");
+        //TODO: this check does not work properly for some values (see Test curveInvalidRange())
+        // check if intersection point exists
+        BigDecimal foo = new BigDecimal(midPointAB.getZ() + r * directionVectorOfBisectionAB.getZ());
+        BigDecimal bar = new BigDecimal(midPointAC.getZ() + s * directionVectorOfBisectionAC.getZ());
+        if(foo.compareTo(bar) == 0) {
+            //schnittpunkt existiert
         }
-
         return midPointAB.add(directionVectorOfBisectionAB.multiply(r));
+
     }
 
     private static Point3D midPointOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {

@@ -209,22 +209,33 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FLIP:
-					String xFlip = commandParams.get(0);
+					String flipDirection;
+					if (commandParams != null && commandParams.size() == 1){
+						flipDirection = commandParams.get(0);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
-					if(validateFlip(xFlip)) {
-						drone.flip(commandPackage, xFlip);
+					if(validateFlip(flipDirection)) {
+						drone.flip(commandPackage, flipDirection);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
 				case TelloControlCommand.GO:
-					int xGo = Integer.parseInt(commandParams.get(0));
-					int yGo = Integer.parseInt(commandParams.get(1));
-					int zGo = Integer.parseInt(commandParams.get(2));
-					int speedGo = Integer.parseInt(commandParams.get(3));
+					double xGo, yGo, zGo, speedGo;
+					if (commandParams != null && commandParams.size() == 4){
+						xGo = Double.parseDouble(commandParams.get(0));
+						yGo = Double.parseDouble(commandParams.get(1));
+						zGo = Double.parseDouble(commandParams.get(2));
+						speedGo = Double.parseDouble(commandParams.get(3));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 					//TODO: String midGo = params.get(4);
-
 					if(validateGo(xGo, yGo, zGo, speedGo)) {
 						drone.go(commandPackage, xGo, yGo, zGo, speedGo);
 					} else {
@@ -233,17 +244,21 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.STOP:
-					drone.stop(commandPackage);
+					if (commandParams == null) {
+						drone.stop(commandPackage);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloControlCommand.CURVE:
-					int x1Curve = Integer.parseInt(commandParams.get(0));
-					int y1Curve = Integer.parseInt(commandParams.get(1));
-					int z1Curve = Integer.parseInt(commandParams.get(2));
-					int x2Curve = Integer.parseInt(commandParams.get(3));
-					int y2Curve = Integer.parseInt(commandParams.get(4));
-					int z2Curve = Integer.parseInt(commandParams.get(5));
-					int speedCurve = Integer.parseInt(commandParams.get(6));
+					double x1Curve = Double.parseDouble(commandParams.get(0));
+					double y1Curve = Double.parseDouble(commandParams.get(1));
+					double z1Curve = Double.parseDouble(commandParams.get(2));
+					double x2Curve = Double.parseDouble(commandParams.get(3));
+					double y2Curve = Double.parseDouble(commandParams.get(4));
+					double z2Curve = Double.parseDouble(commandParams.get(5));
+					double speedCurve = Double.parseDouble(commandParams.get(6));
                     //TODO: implement missionPadId
 
 					if(validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve)) {
@@ -457,7 +472,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateGo(int x, int y, int z, int speed) {
+	private boolean validateGo(double x, double y, double z, double speed) {
         if(x<-500 || x>500) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, input value: "+String.valueOf(x)+", valid value: -500 - 500");
 			return false;
@@ -482,7 +497,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateCurve(int x1, int x2, int y1, int y2, int z1, int z2, int speed) {
+	private boolean validateCurve(double x1, double x2, double y1, double y2, double z1, double z2, double speed) {
 
 		double radiusOfcircumscribedCircle = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
 
@@ -519,6 +534,7 @@ public class CommandHandler {
             //todo: implement missionPadId
 		} else if(radiusOfcircumscribedCircle < 50 || radiusOfcircumscribedCircle > 1000) {
 			logger.error("Illegal Arguments. Command: "+TelloControlCommand.CURVE+", Command: \"+TelloControlCommand.CURVE+\", "); // todo: which error message does the drone return
+			logger.error("Arc radius is not within a range of 0.5-10 meters.");
 			return false;
 		} else {
 			return  true;

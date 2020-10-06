@@ -144,7 +144,7 @@ public class Drone {
      * Moves the drone to the given target coordinates.
      * @param target the position vector/coordinates of the target
      */
-    private void moveToPoint(Point3D target, int speed){
+    private void moveToPoint(Point3D target, double speed){
         Point3D from = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
         Point3D to = target;
         Duration duration = Duration.seconds(from.distance(to) / speed);
@@ -343,9 +343,9 @@ public class Drone {
         rotate(-x, Rotation.YAW);
     }
 
-    public void flip(CommandPackage commandPackage, String x) {
+    public void flip(CommandPackage commandPackage, String flipDirection) {
         this.commandPackage = commandPackage;
-        switch(x) {
+        switch(flipDirection) {
             case "r":
                 rotate(360, Rotation.ROLL);
                 break;
@@ -364,17 +364,17 @@ public class Drone {
         }
     }
 
-    public void go(CommandPackage commandPackage, int x, int y, int z, int speed) {
+    public void go(CommandPackage commandPackage, double x, double y, double z, double speed) {
         this.commandPackage = commandPackage;
         moveToPoint(new Point3D(x,y,z), speed);
         //TODO: Fly to missionpad
     }
 
     public void stop(CommandPackage commandPackage) {
-        //TODO: Hovers in the air
+        //TODO: Hovers in the air works at any time
     }
 
-    public void curve(CommandPackage commandPackage, int x1, int y1, int z1, int x2, int y2, int z2, int speed) {
+    public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
         //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
         //Point3D point1 = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
         Point3D point1 = new Point3D(0,0,0);
