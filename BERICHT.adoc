@@ -3,7 +3,7 @@
 
 *Implementierung eines Simulator für die Tello Drohne*
 
-IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz
+IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz +
 v0.1 +
 Brugg, 6. Oktober 2020
 
@@ -23,11 +23,16 @@ Barbara Scheuner
 
 '''
 == Impressum
+
 == Inhaltsverzeichnis
 == Management Summary
 == Einleitung
 === Ausgangslage
+Im Workshop-Modul 2 (Programmieren von Minidrohnen und "intelligente Kleidung") der Fachhochschule Nordwestschweiz (FHNW) wird die Tello EDU von Ryze Robotics <<telloedu>> eingesetzt. Dabei werden in Teams von durchschnittlich 4 Mitgliedern Applikationen zur Steuerung der Drohne entwickelt. Jedem Team steht dabei eine Tello-Drohne zur Verfügung.
+
 === Problem
+Es hat sich gezeigt, dass die Drohne sehr schnell zu einem Engpass führt, da insbesondere im frühen Entwicklungsstadium viel mit der Drohne experimentiert werden muss. Dadurch verzögert sich der Projektfortschritt. Des Weiteren ist es auch bereits zu mehreren Missgeschicken mit der Drohne gekommen. Beispielsweise wurde vergessen ein Stopp-Signal einzubauen, weswegen die Drohne in eine Wand geflogen und kaputt gegangen ist.
+
 === Anforderungen
 === Lösung
 === Zielpublikum
@@ -35,11 +40,19 @@ Barbara Scheuner
 === Beschreibung der Anwendungsdomäne
 === Beschreibung der verwendeten Methoden
 == Praktischer Teil
+=== Use-Cases
 === Architektur
 === Skalierbarkeit
 == Fazit
 == Danksagung
 == Referenzen
 === Literaturverzeichnis
+[bibliography]
+- [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
+
 === Abbildungsverzeichnis
 == Ehrlichkeitserklärung
+== Anhang
+=== Installationsanleitung Tello Simulator
+=== Operator-Programm mit der Simulator-API verbinden
+=== Benutzerhandbuch Tello Simulator
