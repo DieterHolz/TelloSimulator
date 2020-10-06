@@ -28,12 +28,26 @@ Barbara Scheuner
 == Management Summary
 == Einleitung
 === Ausgangslage
-Im Workshop-Modul 2 (Programmieren von Minidrohnen und "intelligente Kleidung") der Fachhochschule Nordwestschweiz (FHNW) wird die Tello EDU von Ryze Robotics <<telloedu>> eingesetzt. Dabei werden in Teams von durchschnittlich 4 Mitgliedern Applikationen zur Steuerung der Drohne entwickelt. Jedem Team steht dabei eine Tello-Drohne zur Verfügung.
+Im Workshop-Modul 2 (Programmieren von Minidrohnen und "intelligente Kleidung") der Fachhochschule Nordwestschweiz (FHNW) wird die Tello EDU von Ryze Robotics <<telloedu>> (nachfolgend: Tello-Drohne) eingesetzt. Dabei werden in Teams von durchschnittlich 4 Mitgliedern Applikationen zur Steuerung der Drohne entwickelt. Jedem Team steht dabei eine Tello-Drohne zur Verfügung.
 
 === Problem
 Es hat sich gezeigt, dass die Drohne sehr schnell zu einem Engpass führt, da insbesondere im frühen Entwicklungsstadium viel mit der Drohne experimentiert werden muss. Dadurch verzögert sich der Projektfortschritt. Des Weiteren ist es auch bereits zu mehreren Missgeschicken mit der Drohne gekommen. Beispielsweise wurde vergessen ein Stopp-Signal einzubauen, weswegen die Drohne in eine Wand geflogen und kaputt gegangen ist.
 
 === Anforderungen
+Um die beiden Probleme zu minimieren, repsektive eleminieren, soll ein Simulator entwickelt werden, welcher sich möglichst gleich verhält wie die echte Tello-Drohne. Dieser soll rein software-technisch umgesetzt werden, damit nicht wieder die Abhängigkeit von einem technischen Gerät entsteht. Der Simulator muss die Programmierschnittstelle des Tello SDK 2.0 anbieten. Folgende Anforderungen wurden definiert:
+
+* Der Simulator kann Kommandos des Operators entgegennehmen und eine Response senden
+* Die virtuelle Drohne setzt alle Control-, Read- und Set-Commands visuell realitätsgetrau um
+* Der Simulator kann einen Status auf einem separaten Port an den Operator senden
+* Der Simulator kann einen Videostream aus der Sicht der Drohne an den Operator senden
+* Error-Handling (ungültige Befehle, ungültige Parameter)
+
+Für das Extended Product, haben wir folgende Kann-Ziele definiert:
+
+* Per UI kann eine Raumgrösse eingegeben werden (LxBxH) und eine Startposition der Drohne (x, y und Start am Boden)
+* Der Simulator kann mit mehreren Drohnen (Drohnenschwärme) umgehen
+
+
 === Lösung
 === Zielpublikum
 == Theoretischer Teil
