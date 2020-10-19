@@ -13,6 +13,7 @@ import org.opencv.core.Point3;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.TelloDefaultValues;
 import tellosimulator.command.CommandPackage;
+import tellosimulator.math.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
 
 import java.awt.*;
@@ -113,7 +114,7 @@ public class Drone {
 
         if (axis == Rotation.YAW) {
             updateOrientation(angle);
-            rotateTransition.setAxis(getUpwardsNormalVector());
+            rotateTransition.setAxis(VectorHelper.getUpwardsNormalVector());
             rotateTransition.setDuration(Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360));
             rotateTransition.setNode(drone);
 
@@ -155,7 +156,7 @@ public class Drone {
     private void animate(Timeline timeline) {
         timeline.setOnFinished(event -> {
             animationRunning = false;
-            drone.setRotationAxis(getUpwardsNormalVector());
+            drone.setRotationAxis(VectorHelper.getUpwardsNormalVector());
             try {
                 CommandResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
@@ -220,25 +221,9 @@ public class Drone {
 
     // vector calculations
 
-    private Point3D getLeftNormalVector(){
-        //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return getUpwardsNormalVector().crossProduct(getCurrentOrientation());
-    }
 
-    private Point3D getRightNormalVector(){
-        //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return getCurrentOrientation().crossProduct(getUpwardsNormalVector());
-    }
 
-    private Point3D getUpwardsNormalVector(){
-        return new Point3D(0,-1,0);
-    }
-
-    private Point3D getDownwardsNormalVector(){
-        return new Point3D(0,1,0);
-    }
-
-    private Point3D getCurrentOrientation(){
+    public Point3D getCurrentOrientation(){
         return new Point3D(getxOrientation(), getyOrientation(), getzOrientation());
     }
 
@@ -249,8 +234,8 @@ public class Drone {
     private void updateRcPosition() {
         Point3D oldPos = new Point3D(drone.getTranslateX(), drone.getTranslateY(), drone.getTranslateZ());
         Point3D forward = getCurrentOrientation().multiply(getForwardBackwardDiff()/100);
-        Point3D right = getRightNormalVector().multiply(getLeftRightDiff()/100);
-        Point3D up = getUpwardsNormalVector().multiply(getUpDownDiff()/100);
+        Point3D right = VectorHelper.getRightNormalVector(this).multiply(getLeftRightDiff()/100);
+        Point3D up = VectorHelper.getUpwardsNormalVector().multiply(getUpDownDiff()/100);
         Point3D moveDirectionVector = forward.add(right).add(up);
         Point3D newPos = oldPos.add(moveDirectionVector.multiply(getSpeed() / FRAMES_PER_SECOND));
 
@@ -263,7 +248,7 @@ public class Drone {
      * Updates the drone rotation every frame depending on the currently set rc value of yaw.
      */
     private void updateRcYaw() {
-        drone.setRotationAxis(getUpwardsNormalVector());
+        drone.setRotationAxis(VectorHelper.getUpwardsNormalVector());
         double oldRotate = drone.getRotate();
         double rotateAngle = (360F/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000F)))*(getYawDiff()/100);
         drone.setRotate((oldRotate + rotateAngle)%360);
@@ -295,32 +280,32 @@ public class Drone {
 
     public void takeoff(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        move(getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
+        move(VectorHelper.getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
     }
 
     public void land(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        move(getDownwardsNormalVector(), -getDrone().getTranslateY()+INITIAL_Y_POSITION);
+        move(VectorHelper.getDownwardsNormalVector(), -getDrone().getTranslateY()+INITIAL_Y_POSITION);
     }
 
     public void down(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getDownwardsNormalVector(), x);
+        move(VectorHelper.getDownwardsNormalVector(), x);
     }
 
     public void up(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getUpwardsNormalVector(), x);
+        move(VectorHelper.getUpwardsNormalVector(), x);
     }
 
     public void left(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getLeftNormalVector(), x);
+        move(VectorHelper.getLeftNormalVector(this), x);
     }
 
     public void right(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getRightNormalVector(), x);
+        move(VectorHelper.getRightNormalVector(this), x);
     }
 
     public void forward(CommandPackage commandPackage, double x) {
