@@ -35,6 +35,7 @@ public class Drone {
     private String wifiPass;
 
     private boolean missionPadDetection;
+    private int missionPadDetectionMode;
 
     private Group drone;
     private Group pitchContainer;
@@ -383,16 +384,6 @@ public class Drone {
         setYawDiff(d);
     }
 
-    public void mdirection(CommandPackage commandPackage, int x) {
-        if (x == 0) {
-            //TODO: Enable downward detection only
-        } else if (x == 1) {
-            //TODO: Enable forward detection only
-        } else if (x == 2) {
-            //TODO: Enable both forward and downward detection
-        }
-    }
-
     public void ap(CommandPackage commandPackage, String ssid, String pass) {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
     }
@@ -511,6 +502,14 @@ public class Drone {
 
     public void setMissionPadDetection(boolean missionPadDetection) {
         this.missionPadDetection = missionPadDetection;
+    }
+
+    public int getMissionPadDetectionMode() {
+        return missionPadDetectionMode;
+    }
+
+    public void setMissionPadDetectionMode(int missionPadDetectionMode) {
+        this.missionPadDetectionMode = missionPadDetectionMode;
     }
 
     public Group getDrone() {

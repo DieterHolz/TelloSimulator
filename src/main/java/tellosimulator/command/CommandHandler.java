@@ -14,6 +14,7 @@ import tellosimulator.view.Drone;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class CommandHandler {
 	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
@@ -321,31 +322,60 @@ public class CommandHandler {
 
 				case TelloSetCommand.MON:
 					drone.setMissionPadDetection(true);
+					drone.setMissionPadDetectionMode(2);
 					CommandResponseSender.sendOk(commandPackage);
 					logger.warn("Mission pad detection is not supported by the TelloSimulator");
 					break;
 
 				case TelloSetCommand.MOFF:
-					drone.setMissionPadDetection(false);
-					CommandResponseSender.sendOk(commandPackage);
-					logger.warn("Mission pad detection is not supported by the TelloSimulator");
+					if (checkParams(commandParams , 0)){
+						drone.setMissionPadDetection(false);
+						CommandResponseSender.sendOk(commandPackage);
+						logger.warn("Mission pad detection is not supported by the TelloSimulator");
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloSetCommand.MDIRECTION:
-					int xMdirection = Integer.parseInt(commandParams.get(0));
+					int xMdirection;
+					if (checkParams(commandParams, 1) ){
+						xMdirection = Integer.parseInt(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateMdirection(xMdirection)) {
-						drone.mdirection(commandPackage, xMdirection);
+						if (drone.isMissionPadDetection()) {
+							drone.setMissionPadDetectionMode(xMdirection);
+							CommandResponseSender.sendOk(commandPackage);
+							logger.warn("Mission pad detection is not supported by the TelloSimulator");
+						} else {
+							logger.error("Perform 'mon' command before performing this command.");
+							CommandResponseSender.sendError(commandPackage);
+						}
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
 				case TelloSetCommand.AP:
-					String ssidAp = commandParams.get(0);
-					String passAp = commandParams.get(1);
+					String ssidAp;
+					String passAp;
+
+					if (checkParams(commandParams, 2)) {
+						ssidAp = commandParams.get(0);
+						passAp = commandParams.get(1);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
+
 					if(validateAp(ssidAp, passAp)) {
 						drone.ap(commandPackage, ssidAp, passAp);
+						CommandResponseSender.sendOk(commandPackage);
+						logger.warn("Station mode is not supported by the TelloSimulator");
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -387,6 +417,8 @@ public class CommandHandler {
 
 	private boolean checkParams(List<String> commandParams, int expectedNumberOfParams) {
 		if (commandParams != null && commandParams.size() == expectedNumberOfParams) {
+			return true;
+		} else if (commandParams == null && expectedNumberOfParams == 0) {
 			return true;
 		} else {
 			return false;
@@ -482,62 +514,65 @@ public class CommandHandler {
 
 	private boolean validateJump(int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
         if(x<-500 || x>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.JUMP, "x", String.valueOf(x), "-500-500");
+			return false;
 		}
         if(y<-500 || y>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.JUMP, "y", String.valueOf(y), "-500-500");
+			return false;
 		}
         if(z<-500 || z>500) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.JUMP, "z", String.valueOf(z), "-500-500");
+			return false;
 		}
         if(speed<10 || speed>100) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.JUMP, "speed", String.valueOf(speed), "10-100");
+			return false;
 		}
 		// yaw value ist not documented in the sdk todo: find out the valid value for yaw
 		if(!(mid1.equals("m1") || mid1.equals("m2") || mid1.equals("m3") || mid1.equals("m4") || mid1.equals("m5") || mid1.equals("m6") || mid1.equals("m7") || mid1.equals("m8"))) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "mid1", mid1, "m1-m8");
+			return false;
 		}
 		if(!(mid2.equals("m1") || mid2.equals("m2") || mid2.equals("m3") || mid2.equals("m4") || mid2.equals("m5") || mid2.equals("m6") || mid2.equals("m7") || mid2.equals("m8"))) {
-			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "mid2", mid2, "m1-m8");
+			return false;
 		}
-		//TODO: implement correct validateMethod
 		return true;
     }
 
 	private boolean validateRc(int a, int b, int c, int d) {
 		if(a<-100 && a>100) {
-			throw new TelloIllegalArgumentException(TelloSetCommand.RC, "a", String.valueOf(a), "-100-100");
+			return false;
 		}
         if(b<-100 && b>100) {
-			throw new TelloIllegalArgumentException(TelloSetCommand.RC, "b", String.valueOf(b), "-100-100");
+			return false;
 		}
         if(c<-100 && c>100) {
-			throw new TelloIllegalArgumentException(TelloSetCommand.RC, "c", String.valueOf(c), "-100-100");
+			return false;
 		}
         if(d<-100 && d>100) {
-			throw new TelloIllegalArgumentException(TelloSetCommand.RC, "d", String.valueOf(d), "-100-100");
+			return false;
 		}
-		//TODO: implement correct validateMethod
 		return true;
 	}
 
 	private boolean validateWifi(String ssidWifi, String passWifi) {
-		// todo: find out the valid values for ssid and pass (min length?)
-		//TODO: implement correct validateMethod
-		return true;
+		return validateSSID(ssidWifi);
 	}
 
 	private boolean validateMdirection(int x) {
 		if(!(x == 0 || x == 1 || x == 2)) {
-			throw new TelloIllegalArgumentException(TelloSetCommand.MDIRECTION, "x", String.valueOf(x), "0, 1 or 2");
+			return false;
 		}
 		//TODO: implement correct validateMethod
 		return true;
 	}
 
 	private boolean validateAp(String ssidAp, String passAp) {
-		// todo: find out the valid values for ssid and pass (min length?)
-		//TODO: implement correct validateMethod
+		return validateSSID(ssidAp);
+	}
+
+	private boolean validateSSID(String ssidAp) {
+		String regex = "^[!#;].|[+\\[\\]/\"\\t\\s].*$";
+		if (Pattern.matches(regex, ssidAp)) {
+			logger.error("Invalid SSID! The SSID can consist of up to 32 alphanumeric, case-sensitive, characters. The first character cannot be the !, #, or ; character. The +, ], /, \", TAB, and trailing spaces are invalid characters for SSIDs.");
+			return false;
+		}
 		return true;
 	}
 }
