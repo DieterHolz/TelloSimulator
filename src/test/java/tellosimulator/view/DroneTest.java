@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.CommandPackage;
-import tellosimulator.command.TelloSetCommands;
+import tellosimulator.command.TelloSetCommand;
 import tellosimulator.network.CommandConnection;
 import tellosimulator.network.TelloSDKValues;
 
@@ -43,7 +43,7 @@ class DroneTest {
         assertEquals(0, drone.getUpDownDiff());
         assertEquals(0, drone.getYawDiff());
 
-        computeResponse(TelloSetCommands.RC + " 0 10 20 30");
+        computeResponse(TelloSetCommand.RC + " 0 10 20 30");
 
         assertEquals(0, drone.getForwardBackwardDiff());
         assertEquals(10, drone.getLeftRightDiff());

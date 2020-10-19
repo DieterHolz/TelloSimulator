@@ -9,14 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.util.Duration;
-import org.opencv.core.Point3;
 import tellosimulator.command.CommandHandler;
-import tellosimulator.command.TelloDefaultValues;
+import tellosimulator.command.DefaultValueHelper;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.math.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class Drone {
@@ -32,6 +30,11 @@ public class Drone {
 
     private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
+
+    private String wifiSsid;
+    private String wifiPass;
+
+    private boolean missionPadDetection;
 
     private Group drone;
     private Group pitchContainer;
@@ -96,7 +99,8 @@ public class Drone {
         setyOrientation(0);
         setzOrientation(1);
 
-        setSpeed(TelloDefaultValues.DEFAULT_SPEED);
+        setSpeed(DefaultValueHelper.DEFAULT_SPEED);
+        missionPadDetection = false;
     }
 
     private void setupEventHandlers() {
@@ -115,17 +119,17 @@ public class Drone {
         if (axis == Rotation.YAW) {
             updateOrientation(angle);
             rotateTransition.setAxis(VectorHelper.getUpwardsNormalVector());
-            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.TURN_DURATION*Math.abs(angle)/360));
+            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.TURN_DURATION*Math.abs(angle)/360));
             rotateTransition.setNode(drone);
 
         } else if (axis == Rotation.ROLL) {
             rotateTransition.setAxis(new Point3D(0,0,1));
-            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.FLIP_DURATION));
+            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.FLIP_DURATION));
             rotateTransition.setNode(rollContainer);
 
         } else if (axis == Rotation.PITCH) {
             rotateTransition.setAxis(new Point3D(1,0,0));
-            rotateTransition.setDuration(Duration.millis(TelloDefaultValues.FLIP_DURATION));
+            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.FLIP_DURATION));
             rotateTransition.setNode(pitchContainer);
         }
 
@@ -250,7 +254,7 @@ public class Drone {
     private void updateRcYaw() {
         drone.setRotationAxis(VectorHelper.getUpwardsNormalVector());
         double oldRotate = drone.getRotate();
-        double rotateAngle = (360F/(FRAMES_PER_SECOND * (TelloDefaultValues.TURN_DURATION/1000F)))*(getYawDiff()/100);
+        double rotateAngle = (360F/(FRAMES_PER_SECOND * (DefaultValueHelper.TURN_DURATION/1000F)))*(getYawDiff()/100);
         drone.setRotate((oldRotate + rotateAngle)%360);
 
         updateOrientation(rotateAngle);
@@ -280,7 +284,7 @@ public class Drone {
 
     public void takeoff(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getUpwardsNormalVector(), TelloDefaultValues.TAKEOFF_DISTANCE);
+        move(VectorHelper.getUpwardsNormalVector(), DefaultValueHelper.TAKEOFF_DISTANCE);
     }
 
     public void land(CommandPackage commandPackage) {
@@ -372,27 +376,11 @@ public class Drone {
         //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
     }
 
-    public void speed(CommandPackage commandPackage) {
-        //TODO: Set speed to "x" cm/s
-    }
-
     public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
         setForwardBackwardDiff(a);
         setLeftRightDiff(b);
         setUpDownDiff(c);
         setYawDiff(d);
-    }
-
-    public void wifi(CommandPackage commandPackage, String ssidWifi, String passWifi) {
-        //TODO: Set Wi-Fi password
-    }
-
-    public void mon(CommandPackage commandPackage) {
-        //TODO: Enable mission pad detection (both forward and downward detection).
-    }
-
-    public void moff(CommandPackage commandPackage) {
-        //TODO: Disable mission pad detection.
     }
 
     public void mdirection(CommandPackage commandPackage, int x) {
@@ -499,6 +487,30 @@ public class Drone {
 
     public double getAccelerationZ() {
         return accelerationZ;
+    }
+
+    public String getWifiSsid() {
+        return wifiSsid;
+    }
+
+    public void setWifiSsid(String wifiSsid) {
+        this.wifiSsid = wifiSsid;
+    }
+
+    public String getWifiPass() {
+        return wifiPass;
+    }
+
+    public void setWifiPass(String wifiPass) {
+        this.wifiPass = wifiPass;
+    }
+
+    public boolean isMissionPadDetection() {
+        return missionPadDetection;
+    }
+
+    public void setMissionPadDetection(boolean missionPadDetection) {
+        this.missionPadDetection = missionPadDetection;
     }
 
     public Group getDrone() {

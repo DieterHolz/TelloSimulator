@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import tellosimulator.command.TelloDefaultValues;
+import tellosimulator.command.DefaultValueHelper;
 
 import java.util.Locale;
 
@@ -87,7 +87,7 @@ public class SimulatorControls extends GridPane {
             drone.setxOrientation(0);
             drone.setyOrientation(0);
             drone.setzOrientation(1);
-            drone.setSpeed(TelloDefaultValues.DEFAULT_SPEED);
+            drone.setSpeed(DefaultValueHelper.DEFAULT_SPEED);
         });
     }
 
