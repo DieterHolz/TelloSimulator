@@ -1,6 +1,6 @@
 package tellosimulator.command;
 
-public class TelloSetCommands {
+public class TelloSetCommand {
 
 	// Set Commands
 	public static final String SPEED = "speed";

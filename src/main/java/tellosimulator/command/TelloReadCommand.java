@@ -1,6 +1,6 @@
 package tellosimulator.command;
 
-public class TelloReadCommands {
+public class TelloReadCommand {
 
 	//Read Commands
 	public static final String SPEED = "speed?";

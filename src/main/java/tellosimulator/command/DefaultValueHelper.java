@@ -1,6 +1,6 @@
 package tellosimulator.command;
 
-public class TelloDefaultValues {
+public class DefaultValueHelper {
 
     public static final int TAKEOFF_DISTANCE = 30;
     public static final int DEFAULT_SPEED = 10; // just a guess, not known from SDK
