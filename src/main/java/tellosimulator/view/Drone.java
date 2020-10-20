@@ -33,9 +33,10 @@ public class Drone {
 
     private String wifiSsid;
     private String wifiPass;
-
     private boolean missionPadDetection;
     private int missionPadDetectionMode;
+
+    private long flightTime;
 
     private Group drone;
     private Group pitchContainer;
@@ -373,11 +374,11 @@ public class Drone {
 
     }
 
-    public void jump(CommandPackage commandPackage, int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
+    public void jump(CommandPackage commandPackage, double x, double y, double z, double speed, double yaw, String mid1, String mid2) {
         //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
     }
 
-    public void rc(CommandPackage commandPackage, int a, int b, int c, int d) {
+    public void rc(CommandPackage commandPackage, double a, double b, double c, double d) {
         setForwardBackwardDiff(a);
         setLeftRightDiff(b);
         setUpDownDiff(c);
@@ -510,6 +511,14 @@ public class Drone {
 
     public void setMissionPadDetectionMode(int missionPadDetectionMode) {
         this.missionPadDetectionMode = missionPadDetectionMode;
+    }
+
+    public long getFlightTime() {
+        return flightTime;
+    }
+
+    public void setFlightTime(long flightTime) {
+        this.flightTime = flightTime;
     }
 
     public Group getDrone() {

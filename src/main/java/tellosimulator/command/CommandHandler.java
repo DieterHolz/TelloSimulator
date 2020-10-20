@@ -2,7 +2,6 @@ package tellosimulator.command;
 
 import javafx.geometry.Point3D;
 import tellosimulator.TelloSimulator;
-import tellosimulator.exception.TelloIllegalArgumentException;
 import tellosimulator.log.Logger;
 import tellosimulator.math.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
@@ -49,7 +48,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.TAKEOFF:
-					if (checkParams(commandParams, 0)){
+					if (checkNumberOfParams(commandParams, 0)){
 						drone.takeoff(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -57,7 +56,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LAND:
-					if (checkParams(commandParams, 0)){
+					if (checkNumberOfParams(commandParams, 0)){
 						drone.land(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -84,7 +83,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.UP:
 					double xUp;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xUp = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -100,7 +99,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.DOWN:
 					double xDown;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xDown = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -116,7 +115,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.LEFT:
 					double xLeft;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xLeft = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -132,7 +131,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.RIGHT:
 					double xRight;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xRight = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -147,7 +146,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.FORWARD:
 					double xForward;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xForward = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -163,7 +162,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.BACK:
 					double xBack;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xBack = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -179,7 +178,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.CW:
 					double xCw;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xCw = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -195,7 +194,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.CCW:
 					double xCcw;
-					if (checkParams(commandParams, 1)) {
+					if (checkNumberOfParams(commandParams, 1)) {
 						xCcw = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -210,7 +209,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.FLIP:
 					String flipDirection;
-					if (commandParams != null && commandParams.size() == 1){
+					if (checkNumberOfParams(commandParams, 1)){
 						flipDirection = commandParams.get(0);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -226,7 +225,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.GO:
 					double xGo, yGo, zGo, speedGo;
-					if (commandParams != null && commandParams.size() == 4){
+					if (checkNumberOfParams(commandParams, 4)){
 						xGo = Double.parseDouble(commandParams.get(0));
 						yGo = Double.parseDouble(commandParams.get(1));
 						zGo = Double.parseDouble(commandParams.get(2));
@@ -244,7 +243,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.STOP:
-					if (commandParams == null) {
+					if (checkNumberOfParams(commandParams, 0)) {
 						drone.stop(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -252,14 +251,26 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CURVE:
-					double x1Curve = Double.parseDouble(commandParams.get(0));
-					double y1Curve = Double.parseDouble(commandParams.get(1));
-					double z1Curve = Double.parseDouble(commandParams.get(2));
-					double x2Curve = Double.parseDouble(commandParams.get(3));
-					double y2Curve = Double.parseDouble(commandParams.get(4));
-					double z2Curve = Double.parseDouble(commandParams.get(5));
-					double speedCurve = Double.parseDouble(commandParams.get(6));
+					double x1Curve;
+					double y1Curve;
+					double z1Curve;
+					double x2Curve;
+					double y2Curve;
+					double z2Curve;
+					double speedCurve;
                     //TODO: implement missionPadId
+					if (checkNumberOfParams(commandParams, 7)) {
+						x1Curve = Double.parseDouble(commandParams.get(0));
+						y1Curve = Double.parseDouble(commandParams.get(1));
+						z1Curve = Double.parseDouble(commandParams.get(2));
+						x2Curve = Double.parseDouble(commandParams.get(3));
+						y2Curve = Double.parseDouble(commandParams.get(4));
+						z2Curve = Double.parseDouble(commandParams.get(5));
+						speedCurve = Double.parseDouble(commandParams.get(6));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve)) {
 						drone.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve);
@@ -269,13 +280,26 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.JUMP:
-					int xJump = Integer.parseInt(commandParams.get(0));
-					int yJump = Integer.parseInt(commandParams.get(1));
-					int zJump = Integer.parseInt(commandParams.get(2));
-					int speedJump = Integer.parseInt(commandParams.get(3));
-					int yawJump = Integer.parseInt(commandParams.get(4));
-					String mid1Jump = commandParams.get(5);
-					String mid2Jump = commandParams.get(6);
+					double xJump;
+					double yJump;
+					double zJump;
+					double speedJump;
+					double yawJump;
+					String mid1Jump;
+					String mid2Jump;
+
+					if (checkNumberOfParams(commandParams, 7)) {
+						xJump = Double.parseDouble(commandParams.get(0));
+						yJump = Double.parseDouble(commandParams.get(1));
+						zJump = Double.parseDouble(commandParams.get(2));
+						speedJump = Double.parseDouble(commandParams.get(3));
+						yawJump = Double.parseDouble(commandParams.get(4));
+						mid1Jump = commandParams.get(5);
+						mid2Jump = commandParams.get(6);
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 
 					if(validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump)) {
 						drone.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
@@ -285,7 +309,13 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.SPEED:
-					double xSpeed = Double.parseDouble(commandParams.get(0));
+					double xSpeed;
+					if (checkNumberOfParams(commandParams, 1)) {
+						xSpeed = Double.parseDouble(commandParams.get(0));
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 					if (checkRange(TelloSetCommand.SPEED, xSpeed, 10, 100)){
 						drone.setSpeed(xSpeed);
 						CommandResponseSender.sendOk(commandPackage);
@@ -295,11 +325,19 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.RC:
-					int a = Integer.parseInt(commandParams.get(0));
-					int b = Integer.parseInt(commandParams.get(1));
-					int c = Integer.parseInt(commandParams.get(2));
-					int d = Integer.parseInt(commandParams.get(3));
-
+					double a;
+					double b;
+					double c;
+					double d;
+					if (checkNumberOfParams(commandParams, 4)) {
+						a = Double.parseDouble(commandParams.get(0));
+						b = Double.parseDouble(commandParams.get(1));
+						c = Double.parseDouble(commandParams.get(2));
+						d = Double.parseDouble(commandParams.get(3));					}
+					else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+						break;
+					}
 					if(validateRc(a, b, c, d)) {
 						drone.rc(commandPackage, a, b, c, d);
 					} else {
@@ -328,7 +366,7 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.MOFF:
-					if (checkParams(commandParams , 0)){
+					if (checkNumberOfParams(commandParams , 0)){
 						drone.setMissionPadDetection(false);
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Mission pad detection is not supported by the TelloSimulator");
@@ -339,7 +377,7 @@ public class CommandHandler {
 
 				case TelloSetCommand.MDIRECTION:
 					int xMdirection;
-					if (checkParams(commandParams, 1) ){
+					if (checkNumberOfParams(commandParams, 1) ){
 						xMdirection = Integer.parseInt(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -364,7 +402,7 @@ public class CommandHandler {
 					String ssidAp;
 					String passAp;
 
-					if (checkParams(commandParams, 2)) {
+					if (checkNumberOfParams(commandParams, 2)) {
 						ssidAp = commandParams.get(0);
 						passAp = commandParams.get(1);
 					} else {
@@ -382,15 +420,32 @@ public class CommandHandler {
 					break;
 
 				case TelloReadCommand.SPEED:
-					//TODO: Read current speed
+					if (checkNumberOfParams(commandParams, 0)){
+						double speed = drone.getSpeed();
+						//TODO: format of response?
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloReadCommand.BATTERY:
-					//TODO: Send current battery percentage (0-100)
+					if (checkNumberOfParams(commandParams, 0)){
+						int battery = 100;
+						//TODO: Send current battery percentage (0-100)
+						//TODO: format of response?
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloReadCommand.TIME:
-					//TODO: Send current flight time
+					if (checkNumberOfParams(commandParams, 0)){
+						long time = drone.getFlightTime();
+						//TODO: Send current flight time (0-100)
+						//TODO: format of response?
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloReadCommand.WIFI:
@@ -415,7 +470,7 @@ public class CommandHandler {
         }
 	}
 
-	private boolean checkParams(List<String> commandParams, int expectedNumberOfParams) {
+	private boolean checkNumberOfParams(List<String> commandParams, int expectedNumberOfParams) {
 		if (commandParams != null && commandParams.size() == expectedNumberOfParams) {
 			return true;
 		} else if (commandParams == null && expectedNumberOfParams == 0) {
@@ -430,17 +485,16 @@ public class CommandHandler {
 		if (value >= min && value <= max) {
 			return true;
 		}
-		logger.error("Parameter value out of range *** command: "+ command +" *** input value: "+ value +"*** allowed values: " + min + " - " + max);
+		logger.error("Parameter value out of range *** command: " + command + " *** input value: " + value + "*** allowed values: " + min + " - " + max);
 		return false;
 	}
 
 	private boolean validateFlip(String x) {
-		if(!(x.equals("l") || x.equals("r") || x.equals("f") || x.equals("b"))) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.FLIP+", param name: x, input value: "+String.valueOf(x)+", valid values: l, r, f or b");
-			return false;
-		} else {
+		if(x.equals("l") || x.equals("r") || x.equals("f") || x.equals("b")) {
 			return true;
 		}
+		logger.error("Illegal Argument. Command: " + TelloControlCommand.FLIP + ", param name: x, input value: " + x + ", valid values: l, r, f or b");
+		return false;
 	}
 
 	private boolean validateGo(double x, double y, double z, double speed) {
@@ -512,19 +566,12 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateJump(int x, int y, int z, int speed, int yaw, String mid1, String mid2) {
-        if(x<-500 || x>500) {
+	private boolean validateJump(double x, double y, double z, double speed, double yaw, String mid1, String mid2) {
+        if(x<-500 || x>500 || y<-500 || y>500 || z<-500 || z>500 || speed<10 || speed>100) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.JUMP + ", values for x, y, z must be between -500 and 500. Values for speed must be between 10 and 100.");
 			return false;
 		}
-        if(y<-500 || y>500) {
-			return false;
-		}
-        if(z<-500 || z>500) {
-			return false;
-		}
-        if(speed<10 || speed>100) {
-			return false;
-		}
+
 		// yaw value ist not documented in the sdk todo: find out the valid value for yaw
 		if(!(mid1.equals("m1") || mid1.equals("m2") || mid1.equals("m3") || mid1.equals("m4") || mid1.equals("m5") || mid1.equals("m6") || mid1.equals("m7") || mid1.equals("m8"))) {
 			return false;
@@ -535,17 +582,10 @@ public class CommandHandler {
 		return true;
     }
 
-	private boolean validateRc(int a, int b, int c, int d) {
-		if(a<-100 && a>100) {
-			return false;
-		}
-        if(b<-100 && b>100) {
-			return false;
-		}
-        if(c<-100 && c>100) {
-			return false;
-		}
-        if(d<-100 && d>100) {
+	private boolean validateRc(double a, double b, double c, double d) {
+		if(a<-100 || a>100 || b<-100 || b>100 ||
+				c<-100 || c>100 || d<-100 || d>100) {
+			logger.error("Illegal Argument. Command: "+TelloSetCommand.RC + ", values for a, b, c and d must be between -100 and 100.");
 			return false;
 		}
 		return true;
@@ -557,9 +597,9 @@ public class CommandHandler {
 
 	private boolean validateMdirection(int x) {
 		if(!(x == 0 || x == 1 || x == 2)) {
+			logger.error("Illegal Argument. Command: "+TelloSetCommand.MDIRECTION + ", values must be 0, 1 or 2.");
 			return false;
 		}
-		//TODO: implement correct validateMethod
 		return true;
 	}
 
