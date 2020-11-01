@@ -5,12 +5,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import tellosimulator.command.DefaultValueHelper;
+import tellosimulator.controller.DroneController;
 
 import java.util.Locale;
 
 public class SimulatorControls extends GridPane {
-    private final Drone drone;
+    private final DroneController droneController;
+    private final DroneView droneView;
 
     private static final String NUMBER_FORMAT = "%.1f";
     private static final Locale LOCALE_CH = new Locale("de", "CH");
@@ -27,8 +28,9 @@ public class SimulatorControls extends GridPane {
     private Text yawAngleText;
     //TODO: add all other values
 
-    public SimulatorControls(Drone drone){
-        this.drone = drone;
+    public SimulatorControls(DroneController droneController, DroneView droneView){
+        this.droneController = droneController;
+        this.droneView = droneView;
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -80,27 +82,20 @@ public class SimulatorControls extends GridPane {
 
     private void setupEventHandlers() {
         resetButton.setOnAction(event -> {
-            drone.getDrone().setTranslateX(Drone.INITIAL_X_POSITION);
-            drone.getDrone().setTranslateY(Drone.INITIAL_Y_POSITION);
-            drone.getDrone().setTranslateZ(Drone.INITIAL_Z_POSITION);
-            drone.getDrone().setRotate(0);
-            drone.setxOrientation(0);
-            drone.setyOrientation(0);
-            drone.setzOrientation(1);
-            drone.setSpeed(DefaultValueHelper.DEFAULT_SPEED);
+            droneController.resetValues();
         });
     }
 
     private void setupValueChangedListeners() {
-        drone.getDrone().rotateProperty().addListener((observable, oldValue, newValue) -> {
+        droneView.rotateProperty().addListener((observable, oldValue, newValue) -> {
             yawAngleText.textProperty().setValue(String.valueOf(Math.round(newValue.doubleValue() % 360)));
         });
     }
 
     private void setupBindings() {
-        xPositionText.textProperty().bind(drone.getDrone().translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(drone.getDrone().translateYProperty().add(Drone.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
-        zPositionText.textProperty().bind(drone.getDrone().translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        xPositionText.textProperty().bind(droneView.translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(droneView.translateYProperty().add(DroneView.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        zPositionText.textProperty().bind(droneView.translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         //TODO: bind other values
     }

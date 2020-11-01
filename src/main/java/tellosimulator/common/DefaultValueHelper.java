@@ -1,4 +1,4 @@
-package tellosimulator.command;
+package tellosimulator.common;
 
 public class DefaultValueHelper {
 

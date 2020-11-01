@@ -3,12 +3,12 @@ package tellosimulator.command;
 import javafx.geometry.Point3D;
 import tellosimulator.TelloSimulator;
 import tellosimulator.log.Logger;
-import tellosimulator.math.VectorHelper;
+import tellosimulator.common.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.network.CommandConnection;
 import tellosimulator.network.VideoConnection;
 import tellosimulator.video.VideoPublisher;
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class CommandHandler {
 	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
 
-	Drone drone;
+	DroneController droneController;
 	VideoPublisher publisher;
 	List<String> commandParams;
 
@@ -26,8 +26,8 @@ public class CommandHandler {
 		return commandParams;
 	}
 
-    public CommandHandler(Drone drone, CommandConnection commandConnection) {
-        this.drone = drone;
+    public CommandHandler(DroneController droneController, CommandConnection commandConnection) {
+        this.droneController = droneController;
     }
 
     public void handle(CommandPackage commandPackage) throws IOException {
@@ -42,14 +42,14 @@ public class CommandHandler {
 
 		logger.info("handling command: " + command);
 
-		if(!drone.isAnimationRunning() || command == TelloControlCommand.EMERGENCY || command == TelloSetCommand.RC) {
+		if(!droneController.isAnimationRunning() || command == TelloControlCommand.EMERGENCY || command == TelloSetCommand.RC) {
 			switch (command) {
 				case TelloControlCommand.COMMAND:
 					break;
 
 				case TelloControlCommand.TAKEOFF:
 					if (checkNumberOfParams(commandParams, 0)){
-						drone.takeoff(commandPackage);
+						droneController.takeoff(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -57,7 +57,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.LAND:
 					if (checkNumberOfParams(commandParams, 0)){
-						drone.land(commandPackage);
+						droneController.land(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -78,7 +78,7 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.EMERGENCY:
-					drone.emergency();
+					droneController.emergency();
 					break;
 
 				case TelloControlCommand.UP:
@@ -91,7 +91,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xUp, 20, 500)) {
-						drone.up(commandPackage, xUp);
+						droneController.up(commandPackage, xUp);
 					} else {
 						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
@@ -107,7 +107,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xDown, 20, 500)) {
-						drone.down(commandPackage, xDown);
+						droneController.down(commandPackage, xDown);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -123,7 +123,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xLeft, 20, 500)) {
-						drone.left(commandPackage, xLeft);
+						droneController.left(commandPackage, xLeft);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -138,7 +138,7 @@ public class CommandHandler {
 						break;
 					}
 					if(checkRange(command, xRight, 20, 500)) {
-						drone.right(commandPackage, xRight);
+						droneController.right(commandPackage, xRight);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -154,7 +154,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xForward, 20, 500)) {
-						drone.forward(commandPackage, xForward);
+						droneController.forward(commandPackage, xForward);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -170,7 +170,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xBack, 20, 500)) {
-						drone.back(commandPackage, xBack);
+						droneController.back(commandPackage, xBack);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -186,7 +186,7 @@ public class CommandHandler {
 					}
 
 					if(checkRange(command, xCw, 1, 360)) {
-						drone.cw(commandPackage, xCw);
+						droneController.cw(commandPackage, xCw);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -201,7 +201,7 @@ public class CommandHandler {
 						break;
 					}
 					if(checkRange(command, xCcw, 1, 360)) {
-						drone.ccw(commandPackage, xCcw);
+						droneController.ccw(commandPackage, xCcw);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -217,7 +217,7 @@ public class CommandHandler {
 					}
 
 					if(validateFlip(flipDirection)) {
-						drone.flip(commandPackage, flipDirection);
+						droneController.flip(commandPackage, flipDirection);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -236,7 +236,7 @@ public class CommandHandler {
 					}
 					//TODO: String midGo = params.get(4);
 					if(validateGo(xGo, yGo, zGo, speedGo)) {
-						drone.go(commandPackage, xGo, yGo, zGo, speedGo);
+						droneController.go(commandPackage, xGo, yGo, zGo, speedGo);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -244,7 +244,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.STOP:
 					if (checkNumberOfParams(commandParams, 0)) {
-						drone.stop(commandPackage);
+						droneController.stop(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -273,7 +273,7 @@ public class CommandHandler {
 					}
 
 					if(validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve)) {
-						drone.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve);
+						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -302,7 +302,7 @@ public class CommandHandler {
 					}
 
 					if(validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump)) {
-						drone.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
+						droneController.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -317,7 +317,7 @@ public class CommandHandler {
 						break;
 					}
 					if (checkRange(TelloSetCommand.SPEED, xSpeed, 10, 100)){
-						drone.setSpeed(xSpeed);
+						droneController.getDroneModel().setSpeed(xSpeed);
 						CommandResponseSender.sendOk(commandPackage);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
@@ -339,7 +339,7 @@ public class CommandHandler {
 						break;
 					}
 					if(validateRc(a, b, c, d)) {
-						drone.rc(commandPackage, a, b, c, d);
+						droneController.rc(commandPackage, a, b, c, d);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -350,8 +350,8 @@ public class CommandHandler {
 					String wifiPass = commandParams.get(1);
 
 					if(validateWifi(wifiSsid, wifiPass)) {
-						drone.setWifiSsid(wifiSsid);
-						drone.setWifiPass(wifiPass);
+						droneController.getDroneModel().setWifiSsid(wifiSsid);
+						droneController.getDroneModel().setWifiPass(wifiPass);
 						CommandResponseSender.sendOk(commandPackage);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
@@ -359,15 +359,15 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.MON:
-					drone.setMissionPadDetection(true);
-					drone.setMissionPadDetectionMode(2);
+					droneController.getDroneModel().setMissionPadDetection(true);
+					droneController.getDroneModel().setMissionPadDetectionMode(2);
 					CommandResponseSender.sendOk(commandPackage);
 					logger.warn("Mission pad detection is not supported by the TelloSimulator");
 					break;
 
 				case TelloSetCommand.MOFF:
 					if (checkNumberOfParams(commandParams , 0)){
-						drone.setMissionPadDetection(false);
+						droneController.getDroneModel().setMissionPadDetection(false);
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Mission pad detection is not supported by the TelloSimulator");
 					} else {
@@ -385,8 +385,8 @@ public class CommandHandler {
 					}
 
 					if(validateMdirection(xMdirection)) {
-						if (drone.isMissionPadDetection()) {
-							drone.setMissionPadDetectionMode(xMdirection);
+						if (droneController.getDroneModel().isMissionPadDetection()) {
+							droneController.getDroneModel().setMissionPadDetectionMode(xMdirection);
 							CommandResponseSender.sendOk(commandPackage);
 							logger.warn("Mission pad detection is not supported by the TelloSimulator");
 						} else {
@@ -411,7 +411,7 @@ public class CommandHandler {
 					}
 
 					if(validateAp(ssidAp, passAp)) {
-						drone.ap(commandPackage, ssidAp, passAp);
+						droneController.ap(commandPackage, ssidAp, passAp);
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Station mode is not supported by the TelloSimulator");
 					} else {
@@ -421,7 +421,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.SPEED:
 					if (checkNumberOfParams(commandParams, 0)){
-						double speed = drone.getSpeed();
+						double speed = droneController.getDroneModel().getSpeed();
 						//TODO: format of response?
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -440,7 +440,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.TIME:
 					if (checkNumberOfParams(commandParams, 0)){
-						long time = drone.getFlightTime();
+						long time = droneController.getDroneModel().getFlightTime();
 						//TODO: Send current flight time (0-100)
 						//TODO: format of response?
 					} else {

@@ -1,20 +1,20 @@
-package tellosimulator.math;
+package tellosimulator.common;
 
 import javafx.geometry.Point3D;
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
 
 import java.math.BigDecimal;
 
 public class VectorHelper {
 
-    public static Point3D getLeftNormalVector(Drone drone){
+    public static Point3D getLeftNormalVector(DroneController droneController){
         //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
-        return getUpwardsNormalVector().crossProduct(drone.getCurrentOrientation());
+        return getUpwardsNormalVector().crossProduct(droneController.getCurrentOrientation());
     }
 
-    public static Point3D getRightNormalVector(Drone drone){
+    public static Point3D getRightNormalVector(DroneController droneController){
         //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
-        return drone.getCurrentOrientation().crossProduct(getUpwardsNormalVector());
+        return droneController.getCurrentOrientation().crossProduct(getUpwardsNormalVector());
     }
 
     public static Point3D getUpwardsNormalVector(){

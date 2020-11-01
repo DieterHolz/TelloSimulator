@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import tellosimulator.TelloSimulator;
+import tellosimulator.controller.DroneController;
 import tellosimulator.log.Logger;
 import tellosimulator.network.TelloSDKValues;
 import tellosimulator.network.CommandConnection;
@@ -14,7 +15,7 @@ import java.net.*;
 
 public class NetworkControls extends VBox {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "NetworkControls");
-    private final Drone drone;
+    private final DroneController droneController;
 
     private CommandConnection commandConnection;
     private StateConnection stateConnection;
@@ -33,8 +34,8 @@ public class NetworkControls extends VBox {
     private Label videoPortLabel;
     private TextField videoPortField;
 
-    public NetworkControls(Drone drone) throws IOException {
-        this.drone = drone;
+    public NetworkControls(DroneController droneController) throws IOException {
+        this.droneController = droneController;
 
         getExternalIPAddress();
 
@@ -98,8 +99,8 @@ public class NetworkControls extends VBox {
             if (startButton.isSelected()){
                 try {
                     if (commandConnection == null || !commandConnection.isAlive()){
-                        commandConnection = new CommandConnection(drone);
-                        stateConnection = new StateConnection(drone);
+                        commandConnection = new CommandConnection(droneController);
+                        stateConnection = new StateConnection(droneController);
                         commandConnection.start();
                         stateConnection.start();
                     }

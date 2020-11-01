@@ -6,7 +6,8 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
+import tellosimulator.model.DroneModel;
 import tellosimulator.view.SimulatorPane;
 
 public class TelloSimulator extends Application {
@@ -16,9 +17,10 @@ public class TelloSimulator extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Drone telloDrone = new Drone();
+        DroneModel droneModel = new DroneModel();
+        DroneController telloDroneController = new DroneController(droneModel);
 
-        Region rootPanel = new SimulatorPane(primaryStage, telloDrone, MAIN_LOG);
+        Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, MAIN_LOG);
         Scene scene = new Scene(rootPanel);
 
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());

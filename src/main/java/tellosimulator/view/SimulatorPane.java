@@ -5,13 +5,16 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
+import tellosimulator.model.DroneModel;
 
 import java.io.IOException;
 
 public class SimulatorPane extends BorderPane {
     private final Stage stage;
-    private final Drone drone;
+    private final DroneController droneController;
+    private final DroneModel droneModel;
 
     private Simulator3DScene simulator3DScene;
     private SimulatorControls simulatorControls;
@@ -21,9 +24,10 @@ public class SimulatorPane extends BorderPane {
     private LogBox logBox;
 
 
-    public SimulatorPane(Stage stage, Drone drone, Log log) throws IOException {
+    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, Log log) throws IOException {
         this.stage = stage;
-        this.drone = drone;
+        this.droneController = droneController;
+        this.droneModel = droneModel;
         this.log = log;
         initializeParts();
         layoutParts();
@@ -35,8 +39,8 @@ public class SimulatorPane extends BorderPane {
 
     private void initializeParts() throws IOException {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
-        simulatorControls = new SimulatorControls(drone);
-        networkControls = new NetworkControls(drone);
+        simulatorControls = new SimulatorControls(droneController, droneController.getDroneView());
+        networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
     }
 
@@ -60,7 +64,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        Group droneGroup = drone.getDrone();
+        Group droneGroup = droneController.getDroneView();
 
         Room3d room3d = new Room3d(Simulator3DScene.ROOM_WIDTH,Simulator3DScene.ROOM_HEIGHT,Simulator3DScene.ROOM_DEPTH,Simulator3DScene.WALL_DEPTH);
         Group roomGroup = room3d.getRoom3d();

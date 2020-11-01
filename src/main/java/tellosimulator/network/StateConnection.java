@@ -1,6 +1,6 @@
 package tellosimulator.network;
 
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
 import java.net.*;
@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StateConnection extends Thread {
     DatagramSocket stateSocket;
-    Drone telloDrone;
+    DroneController telloDroneController;
 
     private boolean running;
     private byte[] buffer = new byte[512];
@@ -20,9 +20,9 @@ public class StateConnection extends Thread {
         this.running = running;
     }
 
-    public StateConnection(Drone telloDrone) throws SocketException {
+    public StateConnection(DroneController telloDroneController) throws SocketException {
 
-        this.telloDrone = telloDrone;
+        this.telloDroneController = telloDroneController;
 
         try {
             stateSocket = new DatagramSocket(TelloSDKValues.SIM_STATE_PORT);
@@ -44,7 +44,7 @@ public class StateConnection extends Thread {
 
             while (running) {
                 try {
-                    String droneState = telloDrone.getDroneState();
+                    String droneState = telloDroneController.getDroneState();
                     DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
                     stateSocket.send(statePacket);
                     TimeUnit.MILLISECONDS.sleep(100);

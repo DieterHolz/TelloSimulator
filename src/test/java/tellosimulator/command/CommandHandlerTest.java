@@ -11,7 +11,7 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.network.TelloSDKValues;
 import tellosimulator.network.CommandConnection;
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
 
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CommandHandlerTest {
 
-    Drone drone;
+    DroneController droneController;
     CommandHandler commandHandler;
     CommandConnection commandConnection;
     CommandPackage commandPackage;
@@ -43,8 +43,8 @@ class CommandHandlerTest {
 
     @BeforeEach
     void setUp() throws UnknownHostException {
-        drone = mock(Drone.class);
-        commandHandler = new CommandHandler(drone, commandConnection);
+        droneController = mock(DroneController.class);
+        commandHandler = new CommandHandler(droneController, commandConnection);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
     }
 
@@ -56,57 +56,57 @@ class CommandHandlerTest {
     void command() throws IOException {
         commandPackage.setCommand(TelloControlCommand.COMMAND);
         commandHandler.handle(commandPackage);
-        verify(drone, atLeastOnce()).isAnimationRunning();
-        verifyNoMoreInteractions(drone);
+        verify(droneController, atLeastOnce()).isAnimationRunning();
+        verifyNoMoreInteractions(droneController);
     }
 
     @Test
     void takeoff() throws IOException {
         commandPackage.setCommand(TelloControlCommand.TAKEOFF);
         commandHandler.handle(commandPackage);
-        verify(drone, times(1)).takeoff(commandPackage);
+        verify(droneController, times(1)).takeoff(commandPackage);
     }
 
     @Test
     void takeoffTypo() throws IOException {
         commandPackage.setCommand("takeofff");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).takeoff(commandPackage);
+        verify(droneController, times(0)).takeoff(commandPackage);
     }
 
     @Test
     void takeoffWithParam() throws IOException {
         commandPackage.setCommand(TelloControlCommand.TAKEOFF + " 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).takeoff(commandPackage);
+        verify(droneController, times(0)).takeoff(commandPackage);
     }
 
     @Test
     void land() throws IOException {
         commandPackage.setCommand(TelloControlCommand.LAND);
         commandHandler.handle(commandPackage);
-        verify(drone, times(1)).land(commandPackage);
+        verify(droneController, times(1)).land(commandPackage);
     }
 
     @Test
     void landTypo() throws IOException {
         commandPackage.setCommand("landdo");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).land(commandPackage);
+        verify(droneController, times(0)).land(commandPackage);
     }
 
     @Test
     void landWithParam() throws IOException {
         commandPackage.setCommand(TelloControlCommand.LAND +" 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).land(commandPackage);
+        verify(droneController, times(0)).land(commandPackage);
     }
 
     @Test
     void emergency() throws IOException {
         commandPackage.setCommand(TelloControlCommand.EMERGENCY);
         commandHandler.handle(commandPackage);
-        verify(drone, times(1)).emergency();
+        verify(droneController, times(1)).emergency();
     }
 
     @ParameterizedTest
@@ -116,7 +116,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).up(commandPackage, dist);
+        verify(droneController, times(1)).up(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -126,7 +126,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).up(commandPackage, dist);
+        verify(droneController, times(0)).up(commandPackage, dist);
     }
 
     @Test
@@ -134,21 +134,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("up30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).up(commandPackage, 30);
+        verify(droneController, times(0)).up(commandPackage, 30);
     }
 
     @Test
     void upNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.UP);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).up(commandPackage, 0);
+        verify(droneController, times(0)).up(commandPackage, 0);
     }
 
     @Test
     void upTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.UP + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).up(commandPackage, 30);
+        verify(droneController, times(0)).up(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -158,7 +158,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).down(commandPackage, dist);
+        verify(droneController, times(1)).down(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -168,7 +168,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).down(commandPackage, dist);
+        verify(droneController, times(0)).down(commandPackage, dist);
     }
 
     @Test
@@ -176,21 +176,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("down30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).down(commandPackage, 30);
+        verify(droneController, times(0)).down(commandPackage, 30);
     }
 
     @Test
     void downNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.DOWN);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).down(commandPackage, 0);
+        verify(droneController, times(0)).down(commandPackage, 0);
     }
 
     @Test
     void downTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.DOWN + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).down(commandPackage, 30);
+        verify(droneController, times(0)).down(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -200,7 +200,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).left(commandPackage, dist);
+        verify(droneController, times(1)).left(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -210,7 +210,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).left(commandPackage, dist);
+        verify(droneController, times(0)).left(commandPackage, dist);
     }
 
     @Test
@@ -218,21 +218,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("left30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).left(commandPackage, 30);
+        verify(droneController, times(0)).left(commandPackage, 30);
     }
 
     @Test
     void leftNoParams() throws IOException {
         commandPackage.setCommand("left");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).left(commandPackage, 0);
+        verify(droneController, times(0)).left(commandPackage, 0);
     }
 
     @Test
     void leftTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.LEFT + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).left(commandPackage, 30);
+        verify(droneController, times(0)).left(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -242,7 +242,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).right(commandPackage, dist);
+        verify(droneController, times(1)).right(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -252,7 +252,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).right(commandPackage, dist);
+        verify(droneController, times(0)).right(commandPackage, dist);
     }
 
     @Test
@@ -260,21 +260,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("right30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).right(commandPackage, 30);
+        verify(droneController, times(0)).right(commandPackage, 30);
     }
 
     @Test
     void rightNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.RIGHT);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).right(commandPackage, 0);
+        verify(droneController, times(0)).right(commandPackage, 0);
     }
 
     @Test
     void rightTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.RIGHT + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).right(commandPackage, 30);
+        verify(droneController, times(0)).right(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -284,7 +284,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).forward(commandPackage, dist);
+        verify(droneController, times(1)).forward(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -294,7 +294,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).forward(commandPackage, dist);
+        verify(droneController, times(0)).forward(commandPackage, dist);
     }
 
     @Test
@@ -302,21 +302,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("forward30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).forward(commandPackage, 30);
+        verify(droneController, times(0)).forward(commandPackage, 30);
     }
 
     @Test
     void forwardNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.FORWARD);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).forward(commandPackage, 0);
+        verify(droneController, times(0)).forward(commandPackage, 0);
     }
 
     @Test
     void forwardTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.FORWARD + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).forward(commandPackage, 30);
+        verify(droneController, times(0)).forward(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -326,7 +326,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(1)).back(commandPackage, dist);
+        verify(droneController, times(1)).back(commandPackage, dist);
     }
 
     @ParameterizedTest
@@ -336,7 +336,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)). back(commandPackage, dist);
+        verify(droneController, times(0)). back(commandPackage, dist);
     }
 
     @Test
@@ -344,21 +344,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("back30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).back(commandPackage, 30);
+        verify(droneController, times(0)).back(commandPackage, 30);
     }
 
     @Test
     void backNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.BACK);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).back(commandPackage, 0);
+        verify(droneController, times(0)).back(commandPackage, 0);
     }
 
     @Test
     void backTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.BACK + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).back(commandPackage, 30);
+        verify(droneController, times(0)).back(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -368,7 +368,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(angle));
-        verify(drone, times(1)).cw(commandPackage, angle);
+        verify(droneController, times(1)).cw(commandPackage, angle);
     }
 
     @ParameterizedTest
@@ -378,7 +378,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).cw(commandPackage, dist);
+        verify(droneController, times(0)).cw(commandPackage, dist);
     }
 
     @Test
@@ -386,21 +386,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("cw30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).cw(commandPackage, 30);
+        verify(droneController, times(0)).cw(commandPackage, 30);
     }
 
     @Test
     void cwNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CW);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).cw(commandPackage, 0);
+        verify(droneController, times(0)).cw(commandPackage, 0);
     }
 
     @Test
     void cwTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CW + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).cw(commandPackage, 30);
+        verify(droneController, times(0)).cw(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -410,7 +410,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(angle));
-        verify(drone, times(1)).ccw(commandPackage, angle);
+        verify(droneController, times(1)).ccw(commandPackage, angle);
     }
 
     @ParameterizedTest
@@ -420,7 +420,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(drone, times(0)).ccw(commandPackage, dist);
+        verify(droneController, times(0)).ccw(commandPackage, dist);
     }
 
     @Test
@@ -428,21 +428,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("ccw30");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).ccw(commandPackage, 30);
+        verify(droneController, times(0)).ccw(commandPackage, 30);
     }
 
     @Test
     void ccwNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CCW);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).ccw(commandPackage, 0);
+        verify(droneController, times(0)).ccw(commandPackage, 0);
     }
 
     @Test
     void ccwTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CCW + " 30 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).ccw(commandPackage, 30);
+        verify(droneController, times(0)).ccw(commandPackage, 30);
     }
 
     @ParameterizedTest
@@ -452,7 +452,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), flipDirection);
-        verify(drone, times(1)).flip(commandPackage, flipDirection);
+        verify(droneController, times(1)).flip(commandPackage, flipDirection);
     }
 
     @ParameterizedTest
@@ -462,7 +462,7 @@ class CommandHandlerTest {
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), flipDirection);
-        verify(drone, times(0)).flip(commandPackage, flipDirection);
+        verify(droneController, times(0)).flip(commandPackage, flipDirection);
     }
 
     @Test
@@ -470,21 +470,21 @@ class CommandHandlerTest {
         commandPackage.setCommand("flipb");
         commandHandler.handle(commandPackage);
         assertEquals(commandHandler.getCommandParams(), null);
-        verify(drone, times(0)).flip(commandPackage, "b");
+        verify(droneController, times(0)).flip(commandPackage, "b");
     }
 
     @Test
     void flipNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.FLIP);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).flip(commandPackage, "");
+        verify(droneController, times(0)).flip(commandPackage, "");
     }
 
     @Test
     void flipTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.FLIP + " f b");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).flip(commandPackage, "f");
+        verify(droneController, times(0)).flip(commandPackage, "f");
     }
 
 
@@ -501,7 +501,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(1)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(1)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -517,7 +517,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(1)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(1)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -533,7 +533,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(1)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(1)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -549,7 +549,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(1)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(1)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -565,7 +565,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(0)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(0)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -581,7 +581,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(0)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(0)).go(commandPackage, x, y, z, speed);
     }
 
     @ParameterizedTest
@@ -597,7 +597,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(0)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(0)).go(commandPackage, x, y, z, speed);
     }
 
     @Test
@@ -613,7 +613,7 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(0)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(0)).go(commandPackage, x, y, z, speed);
     }
 
     @Test
@@ -629,49 +629,49 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().get(1), String.valueOf(y));
         assertEquals(commandHandler.getCommandParams().get(2), String.valueOf(z));
         assertEquals(commandHandler.getCommandParams().get(3), String.valueOf(speed));
-        verify(drone, times(0)).go(commandPackage, x, y, z, speed);
+        verify(droneController, times(0)).go(commandPackage, x, y, z, speed);
     }
 
     @Test
     void goNoParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.GO);
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).flip(commandPackage, "");
+        verify(droneController, times(0)).flip(commandPackage, "");
     }
 
     @Test
     void goTooMuchParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.GO + " 30 30 30 50 30");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).go(commandPackage, 30, 30, 30, 50);
+        verify(droneController, times(0)).go(commandPackage, 30, 30, 30, 50);
     }
 
     @Test
     void stopValid() throws IOException {
         commandPackage.setCommand(TelloControlCommand.STOP);
         commandHandler.handle(commandPackage);
-        verify(drone, times(1)).stop(commandPackage);
+        verify(droneController, times(1)).stop(commandPackage);
     }
 
     @Test
     void stopTypo() throws IOException {
         commandPackage.setCommand("stopp");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).stop(commandPackage);
+        verify(droneController, times(0)).stop(commandPackage);
     }
 
     @Test
     void stopWithParams() throws IOException {
         commandPackage.setCommand(TelloControlCommand.STOP + "10");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).stop(commandPackage);
+        verify(droneController, times(0)).stop(commandPackage);
     }
 
     @Test
     void curveValid() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CURVE + " 100 100 100 40 40 40 50");
         commandHandler.handle(commandPackage);
-        verify(drone, times(1)).curve(commandPackage, 100, 100, 100, 40, 40, 40, 50);
+        verify(droneController, times(1)).curve(commandPackage, 100, 100, 100, 40, 40, 40, 50);
     }
 
     @ParameterizedTest
@@ -679,13 +679,13 @@ class CommandHandlerTest {
     void curveInvalidRange(double x) throws IOException {
         commandPackage.setCommand(TelloControlCommand.CURVE + " " + x + " 101 100 40 40 40 50");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).curve(commandPackage, x, 100, 100, 40, 40, 40, 50);
+        verify(droneController, times(0)).curve(commandPackage, x, 100, 100, 40, 40, 40, 50);
     }
 
     @Test
     void curveInvalidArcRadius() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CURVE + " 30 30 30 40 40 40 50");
         commandHandler.handle(commandPackage);
-        verify(drone, times(0)).curve(commandPackage, 30, 30, 30, 40, 40, 40, 50);
+        verify(droneController, times(0)).curve(commandPackage, 30, 30, 30, 40, 40, 40, 50);
     }
 }

@@ -5,7 +5,7 @@ import tellosimulator.command.CommandHandler;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.command.TelloControlCommand;
 import tellosimulator.log.Logger;
-import tellosimulator.view.Drone;
+import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
 import java.net.*;
@@ -17,15 +17,15 @@ public class CommandConnection extends Thread {
 	Logger logger = new Logger(TelloSimulator.MAIN_LOG, "UDPCommandConnection");
 
 	DatagramSocket commandSocket;
-	Drone telloDrone;
+	DroneController telloDroneController;
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512];
 
-	public CommandConnection(Drone telloDrone) throws SocketException {
+	public CommandConnection(DroneController telloDroneController) throws SocketException {
 
-		this.telloDrone = telloDrone;
+		this.telloDroneController = telloDroneController;
 
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
@@ -42,8 +42,8 @@ public class CommandConnection extends Thread {
 
 	public void run() {
 		sdkModeInitiated = false;
-		CommandHandler commandHandler = new CommandHandler(telloDrone, this);
-		telloDrone.setCommandHandler(commandHandler);
+		CommandHandler commandHandler = new CommandHandler(telloDroneController, this);
+		telloDroneController.setCommandHandler(commandHandler);
 
 		while (running) {
 
