@@ -24,7 +24,7 @@ class DroneTest {
 
 
     @BeforeEach
-    void setUp() throws SocketException, UnknownHostException {
+    void setUp() throws IOException {
         drone = new Drone();
         commandConnection = new CommandConnection(drone);
         commandHandler = new CommandHandler(drone, commandConnection);

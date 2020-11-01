@@ -3,11 +3,11 @@ package tellosimulator.view;
 import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
+import javafx.scene.Node;
 import javafx.util.Duration;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.DefaultValueHelper;
@@ -39,6 +39,7 @@ public class Drone {
     private long flightTime;
 
     private Group drone;
+    private Group drone3DModel;
     private Group pitchContainer;
     private Group rollContainer;
     private AnimationTimer animationTimer;
@@ -68,7 +69,7 @@ public class Drone {
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
 
 
-    public Drone() {
+    public Drone() throws IOException {
         buildDrone();
         setInititalValues();
         animationRunning = false;
@@ -78,15 +79,24 @@ public class Drone {
         createAnimationLoop();
     }
 
-    private void buildDrone() {
+    private void buildDrone() throws IOException {
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/TelloDrone.fxml"));
+        drone3DModel = loader.load();
+        ObservableList<Node> children = drone3DModel.getChildren();
+        // System.out.println(children.toString()); //TODO: identify rotor child nodes to make them rotate
+
         drone = new Group();
         pitchContainer = new Group();
         rollContainer = new Group();
-        PhongMaterial lightskyblue = new PhongMaterial();
-        lightskyblue.setDiffuseColor(Color.LIGHTSKYBLUE);
-        Box box = new Box(DRONE_WIDTH, DRONE_HEIGHT, DRONE_DEPTH);
-        box.setMaterial(lightskyblue);
-        pitchContainer.getChildren().add(box);
+
+        drone3DModel.setScaleX(1);
+        drone3DModel.setScaleY(1);
+        drone3DModel.setScaleZ(1);
+        drone3DModel.setRotate(180);
+        drone3DModel.setTranslateY(INITIAL_Y_POSITION);
+        pitchContainer.getChildren().add(drone3DModel);
         rollContainer.getChildren().add(pitchContainer);
         drone.getChildren().add(rollContainer);
     }
