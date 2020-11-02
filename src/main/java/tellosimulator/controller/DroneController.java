@@ -25,7 +25,6 @@ public class DroneController {
 
     private AnimationTimer animationTimer;
     private Timeline timeline = new Timeline();
-    private RotateTransition rotateTransition = new RotateTransition();
 
     private boolean animationRunning;
     private CommandHandler commandHandler;
@@ -39,7 +38,7 @@ public class DroneController {
     }
 
 
-    public DroneController(DroneModel droneModel) throws IOException {
+    public DroneController(DroneModel droneModel) {
         this.droneModel = droneModel;
         resetValues();
         animationRunning = false;
@@ -61,11 +60,6 @@ public class DroneController {
         droneModel.setRoll(0);
     }
 
-    private void rotate(double angle, Rotation axis) {
-        animate(createRotateAnimation(axis, angle));
-    }
-
-
     /**
      * Moves the drone to the given target coordinates.
      * @param target the position vector/coordinates of the target
@@ -75,23 +69,6 @@ public class DroneController {
         Point3D to = target;
         Duration duration = Duration.seconds(from.distance(to) / speed);
         animate(createMoveAnimation(to, duration));
-
-    }
-
-    private void animate(Timeline timeline) {
-        timeline.setOnFinished(event -> {
-            animationRunning = false;
-            try {
-                CommandResponseSender.sendOk(commandPackage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-        if(!emergency) {
-            animationRunning = true;
-        }
-        timeline.play();
     }
 
     /**
@@ -106,8 +83,18 @@ public class DroneController {
         animate(createMoveAnimation(to, duration));
     }
 
+    /**
+     * Rotates the drone around a certain axis for the given angle.
+     * @param angle the angle it should rotate. Will be added to the current rotate value of this axis.
+     * @param axis the rotation axis it should rotate around
+     */
+    private void rotate(double angle, Rotation axis) {
+        animate(createRotateAnimation(axis, angle));
+    }
+
     private Timeline createRotateAnimation(Rotation rotation, Double angle) {
         timeline.getKeyFrames().clear();
+
         KeyValue rotate = null;
         Duration duration = null;
         KeyFrame keyFrame = null;
@@ -125,7 +112,6 @@ public class DroneController {
             rotate = new KeyValue(droneModel.pitchProperty(), angle);
             duration = Duration.millis(DefaultValueHelper.FLIP_DURATION);
         }
-
 
         if (rotate != null && duration != null){
             keyFrame = new KeyFrame(duration, rotate);
@@ -173,9 +159,23 @@ public class DroneController {
         LOGGER.fatal("emergency!!!!");*/
     }
 
-
-    public Point3D getCurrentOrientation(){
-        return new Point3D(droneModel.getxOrientation(), droneModel.getyOrientation(), droneModel.getzOrientation());
+    /**
+     * Plays the timeline and sends ok to the operator once finished playing.
+     * @param timeline the timeline with its KeyFrames which should be animated.
+     */
+    private void animate(Timeline timeline) {
+        timeline.setOnFinished(event -> {
+            animationRunning = false;
+            try {
+                CommandResponseSender.sendOk(commandPackage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        if(!emergency) {
+            animationRunning = true;
+        }
+        timeline.play();
     }
 
     /**
@@ -200,13 +200,14 @@ public class DroneController {
      */
     private void updateRcYaw() {
         double oldYaw = droneModel.getYaw();
-
         double rotateAngle = (360F/(FRAMES_PER_SECOND * (DefaultValueHelper.TURN_DURATION/1000F)))*(droneModel.getYawDiff()/100);
         droneModel.setYaw((oldYaw + rotateAngle)%360);
-
         updateOrientation(rotateAngle);
     }
 
+    /**
+     * Updates the drone orientation vector. Called when yawing/turning.
+     */
     private void updateOrientation(double rotateAngle) {
         double x1 = droneModel.getxOrientation();
         double z1 = droneModel.getzOrientation();
@@ -215,20 +216,24 @@ public class DroneController {
     }
 
     private void createAnimationLoop() {
-
         animationTimer = new AnimationTimer() {
-            private long lastTimerCall;
-
             @Override
             public void handle(long now) {  // called in every frame!
                 updateRcPosition();
                 updateRcYaw();
             }
         };
-
         animationTimer.start();
     }
 
+    /**
+     * Helper method to get the vector of where the drone is currently facing.
+     */
+    public Point3D getCurrentOrientation(){
+        return new Point3D(droneModel.getxOrientation(), droneModel.getyOrientation(), droneModel.getzOrientation());
+    }
+
+    // control commands
     public void takeoff(CommandPackage commandPackage) {
         droneModel.setTakeoffTime(System.currentTimeMillis());
         this.commandPackage = commandPackage;
@@ -362,7 +367,6 @@ public class DroneController {
     }
 
     //getter and setter
-
     public DroneModel getDroneModel() {
         return droneModel;
     }
