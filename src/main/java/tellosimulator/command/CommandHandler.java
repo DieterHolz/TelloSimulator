@@ -430,9 +430,10 @@ public class CommandHandler {
 
 				case TelloReadCommand.BATTERY:
 					if (checkNumberOfParams(commandParams, 0)){
-						int battery = 100;
 						//TODO: Send current battery percentage (0-100)
 						//TODO: format of response?
+						droneController.getDroneModel().getBattery();
+
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -440,24 +441,44 @@ public class CommandHandler {
 
 				case TelloReadCommand.TIME:
 					if (checkNumberOfParams(commandParams, 0)){
-						long time = droneController.getDroneModel().getFlightTime();
-						//TODO: Send current flight time (0-100)
+						//TODO: Send current flight time
 						//TODO: format of response?
+						long flightTime = droneController.getDroneModel().getFlightTime();
+						CommandResponseSender.sendReadResponse(commandPackage, "current flight time as string in correct format");
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
 
 				case TelloReadCommand.WIFI:
-					//TODO: Send Wi-Fi SNR
+					if (checkNumberOfParams(commandParams, 0)){
+						//TODO: Send Wi-Fi SNR
+						//TODO: format of response?
+						String wifi = droneController.getDroneModel().getWifiSsid();
+						CommandResponseSender.sendReadResponse(commandPackage, "Wi-Fi SNR as string in correct format");
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloReadCommand.SDK:
-					//TODO: Send the Tello SDK version
+					if (checkNumberOfParams(commandParams, 0)){
+						//TODO: Send the Tello SDK version
+						//TODO: format of response
+						CommandResponseSender.sendReadResponse(commandPackage, "Tello SDK 2.0");
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloReadCommand.SN:
-					//TODO: Send the Tello serial number
+					if (checkNumberOfParams(commandParams, 0)){
+						//TODO: Send the Tello serial number
+						//TODO: format of response
+						CommandResponseSender.sendReadResponse(commandPackage, "Tello 1337");
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				default:

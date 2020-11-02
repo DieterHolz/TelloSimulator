@@ -54,6 +54,14 @@ public final class CommandResponseSender {
         logger.debug("Sent response: '" + TelloResponse.OUT_OF_RANGE + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
     }
 
+
+    public static void sendReadResponse(CommandPackage commandPackage, String response) throws IOException {
+        DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), TelloResponse.OUT_OF_RANGE.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+        socket.send(responsePacket);
+        logger.debug("Sent response: '" + TelloResponse.OUT_OF_RANGE + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
+
+    }
+
     public DatagramSocket getSocket() {
         return socket;
     }
