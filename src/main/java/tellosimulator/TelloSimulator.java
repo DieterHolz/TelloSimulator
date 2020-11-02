@@ -8,6 +8,7 @@ import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
 import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
+import tellosimulator.view.DroneView;
 import tellosimulator.view.SimulatorPane;
 
 public class TelloSimulator extends Application {
@@ -19,8 +20,9 @@ public class TelloSimulator extends Application {
     public void start(Stage primaryStage) throws Exception{
         DroneModel droneModel = new DroneModel();
         DroneController telloDroneController = new DroneController(droneModel);
+        DroneView droneView = new DroneView(droneModel);
 
-        Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, MAIN_LOG);
+        Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, droneView, MAIN_LOG);
         Scene scene = new Scene(rootPanel);
 
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());

@@ -2,12 +2,16 @@ package tellosimulator.view;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import tellosimulator.common.VectorHelper;
+import tellosimulator.model.DroneModel;
 
 import java.io.IOException;
 
 public class DroneView extends Group {
+    private DroneModel droneModel;
 
     public static final int DRONE_WIDTH = 18;
     public static final int DRONE_HEIGHT = 5;
@@ -19,8 +23,10 @@ public class DroneView extends Group {
     private Group rollContainer;
 
 
-    public DroneView() throws IOException {
+    public DroneView(DroneModel droneModel) throws IOException {
+        this.droneModel = droneModel;
         buildDrone();
+        setupBindings();
     }
 
     private void buildDrone() throws IOException {
@@ -35,6 +41,10 @@ public class DroneView extends Group {
         pitchContainer = new Group();
         rollContainer = new Group();
 
+        drone.setRotationAxis(VectorHelper.getUpwardsNormalVector());
+        rollContainer.setRotationAxis(new Point3D(0,0,1));
+        pitchContainer.setRotationAxis(new Point3D(1,0,0));
+
         drone3DModel.setScaleX(1);
         drone3DModel.setScaleY(1);
         drone3DModel.setScaleZ(1);
@@ -44,6 +54,16 @@ public class DroneView extends Group {
         rollContainer.getChildren().add(pitchContainer);
         drone.getChildren().add(rollContainer);
         this.getChildren().add(drone);
+    }
+
+
+    private void setupBindings() {
+        this.translateXProperty().bind(droneModel.xPositionProperty());
+        this.translateYProperty().bind(droneModel.yPositionProperty());
+        this.translateZProperty().bind(droneModel.zPositionProperty());
+        this.getDrone().rotateProperty().bind(droneModel.yawProperty());
+        this.getRollContainer().rotateProperty().bind(droneModel.rollProperty());
+        this.getPitchContainer().rotateProperty().bind(droneModel.pitchProperty());
     }
 
     public Group getDrone() {

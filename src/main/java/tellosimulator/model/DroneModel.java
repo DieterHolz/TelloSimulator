@@ -2,16 +2,27 @@ package tellosimulator.model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import tellosimulator.view.DroneView;
 
 public class DroneModel {
 
-    private int mid, x, y, z, pitch, roll, yaw, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
+    private int mid, x, y, z, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
     private double barometer, accelerationX, accelerationY, accelerationZ;
     private String wifiSsid;
     private String wifiPass;
     private boolean missionPadDetection;
     private int missionPadDetectionMode;
     private long flightTime;
+
+    private long takeoffTime = 0L;
+
+    private final DoubleProperty xPosition = new SimpleDoubleProperty();
+    private final DoubleProperty yPosition = new SimpleDoubleProperty();
+    private final DoubleProperty zPosition = new SimpleDoubleProperty();
+
+    private final DoubleProperty pitch = new SimpleDoubleProperty();
+    private final DoubleProperty roll = new SimpleDoubleProperty();
+    private final DoubleProperty yaw = new SimpleDoubleProperty();
 
     private final DoubleProperty xOrientation = new SimpleDoubleProperty();
     private final DoubleProperty yOrientation = new SimpleDoubleProperty();
@@ -23,6 +34,78 @@ public class DroneModel {
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
 
     public DroneModel() {
+    }
+
+    public double getxPosition() {
+        return xPosition.get();
+    }
+
+    public DoubleProperty xPositionProperty() {
+        return xPosition;
+    }
+
+    public void setxPosition(double xPosition) {
+        this.xPosition.set(xPosition);
+    }
+
+    public double getyPosition() {
+        return yPosition.get();
+    }
+
+    public DoubleProperty yPositionProperty() {
+        return yPosition;
+    }
+
+    public void setyPosition(double yPosition) {
+        this.yPosition.set(yPosition);
+    }
+
+    public double getzPosition() {
+        return zPosition.get();
+    }
+
+    public DoubleProperty zPositionProperty() {
+        return zPosition;
+    }
+
+    public void setzPosition(double zPosition) {
+        this.zPosition.set(zPosition);
+    }
+
+    public double getPitch() {
+        return pitch.get();
+    }
+
+    public DoubleProperty pitchProperty() {
+        return pitch;
+    }
+
+    public void setPitch(double pitch) {
+        this.pitch.set(pitch);
+    }
+
+    public double getRoll() {
+        return roll.get();
+    }
+
+    public DoubleProperty rollProperty() {
+        return roll;
+    }
+
+    public void setRoll(double roll) {
+        this.roll.set(roll);
+    }
+
+    public double getYaw() {
+        return yaw.get();
+    }
+
+    public DoubleProperty yawProperty() {
+        return yaw;
+    }
+
+    public void setYaw(double yaw) {
+        this.yaw.set(yaw);
     }
 
     public int getMid() {
@@ -55,30 +138,6 @@ public class DroneModel {
 
     public void setZ(int z) {
         this.z = z;
-    }
-
-    public int getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
-    }
-
-    public int getRoll() {
-        return roll;
-    }
-
-    public void setRoll(int roll) {
-        this.roll = roll;
-    }
-
-    public int getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(int yaw) {
-        this.yaw = yaw;
     }
 
     public int getSpeedX() {
@@ -223,6 +282,14 @@ public class DroneModel {
 
     public void setFlightTime(long flightTime) {
         this.flightTime = flightTime;
+    }
+
+    public long getTakeoffTime() {
+        return takeoffTime;
+    }
+
+    public void setTakeoffTime(long takeoffTime) {
+        this.takeoffTime = takeoffTime;
     }
 
     public double getxOrientation() {

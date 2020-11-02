@@ -15,7 +15,6 @@ import tellosimulator.view.Simulator3DScene;
 import java.io.IOException;
 
 public class DroneController {
-    private DroneView droneView; //TODO: let controller only change model and bind view to model
     private DroneModel droneModel;
 
     private final int FRAMES_PER_SECOND = 60;
@@ -42,7 +41,6 @@ public class DroneController {
 
     public DroneController(DroneModel droneModel) throws IOException {
         this.droneModel = droneModel;
-        this.droneView = new DroneView();
         resetValues();
         animationRunning = false;
         createAnimationLoop();
@@ -55,45 +53,16 @@ public class DroneController {
         droneModel.setSpeed(DefaultValueHelper.DEFAULT_SPEED);
         droneModel.setMissionPadDetection(false);
 
-        droneView.setTranslateX(INITIAL_X_POSITION);
-        droneView.setTranslateY(INITIAL_Y_POSITION);
-        droneView.setTranslateZ(INITIAL_Z_POSITION);
-        droneView.getDrone().setRotate(0);
-        droneView.getPitchContainer().setRotate(0);
-        droneView.getRollContainer().setRotate(0);
+        droneModel.setxPosition(INITIAL_X_POSITION);
+        droneModel.setyPosition(INITIAL_Y_POSITION);
+        droneModel.setzPosition(INITIAL_Z_POSITION);
+        droneModel.setYaw(0);
+        droneModel.setPitch(0);
+        droneModel.setRoll(0);
     }
 
-
     private void rotate(double angle, Rotation axis) {
-
-        rotateTransition.setByAngle(angle);
-
-        if (axis == Rotation.YAW) {
-            updateOrientation(angle);
-            rotateTransition.setAxis(VectorHelper.getUpwardsNormalVector());
-            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.TURN_DURATION*Math.abs(angle)/360));
-            rotateTransition.setNode(droneView.getDrone());
-
-        } else if (axis == Rotation.ROLL) {
-            rotateTransition.setAxis(new Point3D(0,0,1));
-            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.FLIP_DURATION));
-            rotateTransition.setNode(droneView.getRollContainer());
-
-        } else if (axis == Rotation.PITCH) {
-            rotateTransition.setAxis(new Point3D(1,0,0));
-            rotateTransition.setDuration(Duration.millis(DefaultValueHelper.FLIP_DURATION));
-            rotateTransition.setNode(droneView.getPitchContainer());
-        }
-
-        rotateTransition.setOnFinished(event -> {
-            animationRunning = false;
-            try {
-                CommandResponseSender.sendOk(commandPackage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        rotateTransition.play();
+        animate(createRotateAnimation(axis, angle));
     }
 
 
@@ -102,7 +71,7 @@ public class DroneController {
      * @param target the position vector/coordinates of the target
      */
     private void moveToPoint(Point3D target, double speed){
-        Point3D from = new Point3D(droneView.getTranslateX(), droneView.getTranslateY(), droneView.getTranslateZ());
+        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
         Point3D to = target;
         Duration duration = Duration.seconds(from.distance(to) / speed);
         animate(createMoveAnimation(to, duration));
@@ -112,7 +81,6 @@ public class DroneController {
     private void animate(Timeline timeline) {
         timeline.setOnFinished(event -> {
             animationRunning = false;
-            droneView.setRotationAxis(VectorHelper.getUpwardsNormalVector());
             try {
                 CommandResponseSender.sendOk(commandPackage);
             } catch (IOException e) {
@@ -132,18 +100,49 @@ public class DroneController {
      * @param distance the distance (in cm)
      */
     private void move (Point3D directionVector, double distance){
-        Point3D from = new Point3D(droneView.getTranslateX(), droneView.getTranslateY(), droneView.getTranslateZ());   // get p1
+        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());   // get p1
         Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
         Duration duration = Duration.seconds(distance / droneModel.getSpeed());
         animate(createMoveAnimation(to, duration));
     }
 
+    private Timeline createRotateAnimation(Rotation rotation, Double angle) {
+        timeline.getKeyFrames().clear();
+        KeyValue rotate = null;
+        Duration duration = null;
+        KeyFrame keyFrame = null;
+        if (rotation == Rotation.YAW) {
+            updateOrientation(angle);
+            rotate = new KeyValue(droneModel.yawProperty(), angle);
+            duration = Duration.millis(DefaultValueHelper.TURN_DURATION*Math.abs(angle)/360);
+        } else if (rotation == Rotation.ROLL) {
+            droneModel.setRoll(0);
+            rotate = new KeyValue(droneModel.rollProperty(), angle);
+            duration = Duration.millis(DefaultValueHelper.FLIP_DURATION);
+
+        } else if (rotation == Rotation.PITCH) {
+            droneModel.setPitch(0);
+            rotate = new KeyValue(droneModel.pitchProperty(), angle);
+            duration = Duration.millis(DefaultValueHelper.FLIP_DURATION);
+        }
+
+
+        if (rotate != null && duration != null){
+            keyFrame = new KeyFrame(duration, rotate);
+        }
+
+        if (keyFrame != null){
+            timeline.getKeyFrames().add(keyFrame);
+        }
+        return timeline;
+    }
+
     private Timeline createMoveAnimation(Point3D target, Duration duration){
         timeline.getKeyFrames().clear();
 
-        KeyValue keyX = new KeyValue(droneView.translateXProperty(), target.getX(), Interpolator.EASE_BOTH);
-        KeyValue keyY = new KeyValue(droneView.translateYProperty(), target.getY(), Interpolator.EASE_BOTH);
-        KeyValue keyZ = new KeyValue(droneView.translateZProperty(), target.getZ(), Interpolator.EASE_BOTH);
+        KeyValue keyX = new KeyValue(droneModel.xPositionProperty(), target.getX(), Interpolator.EASE_BOTH);
+        KeyValue keyY = new KeyValue(droneModel.yPositionProperty(), target.getY(), Interpolator.EASE_BOTH);
+        KeyValue keyZ = new KeyValue(droneModel.zPositionProperty(), target.getZ(), Interpolator.EASE_BOTH);
 
         KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
         timeline.getKeyFrames().add(keyFrame);
@@ -175,10 +174,6 @@ public class DroneController {
     }
 
 
-    // vector calculations
-
-
-
     public Point3D getCurrentOrientation(){
         return new Point3D(droneModel.getxOrientation(), droneModel.getyOrientation(), droneModel.getzOrientation());
     }
@@ -188,26 +183,26 @@ public class DroneController {
      * up/down depending on the current speed.
      */
     private void updateRcPosition() {
-        Point3D oldPos = new Point3D(droneView.getTranslateX(), droneView.getTranslateY(), droneView.getTranslateZ());
+        Point3D oldPos = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
         Point3D forward = getCurrentOrientation().multiply(droneModel.getForwardBackwardDiff()/100);
         Point3D right = VectorHelper.getRightNormalVector(this).multiply(droneModel.getLeftRightDiff()/100);
         Point3D up = VectorHelper.getUpwardsNormalVector().multiply(droneModel.getUpDownDiff()/100);
         Point3D moveDirectionVector = forward.add(right).add(up);
         Point3D newPos = oldPos.add(moveDirectionVector.multiply(droneModel.getSpeed() / FRAMES_PER_SECOND));
 
-        droneView.setTranslateX(newPos.getX());
-        droneView.setTranslateY(newPos.getY());
-        droneView.setTranslateZ(newPos.getZ());
+        droneModel.setxPosition(newPos.getX());
+        droneModel.setyPosition(newPos.getY());
+        droneModel.setzPosition(newPos.getZ());
     }
 
     /**
      * Updates the drone rotation every frame depending on the currently set rc value of yaw.
      */
     private void updateRcYaw() {
-        droneView.setRotationAxis(VectorHelper.getUpwardsNormalVector());
-        double oldRotate = droneView.getRotate();
+        double oldYaw = droneModel.getYaw();
+
         double rotateAngle = (360F/(FRAMES_PER_SECOND * (DefaultValueHelper.TURN_DURATION/1000F)))*(droneModel.getYawDiff()/100);
-        droneView.setRotate((oldRotate + rotateAngle)%360);
+        droneModel.setYaw((oldYaw + rotateAngle)%360);
 
         updateOrientation(rotateAngle);
     }
@@ -235,13 +230,14 @@ public class DroneController {
     }
 
     public void takeoff(CommandPackage commandPackage) {
+        droneModel.setTakeoffTime(System.currentTimeMillis());
         this.commandPackage = commandPackage;
         move(VectorHelper.getUpwardsNormalVector(), DefaultValueHelper.TAKEOFF_DISTANCE);
     }
 
     public void land(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getDownwardsNormalVector(), -droneView.getTranslateY()+INITIAL_Y_POSITION);
+        move(VectorHelper.getDownwardsNormalVector(), -droneModel.getyPosition()+INITIAL_Y_POSITION);
     }
 
     public void down(CommandPackage commandPackage, double x) {
@@ -366,10 +362,6 @@ public class DroneController {
     }
 
     //getter and setter
-
-    public DroneView getDroneView() {
-        return droneView;
-    }
 
     public DroneModel getDroneModel() {
         return droneModel;

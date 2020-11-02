@@ -6,12 +6,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import tellosimulator.controller.DroneController;
+import tellosimulator.model.DroneModel;
 
 import java.util.Locale;
 
 public class SimulatorControls extends GridPane {
+    private final DroneModel droneModel;
     private final DroneController droneController;
-    private final DroneView droneView;
 
     private static final String NUMBER_FORMAT = "%.1f";
     private static final Locale LOCALE_CH = new Locale("de", "CH");
@@ -28,9 +29,9 @@ public class SimulatorControls extends GridPane {
     private Text yawAngleText;
     //TODO: add all other values
 
-    public SimulatorControls(DroneController droneController, DroneView droneView){
+    public SimulatorControls(DroneModel droneModel, DroneController droneController){
+        this.droneModel = droneModel;
         this.droneController = droneController;
-        this.droneView = droneView;
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -87,15 +88,15 @@ public class SimulatorControls extends GridPane {
     }
 
     private void setupValueChangedListeners() {
-        droneView.rotateProperty().addListener((observable, oldValue, newValue) -> {
+        droneModel.yawProperty().addListener((observable, oldValue, newValue) -> {
             yawAngleText.textProperty().setValue(String.valueOf(Math.round(newValue.doubleValue() % 360)));
         });
     }
 
     private void setupBindings() {
-        xPositionText.textProperty().bind(droneView.translateXProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(droneView.translateYProperty().add(DroneView.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
-        zPositionText.textProperty().bind(droneView.translateZProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        xPositionText.textProperty().bind(droneModel.xPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(droneModel.yPositionProperty().add(DroneView.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        zPositionText.textProperty().bind(droneModel.zPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         //TODO: bind other values
     }

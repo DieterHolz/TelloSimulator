@@ -15,6 +15,7 @@ public class SimulatorPane extends BorderPane {
     private final Stage stage;
     private final DroneController droneController;
     private final DroneModel droneModel;
+    private final DroneView droneView;
 
     private Simulator3DScene simulator3DScene;
     private SimulatorControls simulatorControls;
@@ -24,10 +25,11 @@ public class SimulatorPane extends BorderPane {
     private LogBox logBox;
 
 
-    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, Log log) throws IOException {
+    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) throws IOException {
         this.stage = stage;
         this.droneController = droneController;
         this.droneModel = droneModel;
+        this.droneView = droneView;
         this.log = log;
         initializeParts();
         layoutParts();
@@ -39,7 +41,7 @@ public class SimulatorPane extends BorderPane {
 
     private void initializeParts() throws IOException {
         simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
-        simulatorControls = new SimulatorControls(droneController, droneController.getDroneView());
+        simulatorControls = new SimulatorControls(droneModel, droneController);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
     }
@@ -64,7 +66,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        Group droneGroup = droneController.getDroneView();
+        Group droneGroup = droneView;
 
         Room3d room3d = new Room3d(Simulator3DScene.ROOM_WIDTH,Simulator3DScene.ROOM_HEIGHT,Simulator3DScene.ROOM_DEPTH,Simulator3DScene.WALL_DEPTH);
         Group roomGroup = room3d.getRoom3d();
