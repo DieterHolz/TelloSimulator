@@ -2,7 +2,6 @@ package tellosimulator.model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import tellosimulator.view.DroneView;
 
 public class DroneModel {
 

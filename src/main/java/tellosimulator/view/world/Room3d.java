@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.world;
 
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;

@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.log;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;

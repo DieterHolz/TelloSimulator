@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.controls;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;

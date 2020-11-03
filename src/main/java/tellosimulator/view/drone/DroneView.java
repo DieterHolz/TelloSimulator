@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.drone;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,8 @@ import tellosimulator.common.VectorHelper;
 import tellosimulator.model.DroneModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DroneView extends Group {
     private DroneModel droneModel;
@@ -22,6 +24,7 @@ public class DroneView extends Group {
     private Group pitchContainer;
     private Group rollContainer;
 
+    List<Rotor> rotors = new ArrayList<>();
 
     public DroneView(DroneModel droneModel) throws IOException {
         this.droneModel = droneModel;
@@ -32,10 +35,19 @@ public class DroneView extends Group {
     private void buildDrone() throws IOException {
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/TelloDrone.fxml"));
+        loader.setLocation(getClass().getResource("/TelloDroneLowpoly.fxml"));
         drone3DModel = loader.load();
+
         ObservableList<Node> children = drone3DModel.getChildren();
-        // System.out.println(children.toString()); //TODO: identify rotor child nodes to make them rotate
+        Rotor backRightRotor = new Rotor(children.get(42));
+        Rotor frontRightRotor = new Rotor(children.get(33));
+        Rotor backLeftRotor = new Rotor(children.get(37));
+        Rotor frontLeftRotor = new Rotor(children.get(14));
+
+        rotors.add(backRightRotor);
+        rotors.add(frontRightRotor);
+        rotors.add(backLeftRotor);
+        rotors.add(frontLeftRotor);
 
         drone = new Group();
         pitchContainer = new Group();
@@ -88,5 +100,9 @@ public class DroneView extends Group {
 
     public Group getRollContainer() {
         return rollContainer;
+    }
+
+    public List<Rotor> getRotors() {
+        return rotors;
     }
 }

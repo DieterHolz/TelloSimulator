@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.log;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;

@@ -8,8 +8,8 @@ import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
 import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
-import tellosimulator.view.DroneView;
-import tellosimulator.view.SimulatorPane;
+import tellosimulator.view.drone.DroneView;
+import tellosimulator.view.layout.SimulatorPane;
 
 public class TelloSimulator extends Application {
 
@@ -19,8 +19,8 @@ public class TelloSimulator extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         DroneModel droneModel = new DroneModel();
-        DroneController telloDroneController = new DroneController(droneModel);
         DroneView droneView = new DroneView(droneModel);
+        DroneController telloDroneController = new DroneController(droneModel, droneView);
 
         Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, droneView, MAIN_LOG);
         Scene scene = new Scene(rootPanel);

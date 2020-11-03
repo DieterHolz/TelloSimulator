@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.layout;
 
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -8,6 +8,12 @@ import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
 import tellosimulator.model.DroneModel;
+import tellosimulator.view.world.Room3d;
+import tellosimulator.view.controls.NetworkControls;
+import tellosimulator.view.controls.SimulatorControls;
+import tellosimulator.view.drone.DroneView;
+import tellosimulator.view.log.LogBox;
+import tellosimulator.view.world.Simulator3DScene;
 
 import java.io.IOException;
 
@@ -70,10 +76,11 @@ public class SimulatorPane extends BorderPane {
 
         Room3d room3d = new Room3d(Simulator3DScene.ROOM_WIDTH,Simulator3DScene.ROOM_HEIGHT,Simulator3DScene.ROOM_DEPTH,Simulator3DScene.WALL_DEPTH);
         Group roomGroup = room3d.getRoom3d();
+        //CubeWorld cubeWorld = new CubeWorld(false);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();
-        root.getChildren().addAll(droneGroup, roomGroup);
+        root.getChildren().addAll(droneGroup, roomGroup); //add cubeWorld
         return root;
     }
 

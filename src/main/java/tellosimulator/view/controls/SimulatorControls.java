@@ -1,4 +1,4 @@
-package tellosimulator.view;
+package tellosimulator.view.controls;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
+import tellosimulator.view.drone.DroneView;
 
 import java.util.Locale;
 

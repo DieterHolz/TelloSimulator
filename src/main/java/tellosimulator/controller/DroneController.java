@@ -2,6 +2,7 @@ package tellosimulator.controller;
 
 import javafx.animation.*;
 import javafx.geometry.Point3D;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.common.DefaultValueHelper;
@@ -9,13 +10,15 @@ import tellosimulator.command.CommandPackage;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
-import tellosimulator.view.DroneView;
-import tellosimulator.view.Simulator3DScene;
+import tellosimulator.view.drone.DroneView;
+import tellosimulator.view.world.Simulator3DScene;
+import tellosimulator.view.drone.Rotor;
 
 import java.io.IOException;
 
 public class DroneController {
     private DroneModel droneModel;
+    private DroneView droneView;
 
     private final int FRAMES_PER_SECOND = 60;
 
@@ -38,8 +41,9 @@ public class DroneController {
     }
 
 
-    public DroneController(DroneModel droneModel) {
+    public DroneController(DroneModel droneModel, DroneView droneView) {
         this.droneModel = droneModel;
+        this.droneView = droneView;
         resetValues();
         animationRunning = false;
         createAnimationLoop();
@@ -58,6 +62,8 @@ public class DroneController {
         droneModel.setYaw(0);
         droneModel.setPitch(0);
         droneModel.setRoll(0);
+
+        spinDownRotors(false);
     }
 
     /**
@@ -136,6 +142,7 @@ public class DroneController {
     }
 
     public void emergency() {
+        spinDownRotors(false);
         /*emergency = true;
         if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
             rotateTransition.stop();
@@ -226,6 +233,29 @@ public class DroneController {
         animationTimer.start();
     }
 
+
+    private void spinUpRotors() {
+        //TODO: smooth spin up
+        for (Rotor rotor : droneView.getRotors()) {
+            RotateTransition rotateTransition = new RotateTransition();
+            rotateTransition.setAxis(Rotate.Y_AXIS);
+            rotateTransition.setDuration( Duration.seconds(0.1) );
+            rotateTransition.setByAngle( 360 );
+            rotateTransition.setNode(rotor.getNode());
+            rotateTransition.setCycleCount( Animation.INDEFINITE );
+            rotateTransition.play();
+        }
+    }
+
+    private void spinDownRotors(boolean smoothSpinDown) {
+        if (smoothSpinDown) {
+            //TODO: smooth spin down
+        }
+        for (Rotor rotor : droneView.getRotors()) {
+            rotor.getRotateTransition().stop(); //TODO not working?
+        }
+    }
+
     /**
      * Helper method to get the vector of where the drone is currently facing.
      */
@@ -235,6 +265,7 @@ public class DroneController {
 
     // control commands
     public void takeoff(CommandPackage commandPackage) {
+        spinUpRotors();
         droneModel.setTakeoffTime(System.currentTimeMillis());
         this.commandPackage = commandPackage;
         move(VectorHelper.getUpwardsNormalVector(), DefaultValueHelper.TAKEOFF_DISTANCE);
@@ -243,6 +274,7 @@ public class DroneController {
     public void land(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
         move(VectorHelper.getDownwardsNormalVector(), -droneModel.getyPosition()+INITIAL_Y_POSITION);
+        spinDownRotors(true);
     }
 
     public void down(CommandPackage commandPackage, double x) {
