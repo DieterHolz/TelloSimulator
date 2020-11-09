@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
 import tellosimulator.model.DroneModel;
-import tellosimulator.view.world.Room3d;
+import tellosimulator.view.world.CubeWorld;
 import tellosimulator.view.controls.NetworkControls;
 import tellosimulator.view.controls.SimulatorControls;
 import tellosimulator.view.drone.DroneView;
@@ -39,14 +39,10 @@ public class SimulatorPane extends BorderPane {
         this.log = log;
         initializeParts();
         layoutParts();
-        setupValueChangeListeners();
-        setupEventHandlers();
-        setupBindings();
     }
 
-
     private void initializeParts() throws IOException {
-        simulator3DScene = new Simulator3DScene(stage, buildSceneGraph());
+        simulator3DScene = new Simulator3DScene(stage, buildSceneGraph(), droneView);
         simulatorControls = new SimulatorControls(droneModel, droneController);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
@@ -60,31 +56,12 @@ public class SimulatorPane extends BorderPane {
         setBottom(logBox);
     }
 
-
-    private void setupValueChangeListeners() {
-    }
-
-
-    private void setupEventHandlers() {
-    }
-
-    private void setupBindings() {
-    }
-
     private Parent buildSceneGraph() {
-        Group droneGroup = droneView;
-
-        Room3d room3d = new Room3d(Simulator3DScene.ROOM_WIDTH,Simulator3DScene.ROOM_HEIGHT,Simulator3DScene.ROOM_DEPTH,Simulator3DScene.WALL_DEPTH);
-        Group roomGroup = room3d.getRoom3d();
-        //CubeWorld cubeWorld = new CubeWorld(false);
+        CubeWorld cubeWorld = new CubeWorld(500, 50, false);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();
-        root.getChildren().addAll(droneGroup, roomGroup); //add cubeWorld
+        root.getChildren().addAll(droneView, cubeWorld);
         return root;
     }
-
-
-
-
 }

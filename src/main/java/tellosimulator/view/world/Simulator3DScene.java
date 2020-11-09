@@ -4,80 +4,77 @@ import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import tellosimulator.view.drone.DroneView;
 
 
 public class Simulator3DScene extends SubScene {
-    Camera camera;
+    SimulatorCamera simulatorCamera;
 
-    public static final double ROOM_WIDTH = 300;
-    public static final double ROOM_HEIGHT = 240;
+    public static final double ROOM_WIDTH = 600;
+    public static final double ROOM_HEIGHT = 400;
     public static final double ROOM_DEPTH = 800;
     public static final double WALL_DEPTH = 0.01;
 
-    public Simulator3DScene(Stage stage, Parent sceneGraph) {
-        super(sceneGraph, ROOM_WIDTH*2, ROOM_HEIGHT*2, true, SceneAntialiasing.BALANCED);
-        setupCamera();
+    private double mousePosX;
+    private double mousePosY;
+    private double mouseOldX;
+    private double mouseOldY;
+    private double mouseDeltaX;
+    private double mouseDeltaY;
 
-        setOnMouseDragged( new MouseLook());
-        initMouseControl(stage, sceneGraph);
+    public Simulator3DScene(Stage stage, Parent sceneGraph, DroneView droneView) {
+        super( sceneGraph, 1200, 800, true, SceneAntialiasing.BALANCED); //TODO: resize/bind width and height to parent (maybe put SubScene in StackPane, StackPane in Borderpane center)
+        simulatorCamera = new SimulatorCamera(droneView);
+        setCamera(simulatorCamera);
+
+        stage.addEventHandler(MouseEvent.ANY, mouseEventHandler);
+        stage.addEventHandler(ScrollEvent.ANY, scrollEventHandler);
     }
 
+    private final EventHandler<MouseEvent> mouseEventHandler = event -> {
 
-    private void setupValueChangeListeners() {
-    }
+        if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+            mousePosX = event.getSceneX();
+            mousePosY = event.getSceneY();
+            mouseOldX = event.getSceneX();
+            mouseOldY = event.getSceneY();
 
+        } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+            double modifier = 1.0;
+            double modifierFactor = 0.3;
 
-    private void setupBindings() {
-    }
+            if (event.isControlDown()) {
+                modifier = 0.1;
+            }
+            if (event.isShiftDown()) {
+                modifier = 10.0;
+            }
 
-    private void setupCamera() {
-        camera = new PerspectiveCamera();
-        camera.translateXProperty().set(-ROOM_WIDTH/2);
-        camera.translateYProperty().set(-ROOM_HEIGHT*1.5);
-        camera.translateZProperty().set(0);
-        setCamera(camera);
-    }
+            mouseOldX = mousePosX;
+            mouseOldY = mousePosY;
+            mousePosX = event.getSceneX();
+            mousePosY = event.getSceneY();
+            mouseDeltaX = (mousePosX - mouseOldX);
+            mouseDeltaY = (mousePosY - mouseOldY);
 
-    public void initMouseControl(Stage stage, Parent sceneGraph) {
-        stage.addEventHandler(ScrollEvent.SCROLL, event -> {
-            double delta = event.getDeltaY();
-            sceneGraph.translateZProperty().set(sceneGraph.getTranslateZ() - delta);
-        });
-    }
-
-    private class MouseLook implements EventHandler<MouseEvent> {
-        private Rotate rotation;
-        private int oldX, newX;
-        private boolean alreadyMoved = false;
-
-        @Override
-        public void handle(MouseEvent event) {
-            if ( alreadyMoved ) {
-                newX = (int) event.getScreenX();
-
-                if ( oldX < newX ) { // if mouse moved to right
-                    rotation = new Rotate( 10.0,
-                            // camera rotates around its location
-                            0, 0, 0,
-                            Rotate.Y_AXIS );
-
-
-                } else if ( oldX > newX ) { // if mouse moved to left
-                    rotation = new Rotate( -10.0,
-                            // camera rotates around its location
-                            0, 0, 0,
-                            Rotate.Y_AXIS );
-
-                }
-                camera.getTransforms().addAll( rotation );
-
-                oldX = newX;
-            } else {
-                oldX = (int) event.getScreenX();
-                alreadyMoved = true;
+            if (event.isMiddleButtonDown() || (event.isPrimaryButtonDown() && event.isSecondaryButtonDown())) {
+                simulatorCamera.cameraPosition.setX(simulatorCamera.cameraPosition.getTx() - mouseDeltaX*modifierFactor*modifier*0.3);
+                simulatorCamera.cameraPosition.setY(simulatorCamera.cameraPosition.getTy() - mouseDeltaY*modifierFactor*modifier*0.3);
+            }
+            if (event.isPrimaryButtonDown()) {
+                simulatorCamera.cameraRotateY.setAngle(simulatorCamera.cameraRotateY.getAngle() + mouseDeltaX*modifierFactor*modifier*2.0);
+                simulatorCamera.cameraRotateX.setAngle(simulatorCamera.cameraRotateX.getAngle() - mouseDeltaY*modifierFactor*modifier*2.0);
             }
         }
-    }
+    };
+
+    private final EventHandler<ScrollEvent> scrollEventHandler = event -> {
+        double modifier = 1;
+        if (event.isControlDown()) {
+            modifier = 0.1;
+        }
+        double delta = event.getDeltaY();
+        simulatorCamera.cameraPosition.setZ(simulatorCamera.cameraPosition.getTz() - delta*modifier*0.5);
+    };
 }

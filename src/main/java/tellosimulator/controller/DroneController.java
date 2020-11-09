@@ -11,7 +11,6 @@ import tellosimulator.common.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
-import tellosimulator.view.world.Simulator3DScene;
 import tellosimulator.view.drone.Rotor;
 
 import java.io.IOException;
@@ -22,9 +21,9 @@ public class DroneController {
 
     private final int FRAMES_PER_SECOND = 60;
 
-    public static double INITIAL_X_POSITION = Simulator3DScene.ROOM_WIDTH /2;
-    public static double INITIAL_Y_POSITION = -DroneView.DRONE_HEIGHT/2;
-    public static double INITIAL_Z_POSITION = Math.min(Simulator3DScene.ROOM_DEPTH /5, 500);
+    public static double INITIAL_X_POSITION = 0;
+    public static double INITIAL_Y_POSITION = 0;
+    public static double INITIAL_Z_POSITION = 0;
 
     private AnimationTimer animationTimer;
     private Timeline timeline = new Timeline();
@@ -39,7 +38,6 @@ public class DroneController {
         ROLL,
         PITCH
     }
-
 
     public DroneController(DroneModel droneModel, DroneView droneView) {
         this.droneModel = droneModel;
