@@ -9,6 +9,7 @@ import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
 import tellosimulator.network.CommandConnection;
 import tellosimulator.network.TelloSDKValues;
+import tellosimulator.view.drone.DroneView;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DroneControllerTest {
     DroneModel droneModel;
+    DroneView droneView;
     DroneController droneController;
     CommandHandler commandHandler;
     CommandConnection commandConnection;
@@ -26,7 +28,8 @@ class DroneControllerTest {
     @BeforeEach
     void setUp() throws IOException {
         droneModel = new DroneModel();
-        droneController = new DroneController(droneModel);
+        droneView = new DroneView(droneModel);
+        droneController = new DroneController(droneModel, droneView);
         commandConnection = new CommandConnection(droneController);
         commandHandler = new CommandHandler(droneController, commandConnection);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);

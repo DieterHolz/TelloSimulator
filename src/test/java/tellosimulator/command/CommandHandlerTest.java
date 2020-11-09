@@ -18,10 +18,8 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(ApplicationExtension.class)
@@ -42,7 +40,7 @@ class CommandHandlerTest {
     }
 
     @BeforeEach
-    void setUp() throws UnknownHostException {
+    void setUp() throws IOException {
         droneController = mock(DroneController.class);
         commandHandler = new CommandHandler(droneController, commandConnection);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
