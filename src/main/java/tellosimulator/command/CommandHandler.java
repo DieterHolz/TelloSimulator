@@ -11,6 +11,7 @@ import tellosimulator.video.VideoPublisher;
 import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public class CommandHandler {
 
 	DroneController droneController;
 	VideoPublisher publisher;
-	List<String> commandParams;
+	ArrayList<String> commandParams;
 
 	public List<String> getCommandParams() {
 		return commandParams;
@@ -31,13 +32,18 @@ public class CommandHandler {
     }
 
     public void handle(CommandPackage commandPackage) throws IOException {
-        String received = commandPackage.getCommand();
+		if (commandParams != null) {
+			commandParams.clear();
+		}
+
+		String received = commandPackage.getCommand();
 		List<String> data = Arrays.asList(received.split(" "));
 		String command = data.get(0);
 		VideoConnection videoConnection = new VideoConnection();
 
 		if (data.size() > 1) {
-			commandParams = data.subList(1, data.size());
+			List <String> params = data.subList(1, data.size());
+			commandParams = new ArrayList<>(params);
 		}
 
 		logger.info("handling command: " + command);
