@@ -88,6 +88,17 @@ public class DroneController {
     }
 
     /**
+     * Lands the drone on ground level and spins down rotors.
+     */
+    private void land () {
+        double distanceToGround = -droneModel.getyPosition()+INITIAL_Y_POSITION;
+        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
+        Point3D to = from.add(VectorHelper.getDownwardsNormalVector().multiply(distanceToGround));
+        Duration duration = Duration.seconds(distanceToGround / droneModel.getSpeed());
+        animate(createMoveAnimation(to, duration), true);
+    }
+
+    /**
      * Rotates the drone around a certain axis for the given angle.
      * @param angle the angle it should rotate. Will be added to the current rotate value of this axis.
      * @param axis the rotation axis it should rotate around
@@ -166,9 +177,10 @@ public class DroneController {
 
     /**
      * Plays the timeline and sends ok to the operator once finished playing.
-     * @param timeline the timeline with its KeyFrames which should be animated.
+     * @param timeline  the timeline with its KeyFrames which should be animated.
+     * @param landing   indicates if rotors should be stopped after the animation.
      */
-    private void animate(Timeline timeline) {
+    private void animate(Timeline timeline, boolean landing) {
         timeline.setOnFinished(event -> {
             animationRunning = false;
             try {
@@ -176,11 +188,22 @@ public class DroneController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (landing){
+                spinDownRotors(true);
+            }
         });
         if(!emergency) {
             animationRunning = true;
         }
         timeline.play();
+    }
+
+    /**
+     * Plays the timeline and sends ok to the operator once finished playing. Rotors are not stopped.
+     * @param timeline  the timeline with its KeyFrames which should be animated.
+     */
+    private void animate(Timeline timeline) {
+        animate(timeline, false);
     }
 
     /**
@@ -241,6 +264,7 @@ public class DroneController {
             rotateTransition.setByAngle( 360 );
             rotateTransition.setNode(rotor.getNode());
             rotateTransition.setCycleCount( Animation.INDEFINITE );
+            rotor.setRotateTransition(rotateTransition);
             rotateTransition.play();
         }
     }
@@ -250,7 +274,9 @@ public class DroneController {
             //TODO: smooth spin down
         }
         for (Rotor rotor : droneView.getRotors()) {
-            rotor.getRotateTransition().stop(); //TODO not working?
+            if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
+                    rotor.getRotateTransition().stop();
+            }
         }
     }
 
@@ -271,8 +297,7 @@ public class DroneController {
 
     public void land(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getDownwardsNormalVector(), -droneModel.getyPosition()+INITIAL_Y_POSITION);
-        spinDownRotors(true);
+        land();
     }
 
     public void down(CommandPackage commandPackage, double x) {
