@@ -2,9 +2,9 @@ package tellosimulator.view.drone;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.transform.Rotate;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.model.DroneModel;
 
@@ -14,6 +14,8 @@ import java.util.List;
 
 public class DroneView extends Group {
     private DroneModel droneModel;
+
+    private double droneScalingFactor = 1;
 
     public static final int DRONE_WIDTH = 18;
     public static final int DRONE_HEIGHT = 5;
@@ -54,12 +56,12 @@ public class DroneView extends Group {
         rollContainer = new Group();
 
         drone.setRotationAxis(VectorHelper.getUpwardsNormalVector());
-        rollContainer.setRotationAxis(new Point3D(0,0,1));
-        pitchContainer.setRotationAxis(new Point3D(1,0,0));
+        rollContainer.setRotationAxis(Rotate.Z_AXIS);
+        pitchContainer.setRotationAxis(Rotate.X_AXIS);
 
-        drone3DModel.setScaleX(1);
-        drone3DModel.setScaleY(1);
-        drone3DModel.setScaleZ(1);
+        drone3DModel.setScaleX(droneScalingFactor);
+        drone3DModel.setScaleY(droneScalingFactor);
+        drone3DModel.setScaleZ(droneScalingFactor);
         drone3DModel.setRotate(180);
         drone3DModel.setTranslateY(-DRONE_HEIGHT/2);
         pitchContainer.getChildren().add(drone3DModel);
