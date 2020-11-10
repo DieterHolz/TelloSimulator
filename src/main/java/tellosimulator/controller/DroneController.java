@@ -412,13 +412,22 @@ public class DroneController {
                 ";temph:" + droneModel.getTempHigh() +
                 ";tof:" + droneModel.getTofDistance() +
                 ";h:" + droneModel.getHeight() +
-                ";bat:" + droneModel.getBattery() +
+                ";bat:" + getBatteryLifetime() +
                 ";baro:" + droneModel.getBarometer() +
-                ";time:" + droneModel.getMotorTime() +
+                ";time:" + getFlightTime() +
                 ";agx:" + droneModel.getAccelerationX() +
                 ";agy:" + droneModel.getAccelerationY() +
                 ";agz:" + droneModel.getAccelerationZ() +
                 ";";
+    }
+
+    public long getFlightTime() {
+        return System.currentTimeMillis() - droneModel.getTakeoffTime();
+    }
+
+    public int getBatteryLifetime() {
+        //todo: make a note that we assume a linear battery decrease
+        return 100 - (int)getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
     }
 
     //getter and setter

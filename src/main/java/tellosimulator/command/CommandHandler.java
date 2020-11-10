@@ -438,7 +438,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						//TODO: Send current battery percentage (0-100)
 						//TODO: format of response?
-						droneController.getDroneModel().getBattery();
+						droneController.getBatteryLifetime();
 
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
@@ -449,7 +449,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						//TODO: Send current flight time
 						//TODO: format of response?
-						long flightTime = droneController.getDroneModel().getFlightTime();
+						long flightTimeInMilliSeconds = droneController.getFlightTime();
 						CommandResponseSender.sendReadResponse(commandPackage, "current flight time as string in correct format");
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
