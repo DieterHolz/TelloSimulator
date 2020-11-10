@@ -438,7 +438,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						//TODO: Send current battery percentage (0-100)
 						//TODO: format of response?
-						droneController.getBatteryLifetime();
+						droneController.getBatteryCharge();
 
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);

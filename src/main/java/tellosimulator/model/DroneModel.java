@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class DroneModel {
 
-    private int mid = -1, tempLow, tempHigh, tofDistance, height;
+    private int mid = -1, tempLow, tempHigh, tofDistance; //todo: tempLow? tempHigh? barometer?
     private double barometer, accelerationX, accelerationY, accelerationZ;
     private String wifiSsid;
     private String wifiPass;
@@ -137,14 +137,6 @@ public class DroneModel {
 
     public void setTofDistance(int tofDistance) {
         this.tofDistance = tofDistance;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public double getBarometer() {

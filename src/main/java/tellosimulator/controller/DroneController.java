@@ -1,6 +1,8 @@
 package tellosimulator.controller;
 
 import javafx.animation.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
@@ -411,8 +413,8 @@ public class DroneController {
                 ";templ:" + droneModel.getTempLow() +
                 ";temph:" + droneModel.getTempHigh() +
                 ";tof:" + droneModel.getTofDistance() +
-                ";h:" + droneModel.getHeight() +
-                ";bat:" + getBatteryLifetime() +
+                ";h:" + droneModel.yPositionProperty().negate().doubleValue() +
+                ";bat:" + getBatteryCharge() +
                 ";baro:" + droneModel.getBarometer() +
                 ";time:" + getFlightTime() +
                 ";agx:" + droneModel.getAccelerationX() +
@@ -425,8 +427,8 @@ public class DroneController {
         return System.currentTimeMillis() - droneModel.getTakeoffTime();
     }
 
-    public int getBatteryLifetime() {
-        //todo: make a note that we assume a linear battery decrease
+    public int getBatteryCharge() {
+        //todo: note down that we assume a linear battery decrease
         return 100 - (int)getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
     }
 
