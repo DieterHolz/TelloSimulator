@@ -399,15 +399,15 @@ public class DroneController {
 
         //TODO: check if mission pad detection feature is enabled/disbled
         return  "mid:" + droneModel.getMid() +
-                ";x:" + droneModel.getX() +
-                ";y:" + droneModel.getY() +
-                ";z:" + droneModel.getZ() +
+                ";x:" + droneModel.getxPosition() +
+                ";y:" + droneModel.getyPosition() +
+                ";z:" + droneModel.getzPosition() +
                 ";pitch:" + droneModel.getPitch() +
                 ";roll:" + droneModel.getRoll() +
                 ";yaw:" + droneModel.getYaw() +
-                ";vgx:" + droneModel.getSpeedX() +
-                ";vgy:" + droneModel.getSpeedY() +
-                ";vgz:" + droneModel.getSpeedZ() +
+                ";vgx:" + droneModel.getLeftRightDiff() +
+                ";vgy:" + droneModel.getUpDownDiff() +
+                ";vgz:" + droneModel.getForwardBackwardDiff() +
                 ";templ:" + droneModel.getTempLow() +
                 ";temph:" + droneModel.getTempHigh() +
                 ";tof:" + droneModel.getTofDistance() +
