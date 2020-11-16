@@ -43,72 +43,70 @@ import javafx.scene.transform.Rotate;
 import java.util.ArrayList;
 
 public class CubeWorld extends Group {
-    public Group cubeWorldChildren = new Group();
+    private Group cubeWorldChildren = new Group();
 
-    public double gridLinesOpacity = 1.0;
-    public double gridPanelsOpacity = 0.25;
-    //Color.DARKSLATEGRAY
-    public Color panelWallColor = new Color(0.18431373f, 0.30980393f, 0.30980393f,gridPanelsOpacity);
-    //DARKGRAY
-    public Color panelFloorCeilingColor = new Color(0.6627451f, 0.6627451f, 0.6627451f,gridPanelsOpacity);
-    //Color.DARKSLATEGRAY
-    public Color gridLinesWallColor = new Color(0.18431373f, 0.30980393f, 0.30980393f,gridLinesOpacity);
-    //Color.LIGHTGRAY;
-    public Color gridLinesCeilingFloorColor = new Color(0.827451f, 0.827451f, 0.827451f, gridLinesOpacity);
+    private double gridLinesOpacity = 1.0;
+    private double gridPanelsOpacity = 0.25;
+
+    private Color panelWallColor = new Color(47/255, 79/255, 79/255, gridPanelsOpacity);
+    private Color panelFloorCeilingColor = new Color(169/255, 169/255, 169/255, gridPanelsOpacity);
+    private Color gridLinesWallColor = new Color(47/255, 79/255, 79/255, gridLinesOpacity);
+    private Color gridLinesCeilingFloorColor = new Color(211/255, 211/255, 211/255, gridLinesOpacity);
 
     private double roomSizeX;
     private double roomSizeY;
     private double roomSizeZ;
     private double gridLineSpacing;
-    final double gridThickness = 0.5;
+    private final double gridThickness = 0.5;
+    private final double wallThickness = 0.1;
 
-    double cameraRX = 0;
-    double cameraRY = 0;
-    double cameraRZ = 0;
+    private double cameraRX = 0;
+    private double cameraRY = 0;
+    private double cameraRZ = 0;
 
-    public Box panelFront;
-    public Box panelBack;
-    public Box panelRight;
-    public Box panelLeft;
-    public Box panelCeiling;
-    public Box panelFloor;
+    private Box panelFront;
+    private Box panelBack;
+    private Box panelRight;
+    private Box panelLeft;
+    private Box panelCeiling;
+    private Box panelFloor;
 
-    public boolean showPanelFront   = true;
-    public boolean showPanelBack    = true;
-    public boolean showPanelRight   = true;
-    public boolean showPanelLeft    = true;
-    public boolean showPanelCeiling = true;
-    public boolean showPanelFloor   = true;
+    private boolean showPanelFront   = true;
+    private boolean showPanelBack    = true;
+    private boolean showPanelRight   = true;
+    private boolean showPanelLeft    = true;
+    private boolean showPanelCeiling = true;
+    private boolean showPanelFloor   = true;
 
-    public Group xAxesGroup = new Group();
-    public Group yAxesGroup = new Group();
-    public Group zAxesGroup = new Group();
+    private Group xAxesGroup = new Group();
+    private Group yAxesGroup = new Group();
+    private Group zAxesGroup = new Group();
 
-    public Group verticalLinesOfPanelFront      = new Group();
-    public Group horizontalLinesOfPanelFront    = new Group();
-    public Group verticalLinesOfPanelLeft       = new Group();
-    public Group horizontalLinesOfPanelLeft     = new Group();
-    public Group zAxisLinesOfPanelFloor         = new Group();
-    public Group xAxisLinesOfPanelFloor         = new Group();
-    public Group verticalLinesOfPanelBack       = new Group();
-    public Group horizontalLinesOfPanelBack     = new Group();
-    public Group verticalLinesOfPanelRight      = new Group();
-    public Group horizontalLinesOfPanelRight    = new Group();
-    public Group zAxisLinesOfPanelCeiling       = new Group();
-    public Group xAxisLinesOfPanelCeiling       = new Group();
+    private Group verticalLinesOfPanelFront      = new Group();
+    private Group horizontalLinesOfPanelFront    = new Group();
+    private Group verticalLinesOfPanelLeft       = new Group();
+    private Group horizontalLinesOfPanelLeft     = new Group();
+    private Group zAxisLinesOfPanelFloor         = new Group();
+    private Group xAxisLinesOfPanelFloor         = new Group();
+    private Group verticalLinesOfPanelBack       = new Group();
+    private Group horizontalLinesOfPanelBack     = new Group();
+    private Group verticalLinesOfPanelRight      = new Group();
+    private Group horizontalLinesOfPanelRight    = new Group();
+    private Group zAxisLinesOfPanelCeiling       = new Group();
+    private Group xAxisLinesOfPanelCeiling       = new Group();
 
-    public boolean showVerticalLinesOfPanelFront    = true;
-    public boolean showHorizontalLinesOfPanelFront  = true;
-    public boolean showVerticalLinesOfPanelLeft     = true;
-    public boolean showHorizontalLinesOfPanelLeft   = true;
-    public boolean showZAxisLinesOfPanelFloor       = true;
-    public boolean showXAxisLinesOfPanelFloor       = true;
-    public boolean showVerticalLinesOfPanelBack     = true;
-    public boolean showHorizontalLinesOfPanelBack   = true;
-    public boolean showVerticalLinesOfPanelRight    = true;
-    public boolean showHorizontalLinesOfPanelRight  = true;
-    public boolean showZAxisLinesOfPanelCeiling     = true;
-    public boolean showXAxisLinesOfPanelCeiling     = true;
+    private boolean showVerticalLinesOfPanelFront    = true;
+    private boolean showHorizontalLinesOfPanelFront  = true;
+    private boolean showVerticalLinesOfPanelLeft     = true;
+    private boolean showHorizontalLinesOfPanelLeft   = true;
+    private boolean showZAxisLinesOfPanelFloor       = true;
+    private boolean showXAxisLinesOfPanelFloor       = true;
+    private boolean showVerticalLinesOfPanelBack     = true;
+    private boolean showHorizontalLinesOfPanelBack   = true;
+    private boolean showVerticalLinesOfPanelRight    = true;
+    private boolean showHorizontalLinesOfPanelRight  = true;
+    private boolean showZAxisLinesOfPanelCeiling     = true;
+    private boolean showXAxisLinesOfPanelCeiling     = true;
 
     public CubeWorld(double sizeX, double sizeY, double sizeZ, double spacing) {
         roomSizeX = sizeX;
@@ -120,7 +118,7 @@ public class CubeWorld extends Group {
 
     private void init(){
 
-        buildPanels(roomSizeX,roomSizeY,roomSizeZ, 0.1);
+        buildPanels(roomSizeX,roomSizeY,roomSizeZ, wallThickness);
         buildGrids(roomSizeX, roomSizeY, roomSizeZ, gridLineSpacing);
         buildEventHandlers();
         getChildren().add(cubeWorldChildren); //Holds ScatterPlot data
@@ -132,12 +130,12 @@ public class CubeWorld extends Group {
     }
 
     private void buildPanels(double width, double height, double depth, double wallDepth) {
-        panelFront = preparePanel(width, height, wallDepth, panelWallColor, width/2, -height/2, -wallDepth/2);
-        panelBack = preparePanel(width, height, wallDepth, panelWallColor, width/2, -height/2, depth+wallDepth/2);
-        panelRight = preparePanel(wallDepth, height, depth, panelWallColor, width+wallDepth/2, -height/2, depth/2);
-        panelLeft = preparePanel(wallDepth, height, depth, panelWallColor, 0-wallDepth/2, -height/2, depth/2);
-        panelCeiling = preparePanel(width, wallDepth, depth, panelFloorCeilingColor, width/2, -height-wallDepth/2, depth/2);
-        panelFloor = preparePanel(width, wallDepth, depth, panelFloorCeilingColor, width/2, 0+wallDepth/2, depth/2);
+        panelFront      = preparePanel(width, height, wallDepth, panelWallColor, width/2, -height/2, -wallDepth/2);
+        panelBack       = preparePanel(width, height, wallDepth, panelWallColor, width/2, -height/2, depth+wallDepth/2);
+        panelRight      = preparePanel(wallDepth, height, depth, panelWallColor, width+wallDepth/2, -height/2, depth/2);
+        panelLeft       = preparePanel(wallDepth, height, depth, panelWallColor, 0-wallDepth/2, -height/2, depth/2);
+        panelCeiling    = preparePanel(width, wallDepth, depth, panelFloorCeilingColor, width/2, -height-wallDepth/2, depth/2);
+        panelFloor      = preparePanel(width, wallDepth, depth, panelFloorCeilingColor, width/2, 0+wallDepth/2, depth/2);
 
         getChildren().addAll(panelFront, panelBack, panelLeft, panelRight, panelCeiling, panelFloor);
     }
@@ -152,20 +150,20 @@ public class CubeWorld extends Group {
         phongGridLinesWall.setSpecularColor(gridLinesCeilingFloorColor);
         phongGridLinesWall.setDiffuseColor(gridLinesCeilingFloorColor);
 
-        verticalLinesOfPanelFront = gridLinesXvariable(width, spacing, height, phongGridLinesWall, -height/2, 0, null);
-        verticalLinesOfPanelBack = gridLinesXvariable(width, spacing, height, phongGridLinesWall, -height/2, depth, null);
-        horizontalLinesOfPanelFront = gridLinesYvariable(height, spacing, width, phongGridLinesWall, width/2, 0, Rotate.Z_AXIS);
-        horizontalLinesOfPanelBack = gridLinesYvariable(height, spacing, width, phongGridLinesWall, width/2, depth, Rotate.Z_AXIS);
+        verticalLinesOfPanelFront   = gridLinesXVariable(width, spacing, height, phongGridLinesWall, -height/2, 0, null);
+        verticalLinesOfPanelBack    = gridLinesXVariable(width, spacing, height, phongGridLinesWall, -height/2, depth, null);
+        horizontalLinesOfPanelFront = gridLinesYVariable(height, spacing, width, phongGridLinesWall, width/2, 0, Rotate.Z_AXIS);
+        horizontalLinesOfPanelBack  = gridLinesYVariable(height, spacing, width, phongGridLinesWall, width/2, depth, Rotate.Z_AXIS);
 
-        verticalLinesOfPanelLeft = gridLinesZvariable(depth, spacing, height, phongGridLinesWall, 0, -height/2, null);
-        verticalLinesOfPanelRight = gridLinesZvariable(depth, spacing, height, phongGridLinesWall, width, -height/2, null);
-        horizontalLinesOfPanelLeft = gridLinesYvariable(height, spacing, depth, phongGridLinesWall, 0, depth/2, Rotate.X_AXIS);
-        horizontalLinesOfPanelRight = gridLinesYvariable(height, spacing, depth, phongGridLinesWall, width, depth/2, Rotate.X_AXIS);
+        verticalLinesOfPanelLeft    = gridLinesZVariable(depth, spacing, height, phongGridLinesWall, 0, -height/2, null);
+        verticalLinesOfPanelRight   = gridLinesZVariable(depth, spacing, height, phongGridLinesWall, width, -height/2, null);
+        horizontalLinesOfPanelLeft  = gridLinesYVariable(height, spacing, depth, phongGridLinesWall, 0, depth/2, Rotate.X_AXIS);
+        horizontalLinesOfPanelRight = gridLinesYVariable(height, spacing, depth, phongGridLinesWall, width, depth/2, Rotate.X_AXIS);
 
-        zAxisLinesOfPanelFloor = gridLinesXvariable(width, spacing, depth, phongGridLinesCeilingFloor, 0, depth/2, Rotate.X_AXIS);
-        zAxisLinesOfPanelCeiling = gridLinesXvariable(width, spacing, depth, phongGridLinesCeilingFloor, -height, depth/2, Rotate.X_AXIS);
-        xAxisLinesOfPanelFloor = gridLinesZvariable(depth, spacing, width, phongGridLinesCeilingFloor, width/2, 0, Rotate.Z_AXIS);
-        xAxisLinesOfPanelCeiling = gridLinesZvariable(depth, spacing, width, phongGridLinesCeilingFloor, width/2, -height, Rotate.Z_AXIS);
+        zAxisLinesOfPanelFloor      = gridLinesXVariable(width, spacing, depth, phongGridLinesCeilingFloor, 0, depth/2, Rotate.X_AXIS);
+        zAxisLinesOfPanelCeiling    = gridLinesXVariable(width, spacing, depth, phongGridLinesCeilingFloor, -height, depth/2, Rotate.X_AXIS);
+        xAxisLinesOfPanelFloor      = gridLinesZVariable(depth, spacing, width, phongGridLinesCeilingFloor, width/2, 0, Rotate.Z_AXIS);
+        xAxisLinesOfPanelCeiling    = gridLinesZVariable(depth, spacing, width, phongGridLinesCeilingFloor, width/2, -height, Rotate.Z_AXIS);
 
         //Add the sub groups to the parent group
         getChildren().addAll(verticalLinesOfPanelFront, horizontalLinesOfPanelFront, verticalLinesOfPanelBack, horizontalLinesOfPanelBack, verticalLinesOfPanelLeft, verticalLinesOfPanelRight, horizontalLinesOfPanelLeft, horizontalLinesOfPanelRight, zAxisLinesOfPanelFloor, zAxisLinesOfPanelCeiling, xAxisLinesOfPanelFloor, xAxisLinesOfPanelCeiling);
@@ -188,14 +186,14 @@ public class CubeWorld extends Group {
         return box;
     }
 
-    private Group gridLinesXvariable(double schleifendurchgaenge, double spacing, double linienlaenge, PhongMaterial phong, double verschiebungY, double verschiebungZ, Point3D rotationAxis) {
+    private Group gridLinesXVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateY, double translateZ, Point3D rotationAxis) {
         ArrayList cyls = new ArrayList<>();
-        for (int i = 0; i <= schleifendurchgaenge; i += spacing) {
-            Cylinder cyl = new Cylinder(gridThickness, linienlaenge);
-            cyl.setMaterial(phong);
+        for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
+            Cylinder cyl = new Cylinder(gridThickness, lineLength);
+            cyl.setMaterial(lineMaterial);
             cyl.setTranslateX(i);
-            cyl.setTranslateY(verschiebungY);
-            cyl.setTranslateZ(verschiebungZ);
+            cyl.setTranslateY(translateY);
+            cyl.setTranslateZ(translateZ);
             if(rotationAxis != null) {
                 cyl.setRotationAxis(rotationAxis);
                 cyl.setRotate(90);
@@ -205,14 +203,14 @@ public class CubeWorld extends Group {
         return new Group(cyls);
     }
 
-    private Group gridLinesYvariable(double schleifendurchgaenge, double spacing, double linienlaenge, PhongMaterial phong, double verschiebungX, double verschiebungZ, Point3D rotationAxis) {
+    private Group gridLinesYVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateX, double translateZ, Point3D rotationAxis) {
         ArrayList cyls = new ArrayList<>();
-        for (int i = 0; i <= schleifendurchgaenge; i += spacing) {
-            Cylinder cyl = new Cylinder(gridThickness, linienlaenge);
-            cyl.setMaterial(phong);
-            cyl.setTranslateX(verschiebungX);
+        for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
+            Cylinder cyl = new Cylinder(gridThickness, lineLength);
+            cyl.setMaterial(lineMaterial);
+            cyl.setTranslateX(translateX);
             cyl.setTranslateY(-i);
-            cyl.setTranslateZ(verschiebungZ);
+            cyl.setTranslateZ(translateZ);
             if(rotationAxis != null) {
                 cyl.setRotationAxis(rotationAxis);
                 cyl.setRotate(90);
@@ -222,13 +220,13 @@ public class CubeWorld extends Group {
         return new Group(cyls);
     }
 
-    private Group gridLinesZvariable(double schleifendurchgaenge, double spacing, double linienlaenge, PhongMaterial phong, double verschiebungX, double verschiebungY, Point3D rotationAxis) {
+    private Group gridLinesZVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateX, double translateY, Point3D rotationAxis) {
         ArrayList cyls = new ArrayList<>();
-        for (int i = 0; i <= schleifendurchgaenge; i += spacing) {
-            Cylinder cyl = new Cylinder(gridThickness, linienlaenge);
-            cyl.setMaterial(phong);
-            cyl.setTranslateX(verschiebungX);
-            cyl.setTranslateY(verschiebungY);
+        for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
+            Cylinder cyl = new Cylinder(gridThickness, lineLength);
+            cyl.setMaterial(lineMaterial);
+            cyl.setTranslateX(translateX);
+            cyl.setTranslateY(translateY);
             cyl.setTranslateZ(i);
             if(rotationAxis != null) {
                 cyl.setRotationAxis(rotationAxis);
@@ -240,7 +238,7 @@ public class CubeWorld extends Group {
     }
 
 
-    public void adjustPanelsByPos(double rx, double ry, double rz) {
+    private void adjustPanelsByPos(double rx, double ry, double rz) {
         cameraRX = rx;
         cameraRY = ry;
         cameraRZ = rz;
