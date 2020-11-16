@@ -16,10 +16,7 @@ public class DroneView extends Group {
     private DroneModel droneModel;
 
     private double droneScalingFactor = 1;
-
-    public static final int DRONE_WIDTH = 18;
-    public static final int DRONE_HEIGHT = 5;
-    public static final int DRONE_DEPTH = 16;
+    public static final int droneHeight = 6;
 
     private Group drone;
     private Group drone3DModel;
@@ -63,7 +60,7 @@ public class DroneView extends Group {
         drone3DModel.setScaleY(droneScalingFactor);
         drone3DModel.setScaleZ(droneScalingFactor);
         drone3DModel.setRotate(180);
-        drone3DModel.setTranslateY(-DRONE_HEIGHT/2);
+        drone3DModel.setTranslateY(-droneHeight/2);
         pitchContainer.getChildren().add(drone3DModel);
         rollContainer.getChildren().add(pitchContainer);
         drone.getChildren().add(rollContainer);

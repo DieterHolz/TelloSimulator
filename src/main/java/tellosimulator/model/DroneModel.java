@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class DroneModel {
 
-    private int mid, x, y, z, speedX, speedY, speedZ, tempLow, tempHigh, tofDistance, height, battery, motorTime;
+    private int mid = -1, tempLow, tempHigh, tofDistance; //todo: tempLow? tempHigh? barometer?
     private double barometer, accelerationX, accelerationY, accelerationZ;
     private String wifiSsid;
     private String wifiPass;
@@ -115,54 +115,6 @@ public class DroneModel {
         this.mid = mid;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
-
-    public int getSpeedX() {
-        return speedX;
-    }
-
-    public void setSpeedX(int speedX) {
-        this.speedX = speedX;
-    }
-
-    public int getSpeedY() {
-        return speedY;
-    }
-
-    public void setSpeedY(int speedY) {
-        this.speedY = speedY;
-    }
-
-    public int getSpeedZ() {
-        return speedZ;
-    }
-
-    public void setSpeedZ(int speedZ) {
-        this.speedZ = speedZ;
-    }
-
     public int getTempLow() {
         return tempLow;
     }
@@ -185,30 +137,6 @@ public class DroneModel {
 
     public void setTofDistance(int tofDistance) {
         this.tofDistance = tofDistance;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getBattery() {
-        return battery;
-    }
-
-    public void setBattery(int battery) {
-        this.battery = battery;
-    }
-
-    public int getMotorTime() {
-        return motorTime;
-    }
-
-    public void setMotorTime(int motorTime) {
-        this.motorTime = motorTime;
     }
 
     public double getBarometer() {

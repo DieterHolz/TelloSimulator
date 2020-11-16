@@ -72,7 +72,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        CubeWorld cubeWorld = new CubeWorld(500, 50, false);
+        CubeWorld cubeWorld = new CubeWorld(1000, 200, 800, 40);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();

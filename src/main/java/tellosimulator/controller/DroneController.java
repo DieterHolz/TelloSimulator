@@ -1,6 +1,8 @@
 package tellosimulator.controller;
 
 import javafx.animation.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
@@ -472,26 +474,35 @@ public class DroneController {
 
         //TODO: check if mission pad detection feature is enabled/disbled
         return  "mid:" + droneModel.getMid() +
-                ";x:" + droneModel.getX() +
-                ";y:" + droneModel.getY() +
-                ";z:" + droneModel.getZ() +
+                ";x:" + droneModel.getxPosition() +
+                ";y:" + droneModel.getyPosition() +
+                ";z:" + droneModel.getzPosition() +
                 ";pitch:" + droneModel.getPitch() +
                 ";roll:" + droneModel.getRoll() +
                 ";yaw:" + droneModel.getYaw() +
-                ";vgx:" + droneModel.getSpeedX() +
-                ";vgy:" + droneModel.getSpeedY() +
-                ";vgz:" + droneModel.getSpeedZ() +
+                ";vgx:" + droneModel.getLeftRightDiff() +
+                ";vgy:" + droneModel.getUpDownDiff() +
+                ";vgz:" + droneModel.getForwardBackwardDiff() +
                 ";templ:" + droneModel.getTempLow() +
                 ";temph:" + droneModel.getTempHigh() +
                 ";tof:" + droneModel.getTofDistance() +
-                ";h:" + droneModel.getHeight() +
-                ";bat:" + droneModel.getBattery() +
+                ";h:" + droneModel.yPositionProperty().negate().doubleValue() +
+                ";bat:" + getBatteryCharge() +
                 ";baro:" + droneModel.getBarometer() +
-                ";time:" + droneModel.getMotorTime() +
+                ";time:" + getFlightTime() +
                 ";agx:" + droneModel.getAccelerationX() +
                 ";agy:" + droneModel.getAccelerationY() +
                 ";agz:" + droneModel.getAccelerationZ() +
                 ";";
+    }
+
+    public long getFlightTime() {
+        return System.currentTimeMillis() - droneModel.getTakeoffTime();
+    }
+
+    public int getBatteryCharge() {
+        //todo: note down that we assume a linear battery decrease
+        return 100 - (int)getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
     }
 
     //getter and setter

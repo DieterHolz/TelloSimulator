@@ -96,7 +96,7 @@ public class SimulatorControls extends GridPane {
 
     private void setupBindings() {
         xPositionText.textProperty().bind(droneModel.xPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(droneModel.yPositionProperty().add(DroneView.DRONE_HEIGHT/2).negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(droneModel.yPositionProperty().negate().asString(LOCALE_CH, NUMBER_FORMAT));
         zPositionText.textProperty().bind(droneModel.zPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         //TODO: bind other values
