@@ -34,6 +34,7 @@ public class VectorHelper {
     }
 
     private static Point3D intersectionPointOf2Vectors(Point3D midPointAB, Point3D directionVectorOfBisectionAB, Point3D midPointAC, Point3D directionVectorOfBisectionAC) {
+
         double d = directionVectorOfBisectionAB.getX();
         double e = -directionVectorOfBisectionAC.getX();
         double h = midPointAC.getX()-midPointAB.getX();
@@ -57,7 +58,7 @@ public class VectorHelper {
 
     }
 
-    private static Point3D midPointOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
+    public static Point3D midPointOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
 
         Point3D midPointAB = a.midpoint(b);
         Point3D midPointAC = a.midpoint(c);
@@ -70,5 +71,19 @@ public class VectorHelper {
 
     public static double radiusOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
         return a.distance(midPointOfcircumscribedCircle(a,b,c));
+    }
+
+    // https://stackoverflow.com/questions/31225062/rotating-a-vector-by-angle-and-axis-in-java
+    public static Point3D rotateVector(Point3D v, Point3D axis, double angle){
+        double xPrime = axis.getX()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+                + v.getX()*Math.cos(angle)
+                + (-axis.getZ()*v.getY() + axis.getY()*v.getZ())*Math.sin(angle);
+        double yPrime = axis.getY()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+                + v.getY()*Math.cos(angle)
+                + (axis.getZ()*v.getX() - axis.getX()*v.getZ())*Math.sin(angle);
+        double zPrime = axis.getZ()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+                + v.getZ()*Math.cos(angle)
+                + (-axis.getY()*v.getX() + axis.getX()*v.getY())*Math.sin(angle);
+        return new Point3D(xPrime, yPrime, zPrime);
     }
 }
