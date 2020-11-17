@@ -48,7 +48,7 @@ public class SimulatorPane extends BorderPane {
 
     private void initializeParts() throws IOException {
 
-        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView);
+        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
         subSceneHolder = new StackPane(simulator3DScene);
         subSceneHolder.setMinWidth(160);
         subSceneHolder.setMinHeight(90);
