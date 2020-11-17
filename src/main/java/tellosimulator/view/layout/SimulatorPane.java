@@ -3,12 +3,17 @@ package tellosimulator.view.layout;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
 import tellosimulator.model.DroneModel;
+import tellosimulator.view.drone.DroneCameraScene;
+import tellosimulator.view.world.Camera;
 import tellosimulator.view.world.CubeWorld;
 import tellosimulator.view.controls.NetworkControls;
 import tellosimulator.view.controls.SimulatorControls;
@@ -26,6 +31,8 @@ public class SimulatorPane extends BorderPane {
 
     private Simulator3DScene simulator3DScene;
     private StackPane subSceneHolder;
+    private DroneCameraScene droneCamera;
+    private StackPane subSceneCamera;
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
 
@@ -45,23 +52,30 @@ public class SimulatorPane extends BorderPane {
     }
 
     private void initializeParts() throws IOException {
-        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView);
 
-        subSceneHolder = new StackPane();
-        subSceneHolder.getChildren().add(simulator3DScene);
+        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView);
+        subSceneHolder = new StackPane(simulator3DScene);
+        subSceneHolder.setMinWidth(160);
+        subSceneHolder.setMinHeight(90);
+        subSceneHolder.setPrefSize(1280, 720);
+
+        droneCamera = new DroneCameraScene(new Group(), simulator3DScene.getSimulatorCamera());
+        subSceneCamera = new StackPane(droneCamera);
+        subSceneCamera.setMinWidth(160);
+        subSceneCamera.setMinHeight(90);
+        subSceneCamera.setPrefSize(320, 180);
+
         simulatorControls = new SimulatorControls(droneModel, droneController);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
 
-        subSceneHolder.setMinWidth(160);
-        subSceneHolder.setMinHeight(90);
-        subSceneHolder.setPrefSize(1600, 900);
+
     }
 
     private void layoutParts() {
         setPadding(new Insets(10));
         setCenter(subSceneHolder);
-        setLeft(simulatorControls);
+        setLeft(new VBox(simulatorControls, subSceneCamera));
         setRight(networkControls);
         setBottom(logBox);
     }
@@ -79,4 +93,5 @@ public class SimulatorPane extends BorderPane {
         root.getChildren().addAll(droneView, cubeWorld);
         return root;
     }
+
 }
