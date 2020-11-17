@@ -2,11 +2,10 @@ package tellosimulator.view.world;
 
 import javafx.event.EventHandler;
 import javafx.scene.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import tellosimulator.TelloSimulator;
+import tellosimulator.log.Logger;
 import tellosimulator.view.drone.DroneView;
 
 import java.awt.*;
@@ -27,7 +26,7 @@ public class Simulator3DScene extends SubScene {
         super( sceneGraph, 1280, 720, true, SceneAntialiasing.BALANCED);
         simulatorCamera = new Camera(droneView, 200, 25, -10);
         droneCamera = new Camera(droneView, 10, 10, 0);
-        setCamera(droneCamera);
+        setCamera(simulatorCamera);
         setFill(new Color(1,0,0,0.5));
         setupEventHandlers();
     }
@@ -36,15 +35,7 @@ public class Simulator3DScene extends SubScene {
         setPickOnBounds(true); // needed to register MouseEvents on the whole SubScene
         addEventHandler(MouseEvent.ANY, mouseEventHandler);
         addEventHandler(ScrollEvent.ANY, scrollEventHandler);
-        addEventHandler(KeyEvent.ANY, keyboardEventHandler);
     }
-
-    private final EventHandler<KeyEvent> keyboardEventHandler = event -> {
-        if(event.getCode() == KeyCode.K) {
-            System.out.println("bla");
-            simulatorCamera.cameraPosition.setZ(1000);
-        }
-    };
 
     private final EventHandler<MouseEvent> mouseEventHandler = event -> {
 
@@ -92,11 +83,11 @@ public class Simulator3DScene extends SubScene {
         simulatorCamera.cameraPosition.setZ(simulatorCamera.cameraPosition.getTz() - delta*modifier*0.5);
     };
 
-    public Camera getDroneCamera() {
-        return droneCamera;
-    }
-
     public Camera getSimulatorCamera() {
         return simulatorCamera;
+    }
+
+    public Camera getDroneCamera() {
+        return droneCamera;
     }
 }

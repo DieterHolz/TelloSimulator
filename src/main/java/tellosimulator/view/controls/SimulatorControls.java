@@ -7,7 +7,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
-import tellosimulator.view.drone.DroneView;
 
 import java.util.Locale;
 
@@ -25,9 +24,10 @@ public class SimulatorControls extends GridPane {
     private Text yPositionText;
     private Label zPositionLabel;
     private Text zPositionText;
-
     private Label yawAngleLabel;
     private Text yawAngleText;
+    private Button cameraButton;
+
     //TODO: add all other values
 
     public SimulatorControls(DroneModel droneModel, DroneController droneController){
@@ -60,6 +60,9 @@ public class SimulatorControls extends GridPane {
 
         yawAngleLabel = new Label("Rotation/Yaw:");
         yawAngleText = new Text("0");
+
+        cameraButton = new Button("Change to Drone Camera");
+
         //TODO: init all other values
 
         resetButton = new Button("Reset Drone Position");
@@ -74,11 +77,11 @@ public class SimulatorControls extends GridPane {
         add(zPositionText, 2, 2);
         add(yPositionLabel, 1, 3);
         add(yPositionText, 2, 3);
-        add(yawAngleLabel, 1, 5);
-        add(yawAngleText, 2, 5);
+        add(yawAngleLabel, 1, 4);
+        add(yawAngleText, 2, 4);
         //TODO: add all other values to grid
-
-        add(resetButton, 1, 7);
+        add(cameraButton, 1,5);
+        add(resetButton, 1, 6);
 
     }
 
@@ -86,11 +89,23 @@ public class SimulatorControls extends GridPane {
         resetButton.setOnAction(event -> {
             droneController.resetValues();
         });
+
+        cameraButton.setOnAction(event -> {
+            droneModel.setDroneCameraActive(!droneModel.isDroneCameraActive());
+        });
     }
 
     private void setupValueChangedListeners() {
         droneModel.yawProperty().addListener((observable, oldValue, newValue) -> {
             yawAngleText.textProperty().setValue(String.valueOf(Math.round(newValue.doubleValue() % 360)));
+        });
+
+        droneModel.droneCameraActiveProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue) {
+                cameraButton.setText("Change to Simulator Camera");
+            } else {
+                cameraButton.setText("Change to Drone Camera");
+            }
         });
     }
 

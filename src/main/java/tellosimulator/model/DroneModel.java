@@ -1,6 +1,8 @@
 package tellosimulator.model;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public class DroneModel {
@@ -31,6 +33,8 @@ public class DroneModel {
     private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
+
+    private BooleanProperty droneCameraActive = new SimpleBooleanProperty(false);
 
     public DroneModel() {
     }
@@ -313,5 +317,17 @@ public class DroneModel {
 
     public void setYawDiff(double yawDiff) {
         this.yawDiff.set(yawDiff);
+    }
+
+    public boolean isDroneCameraActive() {
+        return droneCameraActive.get();
+    }
+
+    public BooleanProperty droneCameraActiveProperty() {
+        return droneCameraActive;
+    }
+
+    public void setDroneCameraActive(boolean droneCameraActive) {
+        this.droneCameraActive.set(droneCameraActive);
     }
 }
