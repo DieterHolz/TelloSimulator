@@ -549,7 +549,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateCurve(double x1, double x2, double y1, double y2, double z1, double z2, double speed) {
+	private boolean validateCurve(double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
 
 		double radiusOfcircumscribedCircle = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
 

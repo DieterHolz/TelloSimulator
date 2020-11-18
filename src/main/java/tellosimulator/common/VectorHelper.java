@@ -73,17 +73,17 @@ public class VectorHelper {
         return a.distance(midPointOfcircumscribedCircle(a,b,c));
     }
 
-    // https://stackoverflow.com/questions/31225062/rotating-a-vector-by-angle-and-axis-in-java
+    // rotate a vector v around an axis vector for a certain amount/angle (clockwise!)
     public static Point3D rotateVector(Point3D v, Point3D axis, double angle){
-        double xPrime = axis.getX()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+        double xRotated = axis.getX()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
                 + v.getX()*Math.cos(angle)
                 + (-axis.getZ()*v.getY() + axis.getY()*v.getZ())*Math.sin(angle);
-        double yPrime = axis.getY()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+        double yRotated = axis.getY()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
                 + v.getY()*Math.cos(angle)
                 + (axis.getZ()*v.getX() - axis.getX()*v.getZ())*Math.sin(angle);
-        double zPrime = axis.getZ()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
+        double zRotated = axis.getZ()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
                 + v.getZ()*Math.cos(angle)
                 + (-axis.getY()*v.getX() + axis.getX()*v.getY())*Math.sin(angle);
-        return new Point3D(xPrime, yPrime, zPrime);
+        return new Point3D(xRotated, yRotated, zRotated);
     }
 }
