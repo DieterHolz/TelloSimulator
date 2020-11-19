@@ -18,6 +18,7 @@ public class CommandConnection extends Thread {
 
 	DatagramSocket commandSocket;
 	DroneController telloDroneController;
+	StateConnection stateConnection;
 
 	private boolean running = false;
 	private boolean sdkModeInitiated;
@@ -71,7 +72,6 @@ public class CommandConnection extends Thread {
 					}
 				}
 
-
 			} catch (SocketTimeoutException ex) {
 				logger.error("Timeout error: " + ex.getMessage());
 				logger.warn("Safety feature triggerd: Tello will land automatically");
@@ -82,10 +82,13 @@ public class CommandConnection extends Thread {
 				e.printStackTrace();
 			}
 		}
+		stateConnection.setRunning(false);
 		commandSocket.close(); //todo: should maybe in a "finally" section
 	}
 
-	private void initiateStateConnection(InetAddress address) {
+	private void initiateStateConnection(InetAddress address) throws SocketException {
+		stateConnection = new StateConnection(telloDroneController, address);
+		stateConnection.start();
 	}
 
 	private byte[] readBytes() throws IOException {

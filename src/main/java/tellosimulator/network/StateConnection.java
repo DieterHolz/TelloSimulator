@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class StateConnection extends Thread {
     DatagramSocket stateSocket;
     DroneController telloDroneController;
+    InetAddress address;
 
     private boolean running;
     private byte[] buffer = new byte[512];
@@ -20,16 +21,13 @@ public class StateConnection extends Thread {
         this.running = running;
     }
 
-    public StateConnection(DroneController telloDroneController) throws SocketException {
-
+    public StateConnection(DroneController telloDroneController, InetAddress address) throws SocketException {
+        this.address = address;
         this.telloDroneController = telloDroneController;
 
         try {
             stateSocket = new DatagramSocket(TelloSDKValues.SIM_STATE_PORT);
-            InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
-            //commandSocket.setSoTimeout(TelloSDKValues.STATE_SOCKET_TIMEOUT);
             stateSocket.connect(address, TelloSDKValues.OP_STATE_PORT);
-
         } catch (IOException ex) {
             System.out.println("State server error: " + ex.getMessage());
             ex.printStackTrace();
@@ -38,9 +36,6 @@ public class StateConnection extends Thread {
 
     public void run() {
         running = true;
-        InetAddress address = null;
-        try {
-            address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 
             while (running) {
                 try {
@@ -53,14 +48,7 @@ public class StateConnection extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
-
         stateSocket.close();
     }
-
-
 }
