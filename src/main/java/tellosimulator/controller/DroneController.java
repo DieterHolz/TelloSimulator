@@ -458,15 +458,19 @@ public class DroneController {
         //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
     }
 
-    public void rc(CommandPackage commandPackage, double a, double b, double c, double d) {
-        droneModel.setForwardBackwardDiff(a);
-        droneModel.setLeftRightDiff(b);
+    public void rc(double a, double b, double c, double d) {
+        droneModel.setLeftRightDiff(a);
+        droneModel.setForwardBackwardDiff(b);
         droneModel.setUpDownDiff(c);
         droneModel.setYawDiff(d);
     }
 
+
     public void ap(CommandPackage commandPackage, String ssid, String pass) {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
+        // Sets the Wi-Fi SSID and password. The Tello will reboot afterwords
+        droneModel.setWifiSsid(ssid);
+        droneModel.setWifiPass(pass);
     }
 
     public String getDroneState() {
