@@ -8,12 +8,10 @@ import java.math.BigDecimal;
 public class VectorHelper {
 
     public static Point3D getLeftNormalVector(DroneController droneController){
-        //TODO: calculate the vector pointing -90°(left) from the current orientation on the xz-plane
         return getUpwardsNormalVector().crossProduct(droneController.getCurrentOrientation());
     }
 
     public static Point3D getRightNormalVector(DroneController droneController){
-        //TODO: calculate the vector pointing +90°(right) from the current orientation on the xz-plane
         return droneController.getCurrentOrientation().crossProduct(getUpwardsNormalVector());
     }
 
@@ -59,7 +57,6 @@ public class VectorHelper {
     }
 
     public static Point3D midPointOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
-
         Point3D midPointAB = a.midpoint(b);
         Point3D midPointAC = a.midpoint(c);
 

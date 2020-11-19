@@ -39,9 +39,9 @@ public class DroneController {
     double arcAngle;
     double rotateDiffAnglePerFrame;
 
-    Point3D curveApex;
+    Point3D curveP1;
     Point3D curveEnd;
-    Point3D circleMidpoint;
+    Point3D curveCenter;
     Point3D dronePosition;
     Point3D circleNormalVector;
     Point3D midDrone;
@@ -229,7 +229,7 @@ public class DroneController {
         Point3D right = VectorHelper.getRightNormalVector(this).multiply(droneModel.getLeftRightDiff()/100);
         Point3D up = VectorHelper.getUpwardsNormalVector().multiply(droneModel.getUpDownDiff()/100);
         Point3D moveDirectionVector = forward.add(right).add(up);
-        Point3D newPos = oldPos.add(moveDirectionVector.multiply(droneModel.getSpeed() / FRAMES_PER_SECOND));
+        Point3D newPos = oldPos.add(moveDirectionVector);
 
         droneModel.setxPosition(newPos.getX());
         droneModel.setyPosition(newPos.getY());
@@ -258,19 +258,15 @@ public class DroneController {
 
     private void moveOnCurve() throws IOException {
         dronePosition = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
-        System.out.println("dronePosition: " + dronePosition);
 
         if (dronePosition != null && curveEnd != null){
-            double newarcAngle = circleMidpoint.angle(dronePosition, curveEnd);
-            System.out.println("new arcAngle: " + newarcAngle);
+            double newArcAngle = curveCenter.angle(dronePosition, curveEnd);
 
-            //TODO: this should to be checked differently, but works for now
-            if (newarcAngle > 1) {
-
+            //TODO: this should really be checked differently, but works for now
+            if (newArcAngle > 1) {
                 Point3D newMidDrone = VectorHelper.rotateVector(midDrone, circleNormalVector, rotateDiffAnglePerFrame);
-                Point3D newPointOnCurve = circleMidpoint.add(newMidDrone);
+                Point3D newPointOnCurve = curveCenter.add(newMidDrone);
                 midDrone = newMidDrone;
-                System.out.println("newPointOnCurve: " + newPointOnCurve);
                 droneModel.setxPosition(newPointOnCurve.getX());
                 droneModel.setyPosition(newPointOnCurve.getY());
                 droneModel.setzPosition(newPointOnCurve.getZ());
@@ -422,61 +418,39 @@ public class DroneController {
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
         this.commandPackage = commandPackage;
-        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
         double actualX = droneModel.getxPosition();
         double actualY = droneModel.getyPosition();
         double actualZ = droneModel.getzPosition();
-        System.out.println("***Flying on curve***");
+        dronePosition = new Point3D(actualX, actualY, actualZ);
 
         curveRadius = VectorHelper.radiusOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+        Point3D unadaptedCurveCenter = VectorHelper.midPointOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
 
-        Point3D inputCurveApex = new Point3D(x1, y1, z1);
-        Point3D inputCurveEnd = new Point3D(x2, y2, z2);
+        //adapt values to javafx coordinate system
+        Point3D inputCurveP1 = new Point3D(-y1, -z1, x1);
+        Point3D inputCurveP2 = new Point3D(-y2, -z2, x2);
+        Point3D inputCircleMidPoint = new Point3D(-unadaptedCurveCenter.getY(), -unadaptedCurveCenter.getZ(), unadaptedCurveCenter.getX());
 
-        //TODO: drone orientation is not accounted for yet!
-        //correct for orientation
-//        Point3D orientationVector = getCurrentOrientation();
-//        Point3D rotateAxis = Rotate.Y_AXIS;
-//        Point3D projectedOnYZ = new Point3D(y1, 0, x1);
-//        double offsetAngle = Point3D.ZERO.angle(orientationVector, projectedOnYZ);
-//        Point3D rotatedApex = VectorHelper.rotateVector(inputCurveApex, rotateAxis, offsetAngle);
-//        Point3D rotatedEnd = VectorHelper.rotateVector(inputCurveEnd, rotateAxis, offsetAngle);
+        //correct rotation relative to drone orientation
+        Point3D droneOrientation = getCurrentOrientation();
+        Point3D p1ProjectedOnYZ = new Point3D(inputCurveP1.getX(), 0, inputCurveP1.getZ());
+        double offsetAngle = Point3D.ZERO.angle(droneOrientation, p1ProjectedOnYZ);
+        Point3D rotatedP1 = VectorHelper.rotateVector(inputCurveP1, Rotate.Y_AXIS, offsetAngle);
+        Point3D rotatedP2 = VectorHelper.rotateVector(inputCurveP2, Rotate.Y_AXIS, offsetAngle);
+        Point3D rotatedCenter = VectorHelper.rotateVector(inputCircleMidPoint, Rotate.Y_AXIS, offsetAngle);
 
-        //correct with actual position
-        curveApex = new Point3D(actualX - y1, actualY - z1, actualZ + x1);
-        curveEnd = new Point3D(actualX - y2, actualY - z2, actualZ + x2);
+        //transform all points relative to drone position
+        curveP1 = new Point3D(rotatedP1.getX() + actualX, rotatedP1.getY() + actualY, rotatedP1.getZ() + actualZ);
+        curveEnd = new Point3D(rotatedP2.getX() + actualX, rotatedP2.getY() + actualY, rotatedP2.getZ() + actualZ);
+        curveCenter = new Point3D(rotatedCenter.getX() + actualX, rotatedCenter.getY() + actualY, rotatedCenter.getZ()+ actualZ);
 
-        Point3D localCircleMidpoint = VectorHelper.midPointOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-
-        // Point3D rotatedMidPoint = VectorHelper.rotateVector(inputCurveEnd, rotateAxis, offsetAngle);
-
-        circleMidpoint = new Point3D(actualX - localCircleMidpoint.getY(), actualY - localCircleMidpoint.getZ(), actualZ + localCircleMidpoint.getX());
-
-        dronePosition = new Point3D(actualX, actualY, actualZ);
-        arcAngle = circleMidpoint.angle(dronePosition, curveEnd);
+        arcAngle = curveCenter.angle(dronePosition, curveEnd);
         arcLength = (arcAngle/360) * 2 * curveRadius * Math.PI;
-
-        System.out.println("curveRadius: " + curveRadius);
-        System.out.println("arcAngle: " + arcAngle);
-        System.out.println("arcLength: " + arcLength);
-
-        System.out.println("localCircleMidpoint: " + localCircleMidpoint);
-        System.out.println("dronePosition: " + dronePosition);
-        System.out.println("circleMidpoint: " + circleMidpoint);
-        System.out.println("curveApex: " + curveApex);
-        System.out.println("curveEnd: " + curveEnd);
-
-        midDrone = dronePosition.subtract(circleMidpoint);
-        Point3D midApex = curveApex.subtract(circleMidpoint);
-        Point3D midEnd = curveEnd.subtract(circleMidpoint);
-        System.out.println("MD length (should be curveRadius): " + midDrone.magnitude());
-        System.out.println("ME length (should be the same): " + midDrone.magnitude());
-        System.out.println("MD: " + midDrone);
-        System.out.println("ME: " + midDrone);
-        circleNormalVector = (midDrone.crossProduct(midApex)).normalize();
-        System.out.println("circleNormalVector " + circleNormalVector);
-        rotateDiffAnglePerFrame = 0.001 * speed;
-
+        midDrone = dronePosition.subtract(curveCenter);
+        Point3D midP1 = curveP1.subtract(curveCenter);
+        Point3D midP2 = curveEnd.subtract(curveCenter);
+        circleNormalVector = (midDrone.crossProduct(midP1)).normalize();
+        rotateDiffAnglePerFrame = 0.001 * speed/5;
         flyCurve = true;
     }
 
