@@ -7,8 +7,8 @@ public class DroneModel {
 
     private int mid = -1, tempLow, tempHigh, tofDistance; //todo: tempLow? tempHigh? barometer?
     private double barometer, accelerationX, accelerationY, accelerationZ;
-    private String wifiSsid;
-    private String wifiPass;
+    private String wifiSsid = "TelloSimulator";
+    private String wifiPass = "Tello<3";
     private boolean missionPadDetection;
     private int missionPadDetectionMode;
     private long flightTime;

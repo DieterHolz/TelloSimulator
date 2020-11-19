@@ -345,7 +345,7 @@ public class CommandHandler {
 						break;
 					}
 					if(validateRc(a, b, c, d)) {
-						droneController.rc(commandPackage, a, b, c, d);
+						droneController.rc(a, b, c, d);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
