@@ -72,7 +72,8 @@ public class DroneController {
         droneModel.setYaw(0);
         droneModel.setPitch(0);
         droneModel.setRoll(0);
-
+        timeline.stop();
+        animationRunning = false;
         spinDownRotors(false);
     }
 
