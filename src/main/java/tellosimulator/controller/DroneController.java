@@ -93,9 +93,16 @@ public class DroneController {
      * @param distance the distance (in cm)
      */
     private void move (Point3D directionVector, double distance){
-        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());   // get p1
-        Point3D to = from.add(directionVector.multiply(distance)); // vector addition to get p2 (times distance)
+        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
+        Point3D to = from.add(directionVector.normalize().multiply(distance));
         Duration duration = Duration.seconds(distance / droneModel.getSpeed());
+        animate(createMoveAnimation(to, duration));
+    }
+
+    private void move (Point3D directionVector, double distance, double speed){
+        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
+        Point3D to = from.add(directionVector.normalize().multiply(distance));
+        Duration duration = Duration.seconds(distance / speed);
         animate(createMoveAnimation(to, duration));
     }
 
@@ -370,12 +377,12 @@ public class DroneController {
 
     public void cw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        rotate(x, Rotation.YAW);
+        rotate(-x, Rotation.YAW);
     }
 
     public void ccw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        rotate(-x, Rotation.YAW);
+        rotate(x, Rotation.YAW);
     }
 
     public void flip(CommandPackage commandPackage, String flipDirection) {
@@ -401,8 +408,22 @@ public class DroneController {
 
     public void go(CommandPackage commandPackage, double x, double y, double z, double speed) {
         this.commandPackage = commandPackage;
-        moveToPoint(new Point3D(x,y,z), speed);
-        //TODO: Fly to missionpad
+        double actualX = droneModel.getxPosition();
+        double actualY = droneModel.getyPosition();
+        double actualZ = droneModel.getzPosition();
+        dronePosition = new Point3D(actualX, actualY, actualZ);
+
+        //adapt values to javafx coordinate system
+        Point3D relativeCoords = new Point3D(-y, -z, x);
+
+        //correct rotation relative to drone orientation
+        double offsetAngle = droneModel.getYaw();
+        Point3D rotatedCoords = VectorHelper.rotateAroundYAxis(relativeCoords, offsetAngle);
+
+        //transform relative to drone position
+        Point3D transformedCoords = new Point3D(rotatedCoords.getX() + actualX, rotatedCoords.getY() + actualY, rotatedCoords.getZ() + actualZ);
+
+        move(transformedCoords, dronePosition.distance(transformedCoords), speed);
     }
 
     public void stop(CommandPackage commandPackage) {
@@ -425,12 +446,10 @@ public class DroneController {
         Point3D inputCircleMidPoint = new Point3D(-unadaptedCurveCenter.getY(), -unadaptedCurveCenter.getZ(), unadaptedCurveCenter.getX());
 
         //correct rotation relative to drone orientation
-        Point3D droneOrientation = getCurrentOrientation();
-        Point3D p1ProjectedOnYZ = new Point3D(inputCurveP1.getX(), 0, inputCurveP1.getZ());
-        double offsetAngle = Point3D.ZERO.angle(droneOrientation, p1ProjectedOnYZ);
-        Point3D rotatedP1 = VectorHelper.rotateVector(inputCurveP1, Rotate.Y_AXIS, offsetAngle);
-        Point3D rotatedP2 = VectorHelper.rotateVector(inputCurveP2, Rotate.Y_AXIS, offsetAngle);
-        Point3D rotatedCenter = VectorHelper.rotateVector(inputCircleMidPoint, Rotate.Y_AXIS, offsetAngle);
+        double offsetAngle = droneModel.getYaw();
+        Point3D rotatedP1 = VectorHelper.rotateAroundYAxis(inputCurveP1, offsetAngle);
+        Point3D rotatedP2 = VectorHelper.rotateAroundYAxis(inputCurveP2, offsetAngle);
+        Point3D rotatedCenter = VectorHelper.rotateAroundYAxis(inputCircleMidPoint, offsetAngle);
 
         //transform all points relative to drone position
         curveP1 = new Point3D(rotatedP1.getX() + actualX, rotatedP1.getY() + actualY, rotatedP1.getZ() + actualZ);
