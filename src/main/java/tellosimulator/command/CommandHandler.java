@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class CommandHandler {
-	private Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
+	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
 
 	DroneController droneController;
 	VideoPublisher publisher;
@@ -48,7 +48,7 @@ public class CommandHandler {
 
 		logger.info("handling command: " + command);
 
-		if(!droneController.isAnimationRunning() || command == TelloControlCommand.EMERGENCY || command == TelloSetCommand.RC) {
+		if(!droneController.isAnimationRunning() || command.equals(TelloControlCommand.EMERGENCY) || command.equals(TelloSetCommand.RC)) {
 			switch (command) {
 				case TelloControlCommand.COMMAND:
 					break;
@@ -417,7 +417,7 @@ public class CommandHandler {
 					}
 
 					if(validateAp(ssidAp, passAp)) {
-						droneController.ap(commandPackage, ssidAp, passAp);
+						droneController.ap(ssidAp, passAp);
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Station mode is not supported by the TelloSimulator");
 					} else {
@@ -526,19 +526,19 @@ public class CommandHandler {
 
 	private boolean validateGo(double x, double y, double z, double speed) {
         if(x<-500 || x>500) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: x, input value: " + x + ", valid value: -500 - 500");
 			return false;
 		} else if(y<-500 || y>500) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: y, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: y, input value: " +  x + ", valid value: -500 - 500");
 			return false;
 		} else if(z<-500 || z>500) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: z, input value: "+String.valueOf(x)+", valid value: -500 - 500");
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: z, input value: " +  x + ", valid value: -500 - 500");
 			return false;
 		} else if(speed<10 || speed>100) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: speed, input value: "+String.valueOf(x)+", valid value: 10 - 100");
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: speed, input value: " + x + ", valid value: 10 - 100");
 			return false;
 		} else if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.GO+", param name: x, y and z, input value: x: "+String.valueOf(x)+", y: "+String.valueOf(y)+", z: "+String.valueOf(z)+"x, y and z values can't be set between -20 - 20 simultaneously");
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: x, y and z, input value: x: " + x + ", y: " + y + ", z: " + z + "x, y and z values can't be set between -20 - 20 simultaneously");
 			return false;
 //		}
 //	    TODO: implement mission pad id in validate method

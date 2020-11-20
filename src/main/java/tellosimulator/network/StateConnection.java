@@ -1,5 +1,7 @@
 package tellosimulator.network;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
@@ -11,20 +13,13 @@ public class StateConnection extends Thread {
     DroneController telloDroneController;
     InetAddress address;
 
-    private boolean running;
-    private byte[] buffer = new byte[512];
+    private BooleanProperty running = new SimpleBooleanProperty(false);
 
-    public boolean isRunning() {
-        return running;
-    }
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public StateConnection(DroneController telloDroneController, InetAddress address) throws SocketException {
+    public StateConnection(DroneController telloDroneController, InetAddress address) {
         this.address = address;
         this.telloDroneController = telloDroneController;
 
+        setupValueChangedListener();
         try {
             stateSocket = new DatagramSocket(TelloSDKValues.SIM_STATE_PORT);
             stateSocket.connect(address, TelloSDKValues.OP_STATE_PORT);
@@ -34,21 +29,40 @@ public class StateConnection extends Thread {
         }
     }
 
-    public void run() {
-        running = true;
-
-            while (running) {
-                try {
-                    String droneState = telloDroneController.getDroneState();
-                    DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
-                    stateSocket.send(statePacket);
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    private void setupValueChangedListener() {
+        runningProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == false) {
+                stateSocket.close();
             }
-        stateSocket.close();
+        });
+    }
+
+    public void run() {
+        setRunning(true);
+
+        while (isRunning()) {
+            try {
+                String droneState = telloDroneController.getDroneState();
+                DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
+                stateSocket.send(statePacket);
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isRunning() {
+        return running.get();
+    }
+
+    public BooleanProperty runningProperty() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running.set(running);
     }
 }

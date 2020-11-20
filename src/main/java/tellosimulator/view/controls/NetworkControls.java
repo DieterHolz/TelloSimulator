@@ -18,7 +18,6 @@ public class NetworkControls extends VBox {
     private final DroneController droneController;
 
     private CommandConnection commandConnection;
-    private StateConnection stateConnection;
     private String myIp;
 
     private ToggleButton startButton;
@@ -61,7 +60,7 @@ public class NetworkControls extends VBox {
         setMinWidth(150);
     }
 
-    private void initializeParts() throws UnknownHostException {
+    private void initializeParts() {
         startButton = new ToggleButton("Start Virtual Drone");
         simulatorExternalIpLabel = new Label("IP Address in Network:");
         simulatorExternalIpField = new TextField(myIp);
@@ -107,23 +106,15 @@ public class NetworkControls extends VBox {
     private void setupEventHandlers() {
         startButton.setOnAction(event -> {
             if (startButton.isSelected()){
-                try {
-                    if (commandConnection == null || !commandConnection.isAlive()){
-                        commandConnection = new CommandConnection(droneController);
-
-                        commandConnection.start();
-
-                    }
-
-                    commandConnection.setRunning(true);
-                } catch (SocketException e) {
-                    logger.error(e.getMessage());
+                if (commandConnection == null || !commandConnection.isAlive()){
+                    commandConnection = new CommandConnection(droneController);
+                    commandConnection.start();
                 }
+                commandConnection.setRunning(true);
                 logger.debug("Drone turned ON");
-
             } else {
                 commandConnection.setRunning(false);
-                stateConnection.setRunning(false);
+                commandConnection = null;
                 logger.debug("Drone turned OFF");
             }
         });

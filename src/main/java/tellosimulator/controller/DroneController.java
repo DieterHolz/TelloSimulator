@@ -12,7 +12,6 @@ import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.drone.Rotor;
-import java.io.IOException;
 
 public class DroneController {
     private DroneModel droneModel;
@@ -83,9 +82,8 @@ public class DroneController {
      */
     private void moveToPoint(Point3D target, double speed){
         Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
-        Point3D to = target;
-        Duration duration = Duration.seconds(from.distance(to) / speed);
-        animate(createMoveAnimation(to, duration));
+        Duration duration = Duration.seconds(from.distance(target) / speed);
+        animate(createMoveAnimation(target, duration));
     }
 
     /**
@@ -196,11 +194,8 @@ public class DroneController {
     private void animate(Timeline timeline, boolean landing) {
         timeline.setOnFinished(event -> {
             animationRunning = false;
-            try {
-                CommandResponseSender.sendOk(commandPackage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            CommandResponseSender.sendOk(commandPackage);
+
             if (landing){
                 spinDownRotors(true);
             }
@@ -256,10 +251,10 @@ public class DroneController {
         droneModel.setzOrientation(Math.sin(rotateAngle * Math.PI / 180) * x1 + Math.cos(rotateAngle * Math.PI / 180) * z1);
     }
 
-    private void moveOnCurve() throws IOException {
+    private void moveOnCurve() {
         dronePosition = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
 
-        if (dronePosition != null && curveEnd != null){
+        if (curveEnd != null){
             double newArcAngle = curveCenter.angle(dronePosition, curveEnd);
 
             //TODO: this should really be checked differently, but works for now
@@ -288,12 +283,7 @@ public class DroneController {
                 updateRcPosition();
                 updateRcYaw();
                 if (flyCurve){
-                    try {
-                        moveOnCurve();
-                    } catch (IOException e) {
-                        //TODO naja
-                        e.printStackTrace();
-                    }
+                    moveOnCurve();
                 }
             }
         };
@@ -341,7 +331,9 @@ public class DroneController {
     }
 
     public void land(CommandPackage commandPackage) {
-        this.commandPackage = commandPackage;
+        if (commandPackage != null) {
+            this.commandPackage = commandPackage;
+        }
         land();
     }
 
@@ -466,7 +458,7 @@ public class DroneController {
     }
 
 
-    public void ap(CommandPackage commandPackage, String ssid, String pass) {
+    public void ap(String ssid, String pass) {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
         // Sets the Wi-Fi SSID and password. The Tello will reboot afterwords
         droneModel.setWifiSsid(ssid);
