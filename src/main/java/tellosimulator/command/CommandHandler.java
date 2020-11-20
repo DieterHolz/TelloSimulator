@@ -32,6 +32,9 @@ public class CommandHandler {
     }
 
     public void handle(CommandPackage commandPackage) throws IOException {
+		if (droneController.isEmergency()) {
+			return;
+		}
 		if (commandParams != null) {
 			commandParams.clear();
 		}
@@ -89,6 +92,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.EMERGENCY:
 					if (checkNumberOfParams(commandParams, 0)){
+						logger.warn("Stopping motors immediately");
 						droneController.emergency();
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);

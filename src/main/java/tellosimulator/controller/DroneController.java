@@ -29,6 +29,7 @@ public class DroneController {
     private boolean animationRunning;
     private CommandHandler commandHandler;
     private CommandPackage commandPackage;
+
     boolean emergency = false;
 
     private boolean flyCurve = false;
@@ -79,6 +80,7 @@ public class DroneController {
         droneModel.setRoll(0);
         timeline.stop();
         animationRunning = false;
+        emergency = false;
         spinDownRotors(false);
     }
 
@@ -386,6 +388,37 @@ public class DroneController {
         }
     }
 
+
+    public void stop(CommandPackage commandPackage) {
+        droneModel.setLeftRightDiff(0);
+        droneModel.setForwardBackwardDiff(0);
+        droneModel.setUpDownDiff(0);
+        droneModel.setYawDiff(0);
+        timeline.stop();
+        animationRunning=false;
+        CommandResponseSender.sendOk(commandPackage);
+    }
+
+    public void emergency() {
+        emergency = true;
+        spinDownRotors(false);
+        droneModel.setLeftRightDiff(0);
+        droneModel.setForwardBackwardDiff(0);
+        droneModel.setUpDownDiff(0);
+        droneModel.setYawDiff(0);
+        timeline.stop();
+        timeline.getKeyFrames().clear();
+        animationRunning=false;
+
+        Point3D to = new Point3D(droneModel.getxPosition(), 0, droneModel.getzPosition());
+        Duration duration = Duration.seconds(Math.sqrt(2 * Math.abs(droneModel.getyPosition() / DefaultValueHelper.DEFAULT_SPEED_OF_FALL)));
+        KeyValue keyY = new KeyValue(droneModel.yPositionProperty(), to.getY(), Interpolator.EASE_IN); //TODO use a more realistic interpolator
+
+        KeyFrame keyFrame = new KeyFrame(duration, keyY);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+    }
+
     public void go(CommandPackage commandPackage, double x, double y, double z, double speed) {
         this.commandPackage = commandPackage;
         double actualX = droneModel.getxPosition();
@@ -404,41 +437,6 @@ public class DroneController {
         Point3D transformedCoords = new Point3D(rotatedCoords.getX() + actualX, rotatedCoords.getY() + actualY, rotatedCoords.getZ() + actualZ);
 
         move(transformedCoords, dronePosition.distance(transformedCoords), speed);
-    }
-
-    public void stop(CommandPackage commandPackage) {
-        droneModel.setLeftRightDiff(0);
-        droneModel.setForwardBackwardDiff(0);
-        droneModel.setUpDownDiff(0);
-        droneModel.setYawDiff(0);
-        timeline.stop();
-        animationRunning=false;
-        CommandResponseSender.sendOk(commandPackage);
-    }
-
-    public void emergency() {
-        spinDownRotors(false);
-        /*emergency = true;
-        if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
-            rotateTransition.stop();
-        }
-        if(timeline.getStatus() == Animation.Status.RUNNING) {
-            timeline.stop();
-        }
-        animationRunning = false;
-*//*
-        Point3D to = new Point3D(0, INITIAL_Y_POSITION, 0);
-        Duration duration = Duration.seconds(drone.getTranslateY()+INITIAL_Y_POSITION / TelloDefaultValues.DEFAULT_SPEED_OF_FALL);
-
-        KeyValue keyX = new KeyValue(drone.translateXProperty(), to.getX(), Interpolator.EASE_IN);
-        KeyValue keyY = new KeyValue(drone.translateYProperty(), to.getY(), Interpolator.EASE_IN);
-        KeyValue keyZ = new KeyValue(drone.translateZProperty(), to.getZ(), Interpolator.EASE_IN);
-
-        KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
-        timeline.getKeyFrames().add(keyFrame);
-        animate(timeline);*//*
-
-        LOGGER.fatal("emergency!!!!");*/
     }
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
@@ -546,5 +544,14 @@ public class DroneController {
 
     public void setCommandHandler(CommandHandler commandHandler) {
         this.commandHandler = commandHandler;
+    }
+
+
+    public boolean isEmergency() {
+        return emergency;
+    }
+
+    public void setEmergency(boolean emergency) {
+        this.emergency = emergency;
     }
 }
