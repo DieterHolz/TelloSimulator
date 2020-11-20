@@ -60,6 +60,11 @@ public class DroneController {
     }
 
     public void resetValues() {
+        droneModel.setLeftRightDiff(0);
+        droneModel.setForwardBackwardDiff(0);
+        droneModel.setUpDownDiff(0);
+        droneModel.setYawDiff(0);
+
         droneModel.setxOrientation(0);
         droneModel.setyOrientation(0);
         droneModel.setzOrientation(1);
@@ -167,31 +172,6 @@ public class DroneController {
         KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
         timeline.getKeyFrames().add(keyFrame);
         return timeline;
-    }
-
-    public void emergency() {
-        spinDownRotors(false);
-        /*emergency = true;
-        if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
-            rotateTransition.stop();
-        }
-        if(timeline.getStatus() == Animation.Status.RUNNING) {
-            timeline.stop();
-        }
-        animationRunning = false;
-*//*
-        Point3D to = new Point3D(0, INITIAL_Y_POSITION, 0);
-        Duration duration = Duration.seconds(drone.getTranslateY()+INITIAL_Y_POSITION / TelloDefaultValues.DEFAULT_SPEED_OF_FALL);
-
-        KeyValue keyX = new KeyValue(drone.translateXProperty(), to.getX(), Interpolator.EASE_IN);
-        KeyValue keyY = new KeyValue(drone.translateYProperty(), to.getY(), Interpolator.EASE_IN);
-        KeyValue keyZ = new KeyValue(drone.translateZProperty(), to.getZ(), Interpolator.EASE_IN);
-
-        KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
-        timeline.getKeyFrames().add(keyFrame);
-        animate(timeline);*//*
-
-        LOGGER.fatal("emergency!!!!");*/
     }
 
     /**
@@ -427,7 +407,38 @@ public class DroneController {
     }
 
     public void stop(CommandPackage commandPackage) {
-        //TODO: Hovers in the air works at any time
+        droneModel.setLeftRightDiff(0);
+        droneModel.setForwardBackwardDiff(0);
+        droneModel.setUpDownDiff(0);
+        droneModel.setYawDiff(0);
+        timeline.stop();
+        animationRunning=false;
+        CommandResponseSender.sendOk(commandPackage);
+    }
+
+    public void emergency() {
+        spinDownRotors(false);
+        /*emergency = true;
+        if (rotateTransition.getStatus() == Animation.Status.RUNNING) {
+            rotateTransition.stop();
+        }
+        if(timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.stop();
+        }
+        animationRunning = false;
+*//*
+        Point3D to = new Point3D(0, INITIAL_Y_POSITION, 0);
+        Duration duration = Duration.seconds(drone.getTranslateY()+INITIAL_Y_POSITION / TelloDefaultValues.DEFAULT_SPEED_OF_FALL);
+
+        KeyValue keyX = new KeyValue(drone.translateXProperty(), to.getX(), Interpolator.EASE_IN);
+        KeyValue keyY = new KeyValue(drone.translateYProperty(), to.getY(), Interpolator.EASE_IN);
+        KeyValue keyZ = new KeyValue(drone.translateZProperty(), to.getZ(), Interpolator.EASE_IN);
+
+        KeyFrame keyFrame = new KeyFrame(duration, keyX, keyY, keyZ);
+        timeline.getKeyFrames().add(keyFrame);
+        animate(timeline);*//*
+
+        LOGGER.fatal("emergency!!!!");*/
     }
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {

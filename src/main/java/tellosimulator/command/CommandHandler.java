@@ -48,7 +48,11 @@ public class CommandHandler {
 
 		logger.info("handling command: " + command);
 
-		if(!droneController.isAnimationRunning() || command.equals(TelloControlCommand.EMERGENCY) || command.equals(TelloSetCommand.RC)) {
+		if(!droneController.isAnimationRunning()
+				|| command.equals(TelloControlCommand.EMERGENCY)
+				|| command.equals(TelloSetCommand.RC)
+				|| command.equals(TelloControlCommand.STOP)) {
+
 			switch (command) {
 				case TelloControlCommand.COMMAND:
 					break;
@@ -84,7 +88,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.EMERGENCY:
-					droneController.emergency();
+					if (checkNumberOfParams(commandParams, 0)){
+						droneController.emergency();
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloControlCommand.UP:
