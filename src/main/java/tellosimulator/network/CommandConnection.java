@@ -26,6 +26,7 @@ public class CommandConnection extends Thread {
 	private byte[] buffer = new byte[512];
 
 	public CommandConnection(DroneController telloDroneController) {
+		this.setDaemon(true);
 		this.telloDroneController = telloDroneController;
 		setupValueChangedListener();
 
