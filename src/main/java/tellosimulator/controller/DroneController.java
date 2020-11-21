@@ -473,19 +473,13 @@ public class DroneController {
         Point3D inputCurveP1 = new Point3D(-y1, -z1, x1);
         Point3D inputCurveP2 = new Point3D(-y2, -z2, x2);
         Point3D inputCircleMidPoint = new Point3D(-unadaptedCurveCenter.getY(), -unadaptedCurveCenter.getZ(), unadaptedCurveCenter.getX());
-        System.out.println("inputCurveP1 " + inputCurveP1);
-        System.out.println("inputCurveP2 " + inputCurveP2);
-        System.out.println("inputCircleMidPoint " + inputCircleMidPoint);
 
         //correct rotation relative to drone orientation
         double offsetAngle = droneModel.getYaw();
-        System.out.println("yaw " + offsetAngle);
+
         Point3D rotatedP1 = VectorHelper.rotateAroundYAxis(inputCurveP1, offsetAngle);
         Point3D rotatedP2 = VectorHelper.rotateAroundYAxis(inputCurveP2, offsetAngle);
         Point3D rotatedCenter = VectorHelper.rotateAroundYAxis(inputCircleMidPoint, offsetAngle);
-        System.out.println("rotatedP1 " + rotatedP1);
-        System.out.println("rotatedP2 " + rotatedP2);
-        System.out.println("rotatedCenter " + rotatedCenter);
 
         //transform all points relative to drone position
         curveP1 = new Point3D(rotatedP1.getX() + dronePosition.getX(), rotatedP1.getY() + dronePosition.getY(), rotatedP1.getZ() + dronePosition.getZ());

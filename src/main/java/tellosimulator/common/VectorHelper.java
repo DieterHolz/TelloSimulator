@@ -86,10 +86,10 @@ public class VectorHelper {
     }
 
     public static Point3D rotateAroundYAxis(Point3D v, double angle) {
-        double x = v.getX();
-        double z = v.getZ();
-        x = Math.cos(angle * Math.PI / 180) * x - Math.sin(angle * Math.PI / 180) * z;
-        z = Math.sin(angle * Math.PI / 180) * x + Math.cos(angle * Math.PI / 180) * z;
-        return new Point3D(x, v.getY(), z);
+        double x1 = v.getX();
+        double z1 = v.getZ();
+        double x2 = Math.cos(angle * Math.PI / 180) * x1 - Math.sin(angle * Math.PI / 180) * z1;
+        double z2 = Math.sin(angle * Math.PI / 180) * x1 + Math.cos(angle * Math.PI / 180) * z1;
+        return new Point3D(x2, v.getY(), z2);
     }
 }
