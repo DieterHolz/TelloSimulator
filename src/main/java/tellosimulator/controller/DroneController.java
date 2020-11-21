@@ -81,6 +81,7 @@ public class DroneController {
         timeline.stop();
         animationRunning = false;
         emergency = false;
+        flyCurve = false;
         spinDownRotors(false);
     }
 
@@ -141,7 +142,7 @@ public class DroneController {
         KeyFrame keyFrame = null;
         if (rotation == Rotation.YAW) {
             updateOrientation(angle);
-            rotate = new KeyValue(droneModel.yawProperty(), angle);
+            rotate = new KeyValue(droneModel.yawProperty(), droneModel.getYaw() + angle);
             duration = Duration.millis(DefaultValueHelper.TURN_DURATION*Math.abs(angle)/360);
         } else if (rotation == Rotation.ROLL) {
             droneModel.setRoll(0);
@@ -270,8 +271,8 @@ public class DroneController {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {  // called in every frame!
-                updateRcPosition();
                 updateRcYaw();
+                updateRcPosition();
                 if (flyCurve){
                     moveOnCurve();
                 }
@@ -402,6 +403,8 @@ public class DroneController {
     public void emergency() {
         emergency = true;
         spinDownRotors(false);
+
+        droneModel.setSpeed(DefaultValueHelper.DEFAULT_SPEED);
         droneModel.setLeftRightDiff(0);
         droneModel.setForwardBackwardDiff(0);
         droneModel.setUpDownDiff(0);
@@ -483,7 +486,7 @@ public class DroneController {
         droneModel.setLeftRightDiff(a);
         droneModel.setForwardBackwardDiff(b);
         droneModel.setUpDownDiff(c);
-        droneModel.setYawDiff(d);
+        droneModel.setYawDiff(-d);
     }
 
 
