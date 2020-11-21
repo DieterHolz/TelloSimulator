@@ -36,7 +36,7 @@ public final class CommandResponseSender {
 
     public static void sendError(CommandPackage commandPackage) {
         try {
-            DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR.getBytes(), TelloResponse.OK.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+            DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR.getBytes(), TelloResponse.ERROR.getBytes().length, commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
             logger.debug("Sent response: '" + TelloResponse.ERROR + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
         } catch (SocketException e1) {
@@ -48,7 +48,7 @@ public final class CommandResponseSender {
 
     public static void sendErrorNotJoyStick(CommandPackage commandPackage) {
         try {
-            DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR_NOT_JOYSTICK.getBytes(), TelloResponse.OK.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+            DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR_NOT_JOYSTICK.getBytes(), TelloResponse.ERROR_NOT_JOYSTICK.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
             logger.debug("Sent response: '" + TelloResponse.ERROR_NOT_JOYSTICK + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
         } catch (SocketException e1) {
@@ -85,7 +85,7 @@ public final class CommandResponseSender {
 
     public static void sendReadResponse(CommandPackage commandPackage, String response) {
         try {
-            DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), TelloResponse.OUT_OF_RANGE.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+            DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
             logger.debug("Sent read response: '" + response + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
         } catch (SocketException e1) {
