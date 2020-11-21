@@ -1,30 +1,42 @@
+:imagesdir: assets
+:toc: macro
 
 = 20FS_IMVS08: Tello Simulator
 
-*Implementierung eines Simulator für die Tello Drohne*
-
+[.text-center]
+*Implementierung eines Simulators für die Tello Drohne*
+[.text-center]
+image::fhnw_ht_10mm.jpg[width=400]
+[.text-center]
 IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz +
 v0.1 +
 Brugg, 6. Oktober 2020
 
-===== Autoren
+[.text-center]
+*Autoren* +
 Daniel Obrist +
 Severin Peyer +
 
-===== Auftraggeber
+
+[.text-center]
+*Auftraggeber* +
 Fachhochschule Nordwestschweiz FHNW +
 vertreten durch Dieter Holz und Barbara Scheuner +
 Bahnhofstrasse 6 +
 5210 Windisch
 
-===== Betreuer
-Dieter Holz +
-Barbara Scheuner
+[.text-center]
+*Betreuer* +
+Dr. Dieter Holz +
+Dr. Barbara Scheuner
 
 '''
+[discrete]
 == Impressum
 
-== Inhaltsverzeichnis
+:toc-title: Inhaltsverzeichnis
+toc::[]
+
 == Management Summary
 == Einleitung
 === Ausgangslage
