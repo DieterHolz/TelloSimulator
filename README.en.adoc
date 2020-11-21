@@ -2,11 +2,12 @@
 
 :imagesdir: assets
 
-link:README.adoc[Deutsch]
+link:README.adoc[Deutsche Version]
 
 The TelloSimulator allows experimenting and debugging with a virtual Tello drone. The application
 offers the programming interface of the Tello SDK 2.0, sends and receives UDP packets analogous to the real drone
-and has a UI with a 3D world in which the virtual drone flies.
+and has a UI with a 3D world in which the virtual drone flies. A detailed documentation of this
+project can be found in the link:BERICHT.adoc[report].
 
 == Installation instructions:
 
