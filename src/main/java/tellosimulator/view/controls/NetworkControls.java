@@ -116,6 +116,8 @@ public class NetworkControls extends VBox {
                 commandConnection.setRunning(false);
                 commandConnection = null;
                 logger.debug("Drone turned OFF");
+                droneController.emergency();
+                droneController.setEmergency(false);
             }
         });
     }
