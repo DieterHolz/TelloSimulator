@@ -1,7 +1,39 @@
+:imagesdir: assets
+
 = Troubleshooting
 
-[qanda]
-Problem xy::
-Die Antwort auf Problem xy.
-Mögliches Problem 2::
-Antwort auf Problem 2.
+[quanda]
+Kein kompatibles Java JDK?::
+Damit alle benötigten JavaFX Komponenten enthalten sind, empfehlen wir die Verwendung folgender JDK:
+https://bell-sw.com/pages/downloads/#/java-11-lts[Liberica Java JDK 11.0.8,role=external,window=_blank].
+Neuere Versionen können auch funktionieren.
+
+Java JDK in IntelliJ hinzufügen?::
+File-> Project Structure öffnen. Unter Platform Settings -> SDKs auf das '+' klicken -> 'Add New SDK' -> Speicherort
+der JDK angeben.
+
+image::screenshot07.PNG[width=720]
+
+
+JDK via IntelliJ downloaden?::
+Mit IntelliJ IDEA 2020.1 oder neuer lässt sich die JDK auch direkt in IntellJ downloaden.
+Vendor: Bellsoft Liberica JDK, Version: 11.0.8, Location: Speicherort für deine JDKs
+
+image::screenshot8.PNG[width=400]
+
+
+Problemen mit der Java Version?::
+Deine aktuelle Java-Version ist prüfbar mit
+[source,bash]
+java -version
+
+Probleme mit JAVA_HOME?::
+Dein aktuelles JAVA_HOME siehst du mit
+[source,bash]
+echo %JAVA_HOME%
+
+Um das JAVA_HOME auf das Liberica Java JDK 11.0.8 zu ändern:
+https://javatutorial.net/set-java-home-windows-10 oder https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux).
+
+
+

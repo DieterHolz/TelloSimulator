@@ -11,22 +11,26 @@ https://bell-sw.com/pages/downloads/#/java-11-lts[Liberica Java JDK 11.0.8,role=
 Neuere Versionen können auch funktionieren. Ab IntelliJ IDEA 2020.1 können JDKs auch direkt via IntelliJ heruntergeladen werden.
 
 
-=== Schnellstart via Kommandozeile
+=== Schnellstart via Gradle & Kommandozeile
 
 *Schritt 1:* Repository in gewünschtes lokales Verzeichnis klonen (z.B. mit Git Bash / Terminal):
 
-`git clone \https://github.com/DieterHolz/TelloSimulator`
+[source,bash]
+git clone https://github.com/DieterHolz/TelloSimulator
 
 *Schritt 2:* Kommandozeile im TelloSimulator Verzeichnis öffnen:
 
-`cd TelloSimulator`
+[source,bash]
+cd TelloSimulator
 
 *Schritt 3:* Start via Gradle Wrapper.:
 
-`./gradlew run` bzw. `gradlew run`
+[source,bash]
+ ./gradlew run
 
-(Bei Problemen mit der Java Version: Die Version ist prüfbar mit `java -version` bzw. aktuelles JAVA_HOME mit `echo %JAVA_HOME%`. Eventuell muss die JAVA_HOME Variable auf das Liberica Java JDK 11.0.8 geändert werden.
-JAVA_HOME ändern: https://javatutorial.net/set-java-home-windows-10 oder https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux)
+bzw.
+[source,bash]
+ gradlew run
 
 
 
@@ -40,27 +44,18 @@ image::screenshot01.PNG[width=400]
 
 image::screenshot02.PNG[width=600]
 
-*Schritt 3:* Falls nötig GitHub Credentials angeben.
-
-*Schritt 4:* File -> Project Structure öffnen.
+*Schritt 3:* File -> Project Structure öffnen.
 
 image::screenshot05.PNG[width=300]
 
-*Schritt 5:* Unter Platform Settings -> SDKs die Java SDK auf das installierte Liberica JDK 11 setzen.
-Falls dieses noch nicht vorhanden ist auf das '+' klicken -> 'Add New SDK' -> Speicherort des heruntergeladenen Liberica JDK 11 angeben.
+*Schritt 4:* Unter Platform Settings -> SDKs die Java SDK auf Liberica JDK 11 setzen.
 
-image::screenshot07.PNG[width=720]
-
-Alternativ kann man das JDK auch via IntelliJ downloaden (IntelliJ IDEA 2020.1 oder neuer benötigt).
-Vendor: Bellsoft Liberica JDK, Version: 11.0.8, Location: Speicherort für deine JDKs
-
-image::screenshot8.PNG[width=400]
-
-*Schritt 6:* In Project Structure -> Project die Project SDK auf das Liberica JDK 11 setzen.
+*Schritt 5:* In Project Structure -> Project die Project SDK auf das Liberica JDK 11 setzen.
 
 image::screenshot10.PNG[width=720]
 
-*Schritt 7:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen -> `gradlew clean build` ausführen ->  nach dem build `gradlew run` ausführen.
+*Schritt 6:* Rechts oben auf "Gradle" klicken -> Elefant ('Execute Gradle Task') auswählen ->
+`gradlew clean build` ausführen ->  nach dem build `gradlew run` ausführen.
 
 image::screenshot11.PNG[width=720]
 image::screenshot12.PNG[width=720]
