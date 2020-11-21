@@ -90,7 +90,7 @@ public class SimulatorControls extends GridPane {
 
     private void setupValueChangedListeners() {
         droneModel.yawProperty().addListener((observable, oldValue, newValue) -> {
-            yawAngleText.textProperty().setValue(String.valueOf(Math.round(newValue.doubleValue() % 360)));
+            yawAngleText.textProperty().setValue(String.valueOf(Math.round((360 - newValue.doubleValue()) % 360)));
         });
     }
 
