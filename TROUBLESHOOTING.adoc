@@ -1,0 +1,7 @@
+= Troubleshooting
+
+[qanda]
+Problem xy::
+Die Antwort auf Problem xy.
+Mögliches Problem 2::
+Antwort auf Problem 2.

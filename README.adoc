@@ -1,50 +1,88 @@
 = TelloSimulator
 
+:imagesdir: assets
+
+link:README.en.adoc[English]
+
 Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtuellen Tello Drohne. Die Applikation
 bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
 und verfügt über ein UI mit 3D-Welt, in welcher die virtuelle Drohne fliegt.
 
 == Installationsanleitung:
 
-Eine detaillierte Installationsanleitung ist im link:SETUP.adoc[SETUP.adoc] zu finden.
+Repository klonen und das Gradle-Project starten mit:
 
-Um den Simulator zu testen, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und somit auch den Simulator ansteuern kann. Für Testzwecke steht hierzu unter
+[source,bash]
+ ./gradlew run
+
+oder
+
+[source,bash]
+ gradlew run
+
+Eine detailliertere Installationsanleitung, inkl. IntelliJ IDEA Setup, ist im link:SETUP.adoc[SETUP.adoc] zu finden.
+
+Um den Simulator zu verwenden, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und somit auch den Simulator ansteuern kann. Für Testzwecke steht hierzu unter
 https://github.com/danielobrist/TelloDemoCommander eine Demo-Applikation zur Verfügung.
 
+== Simulator-API:
 
-== Operator-Programm mit der Simulator-API verbinden:
+Die Verbindung mit dem Simulator ist sehr ähnlich wie mit der echten Drohne. Allerdings gibt es systembedingt ein paar Unterschiede.
+Die nachfolgenden Abschnitte dokumentieren die Simulator-API und geben beispielhaften Java-Code zum Verbindungsaufbau.
 
-//TODO: Anforderungsänderung "muss im WLAN funktionieren" --> TelloSDKValues / Verbindung mit anderen IPs erklären
-Die Verbindung mit dem Simulator ist sehr ähnlich wie mit der echten Drohne. Allerdings gibt es systembedingt ein paar Unterschiede. Falls der Simulator auf dem gleichen Gerät wie der Operator läuft, verwendet er
-die localhost Loopback-Addresse 127.0.0.1, wodurch nicht dieselben Ports genutzt werden können wie mit der echten Drohne.
-Folgende Anpassungen im *Operator-Programm* sind deshalb für den Verbindungsaufbau zum Simulator nötig:
+=== Commands senden & Responses empfangen
 
-*Schritt 1:* Port des DatagramSockets von *8889* (Default Tello Command Port) auf *8879* (Simulator Command Port) umstellen.
+. Command-Socket auf Port *8889* erstellen, um Commands zu senden:
 
-`ds = new DatagramSocket(8879);`
+[source,java]
+ds = new DatagramSocket(8889);
 
-*Schritt 2:*
+. Connection zur Simulator-IP, um Command-Responses vom Simulator zu empfangen:
+.. *Variante 1: Simulator & Operator auf gleichem Gerät:*
+Connection zur *Loopback-IP* auf Port *8879* herstellen:
 
-(Falls der Simulator auf dem gleichen Gerät wie der Operator läuft):
-
-Statt auf *192.168.10.1* (Tello Drohne IP) auf *127.0.0.1* (localhost) verbinden.
-
-`ds.connect(127.0.0.1);`
-
-(Falls der Simulator auf einem anderen Gerät wie der Operator läuft):
-
-Statt auf *192.168.10.1* (Tello Drohne IP) auf *<IP-Adresse des Simulators>* verbinden. (Aktuelle IP ersichtlich im Simulator UI)
-
-`ds.connect(<IP-Adresse des Simulators>);`
+[source,java]
+ds.connect(127.0.0.1, 8879)
 
 
-*Schritt 3:* //TODO: Tello State und Video Stream Sockets im Simulator umsetzen und API hier dokumentieren
+.. *Variante 2: Simulator & Operator auf verschiedenen Geräten:*
+Connection zur *IP des Simulators* (sichtbar im Simulator-UI) auf Port *8879* herstellen:
+
+[source,java]
+ds.connect(simulatorIP, 8879)
 
 
-Eine detailliere Dokumentation
+. UDP-Pakete senden und empfangen:
+
+[source,java]
+DatagramPacket packet = new DatagramPacket(...);
+
+[source,java]
+ds.send(packet);
+
+[source,java]
+ds.receive(packet);
+
+
+=== State empfangen
+
+. State-Socket auf Port *8890* erstellen, um State vom Simulator zu empfangen:
+
+[source,java]
+ds = new DatagramSocket(8890, InetAddress.getByName("0.0.0.0"));
+
+. State-Pakete empfangen:
+
+[source,java]
+ds.receive(packet);
+
+Der State wird alle 10 ms versendet.
+
+=== Video empfangen
+
+Der TelloSimulator versendet in der aktuellen Version noch keinen Videostream.
 
 == Literaturverzeichnis
-//TODO:
-JavaFX 3D Tutorial: https://www.youtube.com/watch?v=nBjwBmH8OhQ
+
 
 ---
