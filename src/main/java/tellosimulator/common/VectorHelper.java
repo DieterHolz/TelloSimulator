@@ -1,6 +1,7 @@
 package tellosimulator.common;
 
 import javafx.geometry.Point3D;
+import javafx.scene.transform.Rotate;
 import tellosimulator.controller.DroneController;
 
 import java.math.BigDecimal;
@@ -8,11 +9,11 @@ import java.math.BigDecimal;
 public class VectorHelper {
 
     public static Point3D getLeftNormalVector(DroneController droneController){
-        return getUpwardsNormalVector().crossProduct(droneController.getCurrentOrientation());
+        return getUpwardsNormalVector().crossProduct(droneController.getDroneOrientation());
     }
 
     public static Point3D getRightNormalVector(DroneController droneController){
-        return droneController.getCurrentOrientation().crossProduct(getUpwardsNormalVector());
+        return droneController.getDroneOrientation().crossProduct(getUpwardsNormalVector());
     }
 
     public static Point3D getUpwardsNormalVector(){
@@ -20,7 +21,7 @@ public class VectorHelper {
     }
 
     public static Point3D getDownwardsNormalVector(){
-        return new Point3D(0,1,0);
+        return Rotate.Y_AXIS;
     }
 
     private static Point3D normalVectorOfAPlane(Point3D point1, Point3D point2, Point3D point3) {
