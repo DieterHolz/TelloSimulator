@@ -40,12 +40,12 @@ ds = new DatagramSocket(8889);
 .. *Variant 1: Simulator & operator on the same device:*
 Connect to the *loopback IP* on port *8879*:
 [source,java]
-ds.connect(127.0.0.1, 8879)
+ds.connect(InetAddress.getLoopbackAddress(), 8879)
 
 .. *Variant 2: Simulator & operator on different devices:*
 Connect to the *IP of the simulator* (visible in the simulator UI) on port *8879*:
 [source,java]
-ds.connect(simulatorIP, 8879)
+ds.connect(InetAddress.getByName(simulatorIP), 8879)
 
 . Send and receive UDP packets:
 
@@ -71,7 +71,7 @@ ds = new DatagramSocket(8890, InetAddress.getByName("0.0.0.0"));
 [source,java]
 ds.receive(packet);
 
-The state is sent every 10 ms. It is always sent to the address, where the first command was received from.
+The state is sent every 10 ms. It is sent to the address, where the *first command* was received from.
 
 === Receive video
 
