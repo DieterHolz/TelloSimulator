@@ -64,3 +64,8 @@ image::screenshot13.PNG[width=720]
 Für weitere Starts sollte dann in der Run Configuration die Gradle 'run' Configuration zur Verfügung stehen.
 
 image::screenshot14.PNG[width=300]
+
+
+== Probleme bei der Installation?
+
+Schau dir die link:TROUBLESHOOTING.adoc[Troubleshooting FAQ] an.
