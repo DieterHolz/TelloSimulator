@@ -55,7 +55,7 @@ public class SimulatorPane extends BorderPane {
 
         subSceneHolder.setMinWidth(160);
         subSceneHolder.setMinHeight(90);
-        subSceneHolder.setPrefSize(1600, 900);
+        subSceneHolder.setPrefSize(1200, 720);
     }
 
     private void layoutParts() {
