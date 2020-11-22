@@ -252,7 +252,7 @@ public class DroneController {
     private void updateRcPosition() {
         Point3D oldPos = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
         Point3D forward = getDroneOrientation().multiply(droneModel.getForwardBackwardDiff()/100);
-        Point3D right = VectorHelper.getRightNormalVector(this).multiply(droneModel.getLeftRightDiff()/100);
+        Point3D right = VectorHelper.getRightNormalVector(getDroneOrientation()).multiply(droneModel.getLeftRightDiff()/100);
         Point3D up = VectorHelper.getUpwardsNormalVector().multiply(droneModel.getUpDownDiff()/100);
         Point3D moveDirectionVector = forward.add(right).add(up);
         Point3D newPos = oldPos.add(moveDirectionVector);
@@ -370,12 +370,12 @@ public class DroneController {
 
     public void left(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getLeftNormalVector(this), x);
+        move(VectorHelper.getLeftNormalVector(getDroneOrientation()), x);
     }
 
     public void right(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getRightNormalVector(this), x);
+        move(VectorHelper.getRightNormalVector(getDroneOrientation()), x);
     }
 
     public void forward(CommandPackage commandPackage, double x) {

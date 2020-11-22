@@ -4,16 +4,17 @@ import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import tellosimulator.controller.DroneController;
 
+import java.awt.*;
 import java.math.BigDecimal;
 
 public class VectorHelper {
 
-    public static Point3D getLeftNormalVector(DroneController droneController){
-        return getUpwardsNormalVector().crossProduct(droneController.getDroneOrientation());
+    public static Point3D getLeftNormalVector(Point3D vector){
+        return getUpwardsNormalVector().crossProduct(vector);
     }
 
-    public static Point3D getRightNormalVector(DroneController droneController){
-        return droneController.getDroneOrientation().crossProduct(getUpwardsNormalVector());
+    public static Point3D getRightNormalVector(Point3D vector){
+        return vector.crossProduct(getUpwardsNormalVector());
     }
 
     public static Point3D getUpwardsNormalVector(){
