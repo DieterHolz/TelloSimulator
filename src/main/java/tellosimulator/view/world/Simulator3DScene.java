@@ -2,13 +2,19 @@ package tellosimulator.view.world;
 
 import javafx.event.EventHandler;
 import javafx.scene.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
+import javafx.scene.paint.Color;
+import tellosimulator.TelloSimulator;
+import tellosimulator.log.Logger;
+import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
+
+import java.awt.*;
 
 
 public class Simulator3DScene extends SubScene {
-    SimulatorCamera simulatorCamera;
+    private Camera simulatorCamera;
+    private DroneCamera droneCamera;
 
     private double mousePosX;
     private double mousePosY;
@@ -17,9 +23,13 @@ public class Simulator3DScene extends SubScene {
     private double mouseDeltaX;
     private double mouseDeltaY;
 
-    public Simulator3DScene(Parent sceneGraph, DroneView droneView) {
-        super( sceneGraph, 1600, 900, true, SceneAntialiasing.BALANCED);
-        simulatorCamera = new SimulatorCamera(droneView);
+    private DroneModel droneModel;
+
+    public Simulator3DScene(Parent sceneGraph, DroneView droneView, DroneModel droneMod) {
+        super( sceneGraph, 1280, 720, true, SceneAntialiasing.BALANCED);
+        droneModel = droneMod;
+        simulatorCamera = new Camera(droneView, 200, 25, -10);
+        droneCamera = new DroneCamera(droneView);
         setCamera(simulatorCamera);
         setupEventHandlers();
     }
@@ -32,47 +42,60 @@ public class Simulator3DScene extends SubScene {
 
     private final EventHandler<MouseEvent> mouseEventHandler = event -> {
 
-        if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
-            mousePosX = event.getSceneX();
-            mousePosY = event.getSceneY();
-            mouseOldX = event.getSceneX();
-            mouseOldY = event.getSceneY();
+        if(!droneModel.isDroneCameraActive()) {
 
-        } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-            double modifier = 1.0;
-            double modifierFactor = 0.3;
+            if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                mousePosX = event.getSceneX();
+                mousePosY = event.getSceneY();
+                mouseOldX = event.getSceneX();
+                mouseOldY = event.getSceneY();
 
-            if (event.isControlDown()) {
-                modifier = 0.1;
-            }
-            if (event.isShiftDown()) {
-                modifier = 10.0;
-            }
+            } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                double modifier = 1.0;
+                double modifierFactor = 0.3;
 
-            mouseOldX = mousePosX;
-            mouseOldY = mousePosY;
-            mousePosX = event.getSceneX();
-            mousePosY = event.getSceneY();
-            mouseDeltaX = (mousePosX - mouseOldX);
-            mouseDeltaY = (mousePosY - mouseOldY);
+                if (event.isControlDown()) {
+                    modifier = 0.1;
+                }
+                if (event.isShiftDown()) {
+                    modifier = 10.0;
+                }
 
-            if (event.isMiddleButtonDown() || event.isSecondaryButtonDown()) {
-                simulatorCamera.cameraPosition.setX(simulatorCamera.cameraPosition.getTx() - mouseDeltaX*modifierFactor*modifier*0.4);
-                simulatorCamera.cameraPosition.setY(simulatorCamera.cameraPosition.getTy() - mouseDeltaY*modifierFactor*modifier*0.4);
-            }
-            if (event.isPrimaryButtonDown()) {
-                simulatorCamera.cameraRotateY.setAngle(simulatorCamera.cameraRotateY.getAngle() + mouseDeltaX*modifierFactor*modifier*2.0);
-                simulatorCamera.cameraRotateX.setAngle(simulatorCamera.cameraRotateX.getAngle() - mouseDeltaY*modifierFactor*modifier*2.0);
+                mouseOldX = mousePosX;
+                mouseOldY = mousePosY;
+                mousePosX = event.getSceneX();
+                mousePosY = event.getSceneY();
+                mouseDeltaX = (mousePosX - mouseOldX);
+                mouseDeltaY = (mousePosY - mouseOldY);
+
+                if (event.isMiddleButtonDown() || event.isSecondaryButtonDown()) {
+                    simulatorCamera.cameraPosition.setX(simulatorCamera.cameraPosition.getTx() - mouseDeltaX * modifierFactor * modifier * 0.4);
+                    simulatorCamera.cameraPosition.setY(simulatorCamera.cameraPosition.getTy() - mouseDeltaY * modifierFactor * modifier * 0.4);
+                }
+                if (event.isPrimaryButtonDown()) {
+                    simulatorCamera.cameraRotateY.setAngle(simulatorCamera.cameraRotateY.getAngle() + mouseDeltaX * modifierFactor * modifier * 2.0);
+                    simulatorCamera.cameraRotateX.setAngle(simulatorCamera.cameraRotateX.getAngle() - mouseDeltaY * modifierFactor * modifier * 2.0);
+                }
             }
         }
     };
 
     private final EventHandler<ScrollEvent> scrollEventHandler = event -> {
-        double modifier = 1;
-        if (event.isControlDown()) {
-            modifier = 0.1;
+        if(!droneModel.isDroneCameraActive()) {
+            double modifier = 1;
+            if (event.isControlDown()) {
+                modifier = 0.1;
+            }
+            double delta = event.getDeltaY();
+            simulatorCamera.cameraPosition.setZ(simulatorCamera.cameraPosition.getTz() - delta * modifier * 0.5);
         }
-        double delta = event.getDeltaY();
-        simulatorCamera.cameraPosition.setZ(simulatorCamera.cameraPosition.getTz() - delta*modifier*0.5);
     };
+
+    public Camera getSimulatorCamera() {
+        return simulatorCamera;
+    }
+
+    public DroneCamera getDroneCamera() {
+        return droneCamera;
+    }
 }

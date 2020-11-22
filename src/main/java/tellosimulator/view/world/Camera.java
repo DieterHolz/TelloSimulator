@@ -5,7 +5,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import tellosimulator.view.drone.DroneView;
 
-public class SimulatorCamera extends PerspectiveCamera {
+public class Camera extends PerspectiveCamera {
     private DroneView droneView;
 
     private Translate pivotPosition = new Translate();
@@ -14,15 +14,19 @@ public class SimulatorCamera extends PerspectiveCamera {
     public Rotate cameraRotateX = new Rotate();
     public Rotate cameraRotateY = new Rotate();
 
-    private double cameraZOffset = 200;
-    private double cameraYOffset = 25;
-    private double viewingAngle = -10;
+    private double cameraZOffset;
+    private double cameraYOffset;
+    private double viewingAngle;
 
-    public SimulatorCamera(DroneView droneView) {
+    public Camera(DroneView droneView, double camZOffset, double camYOffset, double camViewingAngle) {
         super(true);
         this.droneView = droneView;
         setNearClip(1.0);
         setFarClip(10000.0);
+
+        cameraZOffset = camZOffset;
+        cameraYOffset = camYOffset;
+        viewingAngle = camViewingAngle;
 
         cameraRotateX.setAxis(Rotate.X_AXIS);
         cameraRotateX.setAngle(viewingAngle);

@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
@@ -41,21 +42,25 @@ public class SimulatorPane extends BorderPane {
         this.log = log;
         initializeParts();
         layoutParts();
+        setupValueChangedListeners();
         setupBindings();
     }
 
     private void initializeParts() throws IOException {
-        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView);
 
-        subSceneHolder = new StackPane();
-        subSceneHolder.getChildren().add(simulator3DScene);
+        simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
+        subSceneHolder = new StackPane(simulator3DScene);
+        subSceneHolder.setMinWidth(160);
+        subSceneHolder.setMinHeight(90);
+        subSceneHolder.setPrefSize(1280, 720);
+
         simulatorControls = new SimulatorControls(droneModel, droneController);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
 
         subSceneHolder.setMinWidth(160);
         subSceneHolder.setMinHeight(90);
-        subSceneHolder.setPrefSize(1200, 720);
+        subSceneHolder.setPrefSize(1280, 720);
     }
 
     private void layoutParts() {
@@ -66,13 +71,23 @@ public class SimulatorPane extends BorderPane {
         setBottom(logBox);
     }
 
+    private void setupValueChangedListeners() {
+        droneModel.droneCameraActiveProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue) {
+                simulator3DScene.setCamera(simulator3DScene.getDroneCamera());
+            } else {
+                simulator3DScene.setCamera(simulator3DScene.getSimulatorCamera());
+            }
+        });
+    }
+
     private void setupBindings() {
         simulator3DScene.widthProperty().bind(subSceneHolder.widthProperty());
         simulator3DScene.heightProperty().bind(subSceneHolder.heightProperty());
     }
 
     private Parent buildSceneGraph() {
-        CubeWorld cubeWorld = new CubeWorld(1000, 1000, 800, 40);
+        CubeWorld cubeWorld = new CubeWorld(1000, 500, 800, 40);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();
