@@ -1,6 +1,9 @@
+:icons: font
+:stem:
+:imagesdir: assets
+
 = TelloSimulator
 
-:imagesdir: assets
 
 link:README.en.adoc[English Version]
 
@@ -22,6 +25,7 @@ oder
 ....
 gradlew run
 ....
+
 TIP: Eine detailliertere Installationsanleitung, inkl. IntelliJ IDEA Setup, ist im link:SETUP.adoc[SETUP.adoc] zu finden.
 
 NOTE: Um den Simulator zu verwenden, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und
