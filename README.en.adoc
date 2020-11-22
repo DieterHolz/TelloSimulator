@@ -1,6 +1,7 @@
-= TelloSimulator
-
+:icons: font
 :imagesdir: assets
+
+= TelloSimulator
 
 link:README.adoc[Deutsche Version]
 
@@ -12,18 +13,20 @@ project can be found in the link:BERICHT.adoc[report].
 == Installation instructions:
 
 Clone the repository and run the Gradle project with:
-
 [source,bash]
- ./gradlew run
-
+....
+./gradlew run
+....
 or
 
 [source,bash]
- gradlew run
+....
+gradlew run
+....
 
-For detailed installation instructions, including IntelliJ IDEA setup, please refer to the link:SETUP.adoc[SETUP.adoc].
+TIP: For detailed installation instructions, including IntelliJ IDEA setup, please refer to the link:SETUP.adoc[SETUP.adoc].
 
-To use the simulator, an operator program, which can control the Tello drone and thus also the simulator, is required. For test purposes there is a demo application avaliable under
+NOTE: To use the simulator, an operator program, which can control the Tello drone and thus also the simulator, is required. For test purposes there is a demo application avaliable under
 https://github.com/danielobrist/TelloDemoCommander.
 
 == Simulator-API:
@@ -72,11 +75,11 @@ ds = new DatagramSocket(8890, InetAddress.getByName("0.0.0.0"));
 [source,java]
 ds.receive(packet);
 
-The state is sent every 10 ms. It is sent to the address, where the *first command* was received from.
+NOTE: The state is sent every 10 ms. It is sent to the address, where the *first command* was received from.
 
 === Receive video
 
-The current version of TelloSimulator does not yet send a video stream.
+WARNING: The current version of TelloSimulator does not yet send a video stream.
 
 == References
 
