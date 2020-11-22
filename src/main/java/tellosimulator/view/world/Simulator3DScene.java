@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class Simulator3DScene extends SubScene {
     private Camera simulatorCamera;
-    private Camera droneCamera;
+    private DroneCamera droneCamera;
 
     private double mousePosX;
     private double mousePosY;
@@ -29,9 +29,8 @@ public class Simulator3DScene extends SubScene {
         super( sceneGraph, 1280, 720, true, SceneAntialiasing.BALANCED);
         droneModel = droneMod;
         simulatorCamera = new Camera(droneView, 200, 25, -10);
-        droneCamera = new Camera(droneView, 10, 10, 0);
+        droneCamera = new DroneCamera(droneView);
         setCamera(simulatorCamera);
-        setFill(new Color(1,0,0,0.5));
         setupEventHandlers();
     }
 
@@ -96,7 +95,7 @@ public class Simulator3DScene extends SubScene {
         return simulatorCamera;
     }
 
-    public Camera getDroneCamera() {
+    public DroneCamera getDroneCamera() {
         return droneCamera;
     }
 }
