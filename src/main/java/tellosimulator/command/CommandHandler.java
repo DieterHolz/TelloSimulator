@@ -67,6 +67,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.LAND:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -94,6 +95,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.EMERGENCY:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -108,6 +110,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.UP:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -129,6 +132,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.DOWN:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -150,6 +154,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.LEFT:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -171,6 +176,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.RIGHT:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -191,6 +197,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.FORWARD:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -212,6 +219,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.BACK:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -233,6 +241,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.CW:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -254,6 +263,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.CCW:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -274,6 +284,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.FLIP:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -295,6 +306,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.GO:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -319,6 +331,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.STOP:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -332,6 +345,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.CURVE:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -366,6 +380,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.JUMP:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
@@ -416,6 +431,7 @@ public class CommandHandler {
 
 				case TelloSetCommand.RC:
 					if (!droneController.isMotorsRunning()) {
+						logger.error("Failed to execute command " + command + ". Motor is not running.");
 						CommandResponseSender.sendMotorStop(commandPackage);
 						break;
 					}
