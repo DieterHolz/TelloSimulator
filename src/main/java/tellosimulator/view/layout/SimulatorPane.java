@@ -5,7 +5,6 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
@@ -24,7 +23,6 @@ public class SimulatorPane extends BorderPane {
     private final DroneController droneController;
     private final DroneModel droneModel;
     private final DroneView droneView;
-
     private Simulator3DScene simulator3DScene;
     private StackPane subSceneHolder;
     private SimulatorControls simulatorControls;
@@ -33,13 +31,19 @@ public class SimulatorPane extends BorderPane {
     private Log log;
     private LogBox logBox;
 
+    private double roomWidth, roomDepth, roomHeight, gridSize;
 
-    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) throws IOException {
+
+    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log, double roomWidth, double roomDepth, double roomHeight, double gridSize) throws IOException {
         this.stage = stage;
         this.droneController = droneController;
         this.droneModel = droneModel;
         this.droneView = droneView;
         this.log = log;
+        this.roomWidth = roomWidth;
+        this.roomDepth = roomDepth;
+        this.roomHeight = roomHeight;
+        this.gridSize = gridSize;
         initializeParts();
         layoutParts();
         setupValueChangedListeners();
@@ -47,7 +51,6 @@ public class SimulatorPane extends BorderPane {
     }
 
     private void initializeParts() throws IOException {
-
         simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
         subSceneHolder = new StackPane(simulator3DScene);
         subSceneHolder.setMinWidth(160);
@@ -58,9 +61,6 @@ public class SimulatorPane extends BorderPane {
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
 
-        subSceneHolder.setMinWidth(160);
-        subSceneHolder.setMinHeight(90);
-        subSceneHolder.setPrefSize(1280, 720);
     }
 
     private void layoutParts() {
@@ -87,7 +87,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        CubeWorld cubeWorld = new CubeWorld(1000, 500, 800, 40);
+        CubeWorld cubeWorld = new CubeWorld(roomWidth*100, roomHeight*100, roomDepth*100, gridSize);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();

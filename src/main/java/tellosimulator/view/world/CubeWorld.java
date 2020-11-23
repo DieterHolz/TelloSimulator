@@ -57,7 +57,7 @@ public class CubeWorld extends Group {
     private double roomSizeY;
     private double roomSizeZ;
     private double gridLineSpacing;
-    private final double gridThickness = 0.5;
+    private final double gridThickness = 0.2;
     private final double wallThickness = 0.1;
 
     private double cameraRX = 0;

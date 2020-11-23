@@ -63,15 +63,15 @@ public class SimulatorControls extends GridPane {
 
         cameraButton = new Button("Change to Drone Camera");
 
-        //TODO: init all other values
-
         resetButton = new Button("Reset Drone Position");
+
+        //TODO: init all other values
 
     }
 
     private void layoutParts() {
 
-        add(xPositionLabel, 1,1);
+        add(xPositionLabel, 1, 1);
         add(xPositionText, 2, 1);
         add(zPositionLabel, 1, 2);
         add(zPositionText, 2, 2);
@@ -80,9 +80,8 @@ public class SimulatorControls extends GridPane {
         add(yawAngleLabel, 1, 4);
         add(yawAngleText, 2, 4);
         //TODO: add all other values to grid
-        add(cameraButton, 1,5);
+        add(cameraButton, 1, 5);
         add(resetButton, 1, 6);
-
     }
 
     private void setupEventHandlers() {

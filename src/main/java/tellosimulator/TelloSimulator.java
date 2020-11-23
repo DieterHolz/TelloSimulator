@@ -9,7 +9,7 @@ import tellosimulator.log.Logger;
 import tellosimulator.controller.DroneController;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
-import tellosimulator.view.layout.SimulatorPane;
+import tellosimulator.view.layout.ParentPane;
 
 public class TelloSimulator extends Application {
 
@@ -22,7 +22,7 @@ public class TelloSimulator extends Application {
         DroneView droneView = new DroneView(droneModel);
         DroneController telloDroneController = new DroneController(droneModel, droneView);
 
-        Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, droneView, MAIN_LOG);
+        Region rootPanel = new ParentPane(primaryStage, telloDroneController, droneModel, droneView, MAIN_LOG);
         Scene scene = new Scene(rootPanel);
 
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());
