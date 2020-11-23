@@ -54,6 +54,7 @@ public class CommandHandler {
 
 			switch (command) {
 				case TelloControlCommand.COMMAND:
+					CommandResponseSender.sendOk(commandPackage);
 					break;
 
 				case TelloControlCommand.TAKEOFF:
