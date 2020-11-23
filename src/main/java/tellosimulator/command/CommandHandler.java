@@ -47,11 +47,6 @@ public class CommandHandler {
 
 		logger.info("handling command: " + command);
 
-		if (!command.equals(TelloControlCommand.TAKEOFF) && !droneController.isMotorsRunning()) {
-			CommandResponseSender.sendMotorStop(commandPackage);
-			return;
-		}
-
 		if(!droneController.isAnimationRunning()
 				|| command.equals(TelloControlCommand.EMERGENCY)
 				|| command.equals(TelloSetCommand.RC)
@@ -70,6 +65,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LAND:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.land(commandPackage);
 					} else {
@@ -92,6 +92,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.EMERGENCY:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					if (checkNumberOfParams(commandParams, 0)){
 						logger.warn("Stopping motors immediately");
 						droneController.emergency();
@@ -101,6 +106,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.UP:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xUp;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xUp = Double.parseDouble(commandParams.get(0));
@@ -117,6 +127,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.DOWN:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xDown;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xDown = Double.parseDouble(commandParams.get(0));
@@ -133,6 +148,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LEFT:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xLeft;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xLeft = Double.parseDouble(commandParams.get(0));
@@ -149,6 +169,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.RIGHT:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xRight;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xRight = Double.parseDouble(commandParams.get(0));
@@ -164,6 +189,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FORWARD:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xForward;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xForward = Double.parseDouble(commandParams.get(0));
@@ -180,6 +210,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.BACK:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xBack;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xBack = Double.parseDouble(commandParams.get(0));
@@ -196,6 +231,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CW:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xCw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCw = Double.parseDouble(commandParams.get(0));
@@ -212,6 +252,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CCW:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xCcw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCcw = Double.parseDouble(commandParams.get(0));
@@ -227,6 +272,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FLIP:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					String flipDirection;
 					if (checkNumberOfParams(commandParams, 1)){
 						flipDirection = commandParams.get(0);
@@ -243,6 +293,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.GO:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xGo, yGo, zGo, speedGo;
 					if (checkNumberOfParams(commandParams, 4)){
 						xGo = Double.parseDouble(commandParams.get(0));
@@ -262,6 +317,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.STOP:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					if (checkNumberOfParams(commandParams, 0)) {
 						droneController.stop(commandPackage);
 					} else {
@@ -270,6 +330,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CURVE:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double x1Curve;
 					double y1Curve;
 					double z1Curve;
@@ -299,6 +364,11 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.JUMP:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double xJump;
 					double yJump;
 					double zJump;
@@ -344,6 +414,11 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.RC:
+					if (!droneController.isMotorsRunning()) {
+						CommandResponseSender.sendMotorStop(commandPackage);
+						break;
+					}
+
 					double a;
 					double b;
 					double c;
