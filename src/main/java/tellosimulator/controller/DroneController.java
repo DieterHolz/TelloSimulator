@@ -442,6 +442,7 @@ public class DroneController {
 
         KeyFrame keyFrame = new KeyFrame(duration, keyY);
         timeline.getKeyFrames().add(keyFrame);
+        timeline.setOnFinished(null);
         timeline.play();
     }
 
