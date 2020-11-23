@@ -36,6 +36,10 @@ public class NetworkControls extends VBox {
     private Label videoPortLabel;
     private TextField videoPortField;
 
+    private final String BUTTON_TEXT_START_DRONE = "Start Virtual Drone";
+    private final String BUTTON_TEXT_STOP_DRONE = "Stop Virtual Drone";
+
+
     public NetworkControls(DroneController droneController) throws IOException {
         this.droneController = droneController;
 
@@ -61,7 +65,7 @@ public class NetworkControls extends VBox {
     }
 
     private void initializeParts() {
-        startButton = new ToggleButton("Start Virtual Drone");
+        startButton = new ToggleButton(BUTTON_TEXT_START_DRONE);
         simulatorExternalIpLabel = new Label("IP Address in Network:");
         simulatorExternalIpField = new TextField(myIp);
         simulatorExternalIpField.setEditable(false);
@@ -111,6 +115,7 @@ public class NetworkControls extends VBox {
                     commandConnection.start();
                 }
                 commandConnection.setRunning(true);
+                startButton.setText(BUTTON_TEXT_STOP_DRONE);
                 logger.debug("Drone turned ON");
             } else {
                 commandConnection.setRunning(false);
@@ -118,6 +123,7 @@ public class NetworkControls extends VBox {
                 logger.debug("Drone turned OFF");
                 droneController.emergency();
                 droneController.setEmergency(false);
+                startButton.setText(BUTTON_TEXT_START_DRONE);
             }
         });
     }
