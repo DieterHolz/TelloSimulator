@@ -18,6 +18,7 @@ public final class CommandResponseSender {
         public static final String ERROR_NOT_JOYSTICK = "error Not joystick";
         public static final String UNKNOWN_COMMAND = "unknown command: ";
         public static final String OUT_OF_RANGE = "out of range";
+        public static final String ERROR_MOTOR_STOP = "error Motor stop";
     }
 
     private static DatagramSocket socket;
@@ -76,6 +77,18 @@ public final class CommandResponseSender {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.OUT_OF_RANGE.getBytes(), TelloResponse.OUT_OF_RANGE.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
             logger.debug("Sent response: '" + TelloResponse.OUT_OF_RANGE + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
+        } catch (SocketException e1) {
+            logger.warn("Could not send response: " + e1.getMessage());
+        } catch (IOException e2) {
+            logger.error("Error: " + e2);
+        }
+    }
+
+    public static void sendMotorStop(CommandPackage commandPackage) {
+        try {
+            DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR_MOTOR_STOP.getBytes(), TelloResponse.ERROR_MOTOR_STOP.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
+            socket.send(responsePacket);
+            logger.debug("Sent response: '" + TelloResponse.ERROR_MOTOR_STOP + "' to " + commandPackage.getOriginAddress().getCanonicalHostName() + ":" + commandPackage.getOriginPort());
         } catch (SocketException e1) {
             logger.warn("Could not send response: " + e1.getMessage());
         } catch (IOException e2) {

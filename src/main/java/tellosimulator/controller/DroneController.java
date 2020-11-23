@@ -27,6 +27,7 @@ public class DroneController {
     private Timeline timeline = new Timeline();
 
     private boolean animationRunning;
+    private boolean motorsRunning = false;
     private CommandHandler commandHandler;
     private CommandPackage commandPackage;
 
@@ -232,12 +233,11 @@ public class DroneController {
      */
     private void animate(Timeline timeline, boolean landing) {
         timeline.setOnFinished(event -> {
-            animationRunning = false;
-            CommandResponseSender.sendOk(commandPackage);
-
             if (landing){
                 spinDownRotors();
             }
+            animationRunning = false;
+            CommandResponseSender.sendOk(commandPackage);
         });
         if(!emergency) {
             animationRunning = true;
@@ -315,6 +315,7 @@ public class DroneController {
     }
 
     private void spinUpRotors() {
+        motorsRunning = true;
         for (Rotor rotor : droneView.getRotors()) {
             RotateTransition rotateTransition = new RotateTransition();
             rotateTransition.setAxis(Rotate.Y_AXIS);
@@ -328,6 +329,7 @@ public class DroneController {
     }
 
     private void spinDownRotors() {
+        motorsRunning = false;
         for (Rotor rotor : droneView.getRotors()) {
             if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
                     rotor.getRotateTransition().stop();
@@ -355,7 +357,11 @@ public class DroneController {
         if (commandPackage != null) {
             this.commandPackage = commandPackage;
         }
-        land();
+        if(motorsRunning) {
+            land();
+        } else {
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void down(CommandPackage commandPackage, double x) {
@@ -427,7 +433,6 @@ public class DroneController {
 
     public void emergency() {
         emergency = true;
-
         resetDiffs();
         resetSpeed();
         stopAnimation();
@@ -574,5 +579,13 @@ public class DroneController {
 
     public void setEmergency(boolean emergency) {
         this.emergency = emergency;
+    }
+
+    public boolean isMotorsRunning() {
+        return motorsRunning;
+    }
+
+    public void setMotorsRunning(boolean motorsRunning) {
+        this.motorsRunning = motorsRunning;
     }
 }

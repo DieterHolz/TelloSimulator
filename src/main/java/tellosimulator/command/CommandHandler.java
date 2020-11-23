@@ -35,21 +35,22 @@ public class CommandHandler {
 		if (droneController.isEmergency()) {
 			return;
 		}
-		if (commandParams != null) {
-			commandParams.clear();
-		}
+
+		clearParams();
 
 		String received = commandPackage.getCommand();
 		List<String> data = Arrays.asList(received.split(" "));
 		String command = data.get(0);
 		VideoConnection videoConnection = new VideoConnection();
 
-		if (data.size() > 1) {
-			List <String> params = data.subList(1, data.size());
-			commandParams = new ArrayList<>(params);
-		}
+		extractParams(data);
 
 		logger.info("handling command: " + command);
+
+		if (!command.equals(TelloControlCommand.TAKEOFF) && !droneController.isMotorsRunning()) {
+			CommandResponseSender.sendMotorStop(commandPackage);
+			return;
+		}
 
 		if(!droneController.isAnimationRunning()
 				|| command.equals(TelloControlCommand.EMERGENCY)
@@ -359,7 +360,7 @@ public class CommandHandler {
 					if(validateRc(a, b, c, d)) {
 						droneController.rc(a, b, c, d);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -507,6 +508,19 @@ public class CommandHandler {
         } else {
 			CommandResponseSender.sendErrorNotJoyStick(commandPackage);
         }
+	}
+
+	private void clearParams() {
+		if (commandParams != null) {
+			commandParams.clear();
+		}
+	}
+
+	private void extractParams(List<String> data) {
+		if (data.size() > 1) {
+			List <String> params = data.subList(1, data.size());
+			commandParams = new ArrayList<>(params);
+		}
 	}
 
 	private boolean checkNumberOfParams(List<String> commandParams, int expectedNumberOfParams) {
