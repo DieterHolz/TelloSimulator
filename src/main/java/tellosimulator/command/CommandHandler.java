@@ -240,7 +240,7 @@ public class CommandHandler {
 
 				case TelloControlCommand.GO:
 					double xGo, yGo, zGo, speedGo;
-					String mid = null;
+					String midGo = null;
 					if (checkNumberOfParams(commandParams, 4)) {
 						xGo = Double.parseDouble(commandParams.get(0));
 						yGo = Double.parseDouble(commandParams.get(1));
@@ -251,15 +251,17 @@ public class CommandHandler {
 						yGo = Double.parseDouble(commandParams.get(1));
 						zGo = Double.parseDouble(commandParams.get(2));
 						speedGo = Double.parseDouble(commandParams.get(3));
-						mid = commandParams.get(4);
+						midGo = commandParams.get(4);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
 
-					if(mid == null && validateGo(xGo, yGo, zGo, speedGo, null)) {
+					if(midGo == null && validateGo(xGo, yGo, zGo, speedGo, null)) {
 						droneController.go(commandPackage, xGo, yGo, zGo, speedGo);
-					} else if (mid != null && validateGo(xGo, yGo, zGo, speedGo, mid)){
+					} else if (midGo != null && validateGo(xGo, yGo, zGo, speedGo, midGo)){
+						droneController.go(commandPackage, xGo, yGo, zGo, speedGo, midGo);
+					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
@@ -273,13 +275,10 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CURVE:
-					double x1Curve;
-					double y1Curve;
-					double z1Curve;
-					double x2Curve;
-					double y2Curve;
-					double z2Curve;
+					double x1Curve, y1Curve, z1Curve;
+					double x2Curve, y2Curve, z2Curve;
 					double speedCurve;
+					String midCurve = null;
 					if (checkNumberOfParams(commandParams, 7)) {
 						x1Curve = Double.parseDouble(commandParams.get(0));
 						y1Curve = Double.parseDouble(commandParams.get(1));
@@ -288,22 +287,31 @@ public class CommandHandler {
 						y2Curve = Double.parseDouble(commandParams.get(4));
 						z2Curve = Double.parseDouble(commandParams.get(5));
 						speedCurve = Double.parseDouble(commandParams.get(6));
+					} else if (checkNumberOfParams(commandParams, 8)) {
+						x1Curve = Double.parseDouble(commandParams.get(0));
+						y1Curve = Double.parseDouble(commandParams.get(1));
+						z1Curve = Double.parseDouble(commandParams.get(2));
+						x2Curve = Double.parseDouble(commandParams.get(3));
+						y2Curve = Double.parseDouble(commandParams.get(4));
+						z2Curve = Double.parseDouble(commandParams.get(5));
+						speedCurve = Double.parseDouble(commandParams.get(6));
+						midCurve = commandParams.get(7);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
 
-					if(validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve)) {
+					if(midCurve == null && validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve)) {
 						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve);
+					} else if (midCurve != null && validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve)) {
+						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
 				case TelloControlCommand.JUMP:
-					double xJump;
-					double yJump;
-					double zJump;
+					double xJump, yJump, zJump;
 					double speedJump;
 					double yawJump;
 					String mid1Jump;
@@ -573,7 +581,7 @@ public class CommandHandler {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: x, y and z, input value: x: " + x + ", y: " + y + ", z: " + z + "x, y and z values can't be set between -20 - 20 simultaneously");
 			return false;
 		}
-		if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+		if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8"))) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: mid, input value: " + mid + ", valid value: m1-m8 or empty");
 			return false;
 		} else {
@@ -581,9 +589,9 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean validateCurve(double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
+	private boolean validateCurve(double x1, double y1, double z1, double x2, double y2, double z2, double speed, String mid) {
 
-		double radiusOfcircumscribedCircle = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
+		double radiusCircumscribedCircle = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
 
         if(x1<-500 || x1>500) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.CURVE + ", param name: x1, input value: " + x1 + ", valid value: -500 - 500");
@@ -612,12 +620,12 @@ public class CommandHandler {
 		} else if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: x, y and z, input value: x: " + x2 + ", y: " + y2 + ", z: " + z2 + "x, y and z values can't be set between -20 - 20 simultaneously");
 			return false;
-//		} else if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
-//			throw new TelloIllegalArgumentException(TelloControlCommand.CURVE, "mid", mid, "m1-m8");
-//			return false;
-            //todo: implement missionPadId
-		} else if(radiusOfcircumscribedCircle < 50 || radiusOfcircumscribedCircle > 1000) {
-			logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", Command: " + TelloControlCommand.CURVE + ", "); // todo: which error message does the drone return
+		} else if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: mid, input value: " + mid + ", valid value: m1-m8 or empty");
+			return false;
+		} else if(radiusCircumscribedCircle < 50 || radiusCircumscribedCircle > 1000) {
+			// TODO: which error message does the drone return?
+			logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", Command: " + TelloControlCommand.CURVE + ", ");
 			logger.error("Arc radius is not within a range of 0.5-10 meters.");
 			return false;
 		} else {

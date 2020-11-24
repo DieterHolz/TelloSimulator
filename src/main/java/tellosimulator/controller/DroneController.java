@@ -534,25 +534,7 @@ public class DroneController {
     }
 
     public void go(CommandPackage commandPackage, double x, double y, double z, double speed, String mid) {
-        this.commandPackage = commandPackage;
-        if (motorsRunning) {
-            dronePosition = getDronePosition();
-
-            //adapt values to javafx coordinate system
-            Point3D relativeCoords = new Point3D(-y, -z, x);
-
-            //correct rotation relative to drone orientation
-            double offsetAngle = droneModel.getYaw();
-            Point3D rotatedCoords = VectorHelper.rotateAroundYAxis(relativeCoords, offsetAngle);
-
-            //transform relative to drone position
-            Point3D transformedCoords = new Point3D(rotatedCoords.getX() + dronePosition.getX(), rotatedCoords.getY() + dronePosition.getY(), rotatedCoords.getZ() + dronePosition.getZ());
-
-            move(transformedCoords, dronePosition.distance(transformedCoords), speed);
-        } else {
-            logger.error("Failed to execute command. Motor not running.");
-            CommandResponseSender.sendMotorStop(commandPackage);
-        }
+        sendNotImplemented(commandPackage);
     }
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
@@ -594,12 +576,12 @@ public class DroneController {
         }
     }
 
+    public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed, String mid) {
+        sendNotImplemented(commandPackage);
+    }
+
     public void jump(CommandPackage commandPackage, double x, double y, double z, double speed, double yaw, String mid1, String mid2) {
-        this.commandPackage = commandPackage;
-        logger.warn("Command not implemented.");
-        CommandResponseSender.sendOk(commandPackage);
-        //TODO: Fly to coordinates "x", "y", and "z" of Mission Pad 1, and recognize
-        // corrdinates 0, 0, "z" of Mission Pad 2 and rotate to the yaw value.
+        sendNotImplemented(commandPackage);
     }
 
     public void rc(double a, double b, double c, double d) {
@@ -608,7 +590,6 @@ public class DroneController {
         droneModel.setUpDownDiff(c);
         droneModel.setYawDiff(-d);
     }
-
 
     public void ap(String ssid, String pass) {
         //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
@@ -650,6 +631,12 @@ public class DroneController {
     public int getBatteryCharge() {
         //todo: note down that we assume a linear battery decrease
         return 100 - (int)getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
+    }
+
+    private void sendNotImplemented(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        logger.warn("Command not implemented.");
+        CommandResponseSender.sendOk(commandPackage);
     }
 
     //getter and setter
