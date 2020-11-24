@@ -9,9 +9,9 @@ public class DroneModel {
     private int tempHigh = 0;
 
     private double barometer = 281.96;
-    private String telloSdkVersion = "Tello SDK 2.0";
-    private String telloSerialNumber = "Tello-1337";
-    private String wifiSsid = "TelloSimulator";
+    private String telloSdkVersion = "20";
+    private String telloSerialNumber = "T3LLOS1MUL4T0R";
+    private String wifiSsid = "1337\r\n";
     private String wifiPass = "Tello<3";
     private boolean missionPadDetection;
     private int missionPadDetectionMode;

@@ -14,7 +14,6 @@ import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.drone.Rotor;
-
 import java.util.concurrent.TimeUnit;
 
 public class DroneController {
@@ -605,9 +604,9 @@ public class DroneController {
     public String getDroneState() {
 
         return  "mid:" + droneModel.getMid() +
-                ";x:" + "-100" +
-                ";y:" + "-100" +
-                ";z:" + "-100" +
+                ";x:" + "0" +
+                ";y:" + "0" +
+                ";z:" + "0" +
                 ";mpry:" + "-1,-1,-1" +
                 ";pitch:" + droneModel.pitchProperty().intValue() +
                 ";roll:" + droneModel.rollProperty().intValue() +
@@ -625,45 +624,39 @@ public class DroneController {
                 ";agx:" + droneModel.getAccelerationX() +
                 ";agy:" + droneModel.getAccelerationY() +
                 ";agz:" + droneModel.getAccelerationZ() +
-                ";";
+                ";\r\n";
     }
 
     // read commands
     public void sendSpeed(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
         double currentSpeed = getDroneModel().getSpeed();
-        //TODO: format of response?
-        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(currentSpeed));
+        CommandResponseSender.sendReadResponse(commandPackage, String.format(String.valueOf(currentSpeed), "%.1f") + "\r\n");
     }
 
     public void sendBattery(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
         //assuming linear battery decrease
-        //TODO: format of response?
-        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(getBattery()));
+        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(getBattery()) + "\r\n");
     }
 
     public void sendFlightTime(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        //TODO: format of response?
-        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf((int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime())));
+        CommandResponseSender.sendReadResponse(commandPackage, (int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime()) + "s\r\n");
     }
 
     public void sendWifi(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        //TODO: format of response?
         CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getWifiSsid());
     }
 
     public void sendSdk(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        //TODO: format of response
         CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getTelloSdkVersion());
     }
 
     public void sendSerialNumber(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        //TODO: format of response
         CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getTelloSerialNumber());
     }
 
