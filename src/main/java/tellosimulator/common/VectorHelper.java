@@ -34,6 +34,39 @@ public class VectorHelper {
     }
 
     private static Point3D intersectionPointOf2Vectors(Point3D midPointAB, Point3D directionVectorOfBisectionAB, Point3D midPointAC, Point3D directionVectorOfBisectionAC) {
+//        double a1 = midPointAB.getX();
+//        double a2 = midPointAB.getY();
+//        double a3 = midPointAB.getZ();
+//        double b1 = midPointAC.getX();
+//        double b2 = midPointAC.getY();
+//        double b3 = midPointAC.getZ();
+//        double u1 = directionVectorOfBisectionAB.normalize().getX();
+//        double u2 = directionVectorOfBisectionAB.normalize().getY();
+//        double u3 = directionVectorOfBisectionAB.normalize().getZ();
+//        double v1 = directionVectorOfBisectionAC.normalize().getX();
+//        double v2 = directionVectorOfBisectionAC.normalize().getY();
+//        double v3 = directionVectorOfBisectionAC.normalize().getZ();
+//
+//        double D = (u1*v2 - u2*v1);
+//        if (D != 0) {
+//            //schneiden sich evtl.
+//            double D1 = (b1-a1)*v2 - v1*(b2-a2);
+//            double D2 = u1*(b2-a2) - u2*(b1-a1);
+//            double lambda = D1/D;
+//            double my = -D2/D;
+//            if(lambda*u3 - my*v3 == b3-a3) {
+//                //schneiden sich, Punkt lässt sich mit gegebenen Lambda oder my berechnen
+//                double p1 = a1 + lambda*u1;
+//                double p2 = a2 + lambda*u2;
+//                double p3 = a3 + lambda*u3;
+//                return new Point3D(p1, p2, p3);
+//            } else {
+//                // lediglich die Projektion in die x-y-Ebene schneidet sich ...
+//                return null;
+//            }
+//        } else {
+//            return null;
+//        }
 
         double d = directionVectorOfBisectionAB.getX();
         double e = -directionVectorOfBisectionAC.getX();

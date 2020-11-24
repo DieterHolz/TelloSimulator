@@ -267,6 +267,7 @@ public class CommandHandler {
 						speedGo = Double.parseDouble(commandParams.get(3));
 						midGo = commandParams.get(4);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -284,6 +285,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)) {
 						droneController.stop(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -311,14 +313,31 @@ public class CommandHandler {
 						speedCurve = Double.parseDouble(commandParams.get(6));
 						midCurve = commandParams.get(7);
 					} else {
-						//TODO log to gui
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
 
-					if(midCurve == null && validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve)) {
+					if(midCurve == null && validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, null)) {
+						if (pointsTooClose(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve)) {
+							CommandResponseSender.sendOutOfRange(commandPackage);
+							break;
+						}
+
+						if (radiusOutOfRange(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve)) {
+							CommandResponseSender.sendRadiusError(commandPackage);
+							break;
+						}
 						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve);
 					} else if (midCurve != null && validateCurve(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve)) {
+						if (pointsTooClose(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve)) {
+							CommandResponseSender.sendOutOfRange(commandPackage);
+							break;
+						}
+						if (radiusOutOfRange(x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve)) {
+							CommandResponseSender.sendRadiusError(commandPackage);
+							break;
+						}
 						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
@@ -341,6 +360,7 @@ public class CommandHandler {
 						mid1Jump = commandParams.get(5);
 						mid2Jump = commandParams.get(6);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -357,6 +377,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						speed = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -604,8 +625,6 @@ public class CommandHandler {
 
 	private boolean validateCurve(double x1, double y1, double z1, double x2, double y2, double z2, double speed, String mid) {
 
-		double radiusCircumscribedCircle = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
-
         if(x1<-500 || x1>500) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.CURVE + ", param name: x1, input value: " + x1 + ", valid value: -500 - 500");
 			return false;
@@ -627,24 +646,39 @@ public class CommandHandler {
 		} else if(speed<10 || speed>60) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: speed, input value: " + speed + ", valid value: 10 - 60");
 			return false;
-		} else if(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: x, y and z, input value: x: " + x1 + ", y: " + y1 + ", z: " + z1 + "x, y and z values can't be set between -20 - 20 simultaneously");
-			return false;
-		} else if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
-			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: x, y and z, input value: x: " + x2 + ", y: " + y2 + ", z: " + z2 + "x, y and z values can't be set between -20 - 20 simultaneously");
-			return false;
 		} else if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: mid, input value: " + mid + ", valid value: m1-m8 or empty");
-			return false;
-		} else if(radiusCircumscribedCircle < 50 || radiusCircumscribedCircle > 1000) {
-			// TODO: which error message does the drone return?
-			logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", Command: " + TelloControlCommand.CURVE + ", ");
-			logger.error("Arc radius is not within a range of 0.5-10 meters.");
 			return false;
 		} else {
 			return  true;
 		}
 	}
+
+	private boolean pointsTooClose(double x1, double y1, double z1, double x2, double y2, double z2) {
+		if(x1>=-20 && x1<=20 && y1>=-20 && y1<=20 && z1>=-20 && z1<=20) {
+			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: x, y and z, input value: x: " + x1 + ", y: " + y1 + ", z: " + z1 + ". x, y and z values can't be set between -20 - 20 simultaneously");
+			return true;
+		} else if(x2>=-20 && x2<=20 && y2>=-20 && y2<=20 && z2>=-20 && z2<=20) {
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.CURVE + ", param name: x, y and z, input value: x: " + x2 + ", y: " + y2 + ", z: " + z2 + ". x, y and z values can't be set between -20 - 20 simultaneously");
+			return true;
+		}
+		return false;
+	}
+
+	private boolean radiusOutOfRange(double x1, double y1, double z1, double x2, double y2, double z2) {
+    	Double radius = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
+    	if (radius == null) {
+    		logger.error("No midpoint for curve found. Could not calculate radius.");
+    		return true;
+		}
+
+    	if(radius < 50 || radius > 1000) {
+    		logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", Command: " + TelloControlCommand.CURVE + ", ");
+    		logger.error("Arc radius is not within a range of 0.5-10 meters.");
+    		return true;
+    	}
+    	return false;
+    }
 
 	private boolean validateJump(double x, double y, double z, double speed, double yaw, String mid1, String mid2) {
         if(x<-500 || x>500 || y<-500 || y>500 || z<-500 || z>500 || speed<10 || speed>100) {
