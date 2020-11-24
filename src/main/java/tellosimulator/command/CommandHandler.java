@@ -66,12 +66,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LAND:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.land(commandPackage);
 					} else {
@@ -94,12 +88,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.EMERGENCY:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					if (checkNumberOfParams(commandParams, 0)){
 						logger.warn("Stopping motors immediately");
 						droneController.emergency();
@@ -109,12 +97,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.UP:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xUp;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xUp = Double.parseDouble(commandParams.get(0));
@@ -131,12 +113,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.DOWN:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xDown;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xDown = Double.parseDouble(commandParams.get(0));
@@ -153,12 +129,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.LEFT:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xLeft;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xLeft = Double.parseDouble(commandParams.get(0));
@@ -175,12 +145,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.RIGHT:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xRight;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xRight = Double.parseDouble(commandParams.get(0));
@@ -196,12 +160,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FORWARD:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xForward;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xForward = Double.parseDouble(commandParams.get(0));
@@ -218,12 +176,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.BACK:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xBack;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xBack = Double.parseDouble(commandParams.get(0));
@@ -240,12 +192,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CW:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xCw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCw = Double.parseDouble(commandParams.get(0));
@@ -262,12 +208,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CCW:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xCcw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCcw = Double.parseDouble(commandParams.get(0));
@@ -283,12 +223,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.FLIP:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					String flipDirection;
 					if (checkNumberOfParams(commandParams, 1)){
 						flipDirection = commandParams.get(0);
@@ -305,37 +239,32 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.GO:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xGo, yGo, zGo, speedGo;
-					if (checkNumberOfParams(commandParams, 4)){
+					String mid = null;
+					if (checkNumberOfParams(commandParams, 4)) {
 						xGo = Double.parseDouble(commandParams.get(0));
 						yGo = Double.parseDouble(commandParams.get(1));
 						zGo = Double.parseDouble(commandParams.get(2));
 						speedGo = Double.parseDouble(commandParams.get(3));
+					} else if (checkNumberOfParams(commandParams, 5)) {
+						xGo = Double.parseDouble(commandParams.get(0));
+						yGo = Double.parseDouble(commandParams.get(1));
+						zGo = Double.parseDouble(commandParams.get(2));
+						speedGo = Double.parseDouble(commandParams.get(3));
+						mid = commandParams.get(4);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
-					//TODO: String midGo = params.get(4);
-					if(validateGo(xGo, yGo, zGo, speedGo)) {
+
+					if(mid == null && validateGo(xGo, yGo, zGo, speedGo, null)) {
 						droneController.go(commandPackage, xGo, yGo, zGo, speedGo);
-					} else {
+					} else if (mid != null && validateGo(xGo, yGo, zGo, speedGo, mid)){
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
 				case TelloControlCommand.STOP:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					if (checkNumberOfParams(commandParams, 0)) {
 						droneController.stop(commandPackage);
 					} else {
@@ -344,12 +273,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.CURVE:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double x1Curve;
 					double y1Curve;
 					double z1Curve;
@@ -357,7 +280,6 @@ public class CommandHandler {
 					double y2Curve;
 					double z2Curve;
 					double speedCurve;
-                    //TODO: implement missionPadId
 					if (checkNumberOfParams(commandParams, 7)) {
 						x1Curve = Double.parseDouble(commandParams.get(0));
 						y1Curve = Double.parseDouble(commandParams.get(1));
@@ -379,12 +301,6 @@ public class CommandHandler {
 					break;
 
 				case TelloControlCommand.JUMP:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double xJump;
 					double yJump;
 					double zJump;
@@ -430,12 +346,6 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.RC:
-					if (!droneController.isMotorsRunning()) {
-						logger.error("Failed to execute command " + command + ". Motor is not running.");
-						CommandResponseSender.sendMotorStop(commandPackage);
-						break;
-					}
-
 					double a;
 					double b;
 					double c;
@@ -444,8 +354,8 @@ public class CommandHandler {
 						a = Double.parseDouble(commandParams.get(0));
 						b = Double.parseDouble(commandParams.get(1));
 						c = Double.parseDouble(commandParams.get(2));
-						d = Double.parseDouble(commandParams.get(3));					}
-					else {
+						d = Double.parseDouble(commandParams.get(3));
+					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -470,10 +380,14 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.MON:
-					droneController.getDroneModel().setMissionPadDetection(true);
-					droneController.getDroneModel().setMissionPadDetectionMode(2);
-					CommandResponseSender.sendOk(commandPackage);
-					logger.warn("Mission pad detection is not supported by the TelloSimulator");
+					if (checkNumberOfParams(commandParams , 0)){
+						droneController.getDroneModel().setMissionPadDetection(true);
+						droneController.getDroneModel().setMissionPadDetectionMode(2);
+						CommandResponseSender.sendOk(commandPackage);
+						logger.warn("Mission pad detection is not supported by the TelloSimulator");
+					} else {
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloSetCommand.MOFF:
@@ -642,8 +556,8 @@ public class CommandHandler {
 		return false;
 	}
 
-	private boolean validateGo(double x, double y, double z, double speed) {
-        if(x<-500 || x>500) {
+	private boolean validateGo(double x, double y, double z, double speed, String mid) {
+		if(x<-500 || x>500) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: x, input value: " + x + ", valid value: -500 - 500");
 			return false;
 		} else if(y<-500 || y>500) {
@@ -658,10 +572,10 @@ public class CommandHandler {
 		} else if(x>=-20 && x<=20 && y>=-20 && y<=20 && z>=-20 && z<=20) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: x, y and z, input value: x: " + x + ", y: " + y + ", z: " + z + "x, y and z values can't be set between -20 - 20 simultaneously");
 			return false;
-//		}
-//	    TODO: implement mission pad id in validate method
-//		if(!(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
-//			throw new TelloIllegalArgumentException(TelloControlCommands.GO, "mid", mid, "m1-m8 or empty");
+		}
+		if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: mid, input value: " + mid + ", valid value: m1-m8 or empty");
+			return false;
 		} else {
 			return true;
 		}

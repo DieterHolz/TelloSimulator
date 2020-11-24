@@ -4,16 +4,20 @@ import javafx.animation.*;
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import tellosimulator.TelloSimulator;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.common.DefaultValueHelper;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.common.VectorHelper;
+import tellosimulator.log.Logger;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.drone.Rotor;
 
 public class DroneController {
+    private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "DroneController");
+
     private DroneModel droneModel;
     private DroneView droneView;
 
@@ -315,24 +319,28 @@ public class DroneController {
     }
 
     private void spinUpRotors() {
-        motorsRunning = true;
-        for (Rotor rotor : droneView.getRotors()) {
-            RotateTransition rotateTransition = new RotateTransition();
-            rotateTransition.setAxis(Rotate.Y_AXIS);
-            rotateTransition.setDuration( Duration.seconds(0.1) );
-            rotateTransition.setByAngle( 360 );
-            rotateTransition.setNode(rotor.getNode());
-            rotateTransition.setCycleCount( Animation.INDEFINITE );
-            rotor.setRotateTransition(rotateTransition);
-            rotateTransition.play();
+        if (!motorsRunning) {
+            motorsRunning = true;
+            for (Rotor rotor : droneView.getRotors()) {
+                RotateTransition rotateTransition = new RotateTransition();
+                rotateTransition.setAxis(Rotate.Y_AXIS);
+                rotateTransition.setDuration( Duration.seconds(0.1) );
+                rotateTransition.setByAngle( 360 );
+                rotateTransition.setNode(rotor.getNode());
+                rotateTransition.setCycleCount( Animation.INDEFINITE );
+                rotor.setRotateTransition(rotateTransition);
+                rotateTransition.play();
+            }
         }
     }
 
     private void spinDownRotors() {
-        motorsRunning = false;
-        for (Rotor rotor : droneView.getRotors()) {
-            if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
+        if (motorsRunning){
+            motorsRunning = false;
+            for (Rotor rotor : droneView.getRotors()) {
+                if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
                     rotor.getRotateTransition().stop();
+                }
             }
         }
     }
@@ -357,71 +365,118 @@ public class DroneController {
         if (commandPackage != null) {
             this.commandPackage = commandPackage;
         }
-        if(motorsRunning) {
+
+        if (motorsRunning) {
             land();
         } else {
+            logger.error("Failed to execute command. Motor not running.");
             CommandResponseSender.sendMotorStop(commandPackage);
         }
     }
 
     public void down(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getDownwardsNormalVector(), x);
+        if (motorsRunning) {
+            move(VectorHelper.getDownwardsNormalVector(), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void up(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getUpwardsNormalVector(), x);
+        if (motorsRunning) {
+            move(VectorHelper.getUpwardsNormalVector(), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void left(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getLeftNormalVector(getDroneOrientation()), x);
+        if (motorsRunning) {
+            move(VectorHelper.getLeftNormalVector(getDroneOrientation()), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void right(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(VectorHelper.getRightNormalVector(getDroneOrientation()), x);
+        if (motorsRunning) {
+            move(VectorHelper.getRightNormalVector(getDroneOrientation()), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void forward(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getDroneOrientation(), x);
+        if (motorsRunning) {
+            move(getDroneOrientation(), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void back(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        move(getDroneOrientation().multiply(-1), x);
+        if (motorsRunning) {
+            move(getDroneOrientation().multiply(-1), x);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void cw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        rotate(-x, Rotation.YAW);
+        if (motorsRunning) {
+            rotate(-x, Rotation.YAW);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void ccw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        rotate(x, Rotation.YAW);
+        if (motorsRunning) {
+            rotate(x, Rotation.YAW);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void flip(CommandPackage commandPackage, String flipDirection) {
         this.commandPackage = commandPackage;
-        switch(flipDirection) {
-            case "r":
-                rotate(360, Rotation.ROLL);
-                break;
+        if (motorsRunning) {
+            switch(flipDirection) {
+                case "r":
+                    rotate(360, Rotation.ROLL);
+                    break;
 
-            case "l":
-                rotate(-360, Rotation.ROLL);
-                break;
+                case "l":
+                    rotate(-360, Rotation.ROLL);
+                    break;
 
-            case "f":
-                rotate(-360, Rotation.PITCH);
-                break;
+                case "f":
+                    rotate(-360, Rotation.PITCH);
+                    break;
 
-            case "b":
-                rotate(360, Rotation.PITCH);
-                break;
+                case "b":
+                    rotate(360, Rotation.PITCH);
+                    break;
+            }
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
         }
     }
 
@@ -432,12 +487,17 @@ public class DroneController {
     }
 
     public void emergency() {
-        emergency = true;
-        resetDiffs();
-        resetSpeed();
-        stopAnimation();
-        spinDownRotors();
-        playFallAnimation();
+        if (motorsRunning) {
+            emergency = true;
+            resetDiffs();
+            resetSpeed();
+            stopAnimation();
+            spinDownRotors();
+            playFallAnimation();
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     private void playFallAnimation() {
@@ -453,57 +513,93 @@ public class DroneController {
 
     public void go(CommandPackage commandPackage, double x, double y, double z, double speed) {
         this.commandPackage = commandPackage;
-        dronePosition = getDronePosition();
+        if (motorsRunning) {
+            dronePosition = getDronePosition();
 
-        //adapt values to javafx coordinate system
-        Point3D relativeCoords = new Point3D(-y, -z, x);
+            //adapt values to javafx coordinate system
+            Point3D relativeCoords = new Point3D(-y, -z, x);
 
-        //correct rotation relative to drone orientation
-        double offsetAngle = droneModel.getYaw();
-        Point3D rotatedCoords = VectorHelper.rotateAroundYAxis(relativeCoords, offsetAngle);
+            //correct rotation relative to drone orientation
+            double offsetAngle = droneModel.getYaw();
+            Point3D rotatedCoords = VectorHelper.rotateAroundYAxis(relativeCoords, offsetAngle);
 
-        //transform relative to drone position
-        Point3D transformedCoords = new Point3D(rotatedCoords.getX() + dronePosition.getX(), rotatedCoords.getY() + dronePosition.getY(), rotatedCoords.getZ() + dronePosition.getZ());
+            //transform relative to drone position
+            Point3D transformedCoords = new Point3D(rotatedCoords.getX() + dronePosition.getX(), rotatedCoords.getY() + dronePosition.getY(), rotatedCoords.getZ() + dronePosition.getZ());
 
-        move(transformedCoords, dronePosition.distance(transformedCoords), speed);
+            move(transformedCoords, dronePosition.distance(transformedCoords), speed);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
+    }
+
+    public void go(CommandPackage commandPackage, double x, double y, double z, double speed, String mid) {
+        this.commandPackage = commandPackage;
+        if (motorsRunning) {
+            dronePosition = getDronePosition();
+
+            //adapt values to javafx coordinate system
+            Point3D relativeCoords = new Point3D(-y, -z, x);
+
+            //correct rotation relative to drone orientation
+            double offsetAngle = droneModel.getYaw();
+            Point3D rotatedCoords = VectorHelper.rotateAroundYAxis(relativeCoords, offsetAngle);
+
+            //transform relative to drone position
+            Point3D transformedCoords = new Point3D(rotatedCoords.getX() + dronePosition.getX(), rotatedCoords.getY() + dronePosition.getY(), rotatedCoords.getZ() + dronePosition.getZ());
+
+            move(transformedCoords, dronePosition.distance(transformedCoords), speed);
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
         this.commandPackage = commandPackage;
-        dronePosition = getDronePosition();
+        if (motorsRunning) {
+            dronePosition = getDronePosition();
 
-        curveRadius = VectorHelper.radiusOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-        Point3D unadaptedCurveCenter = VectorHelper.midPointOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+            curveRadius = VectorHelper.radiusOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+            Point3D unadaptedCurveCenter = VectorHelper.midPointOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
 
-        //adapt values to javafx coordinate system
-        Point3D inputCurveP1 = new Point3D(-y1, -z1, x1);
-        Point3D inputCurveP2 = new Point3D(-y2, -z2, x2);
-        Point3D inputCircleMidPoint = new Point3D(-unadaptedCurveCenter.getY(), -unadaptedCurveCenter.getZ(), unadaptedCurveCenter.getX());
+            //adapt values to javafx coordinate system
+            Point3D inputCurveP1 = new Point3D(-y1, -z1, x1);
+            Point3D inputCurveP2 = new Point3D(-y2, -z2, x2);
+            Point3D inputCircleMidPoint = new Point3D(-unadaptedCurveCenter.getY(), -unadaptedCurveCenter.getZ(), unadaptedCurveCenter.getX());
 
-        //correct rotation relative to drone orientation
-        double offsetAngle = droneModel.getYaw();
+            //correct rotation relative to drone orientation
+            double offsetAngle = droneModel.getYaw();
 
-        Point3D rotatedP1 = VectorHelper.rotateAroundYAxis(inputCurveP1, offsetAngle);
-        Point3D rotatedP2 = VectorHelper.rotateAroundYAxis(inputCurveP2, offsetAngle);
-        Point3D rotatedCenter = VectorHelper.rotateAroundYAxis(inputCircleMidPoint, offsetAngle);
+            Point3D rotatedP1 = VectorHelper.rotateAroundYAxis(inputCurveP1, offsetAngle);
+            Point3D rotatedP2 = VectorHelper.rotateAroundYAxis(inputCurveP2, offsetAngle);
+            Point3D rotatedCenter = VectorHelper.rotateAroundYAxis(inputCircleMidPoint, offsetAngle);
 
-        //transform all points relative to drone position
-        curveP1 = new Point3D(rotatedP1.getX() + dronePosition.getX(), rotatedP1.getY() + dronePosition.getY(), rotatedP1.getZ() + dronePosition.getZ());
-        curveEnd = new Point3D(rotatedP2.getX() + dronePosition.getX(), rotatedP2.getY() + dronePosition.getY(), rotatedP2.getZ() + dronePosition.getZ());
-        curveCenter = new Point3D(rotatedCenter.getX() + dronePosition.getX(), rotatedCenter.getY() + dronePosition.getY(), rotatedCenter.getZ() + dronePosition.getZ());
+            //transform all points relative to drone position
+            curveP1 = new Point3D(rotatedP1.getX() + dronePosition.getX(), rotatedP1.getY() + dronePosition.getY(), rotatedP1.getZ() + dronePosition.getZ());
+            curveEnd = new Point3D(rotatedP2.getX() + dronePosition.getX(), rotatedP2.getY() + dronePosition.getY(), rotatedP2.getZ() + dronePosition.getZ());
+            curveCenter = new Point3D(rotatedCenter.getX() + dronePosition.getX(), rotatedCenter.getY() + dronePosition.getY(), rotatedCenter.getZ() + dronePosition.getZ());
 
-        arcAngle = curveCenter.angle(dronePosition, curveEnd);
-        arcLength = (arcAngle/360) * 2 * curveRadius * Math.PI;
-        midDrone = dronePosition.subtract(curveCenter);
-        Point3D midP1 = curveP1.subtract(curveCenter);
-        Point3D midP2 = curveEnd.subtract(curveCenter);
-        circleNormalVector = (midDrone.crossProduct(midP1)).normalize();
-        rotateDiffAnglePerFrame = 0.001 * speed/5;
-        flyCurve = true;
+            arcAngle = curveCenter.angle(dronePosition, curveEnd);
+            arcLength = (arcAngle/360) * 2 * curveRadius * Math.PI;
+            midDrone = dronePosition.subtract(curveCenter);
+            Point3D midP1 = curveP1.subtract(curveCenter);
+            Point3D midP2 = curveEnd.subtract(curveCenter);
+            circleNormalVector = (midDrone.crossProduct(midP1)).normalize();
+            rotateDiffAnglePerFrame = 0.001 * speed/5;
+            flyCurve = true;
+        } else {
+            logger.error("Failed to execute command. Motor not running.");
+            CommandResponseSender.sendMotorStop(commandPackage);
+        }
     }
 
     public void jump(CommandPackage commandPackage, double x, double y, double z, double speed, double yaw, String mid1, String mid2) {
-        //TODO: Fly at a curve according to the two given coordinates at "speed" (cm/s)
+        this.commandPackage = commandPackage;
+        logger.warn("Command not implemented.");
+        CommandResponseSender.sendOk(commandPackage);
+        //TODO: Fly to coordinates "x", "y", and "z" of Mission Pad 1, and recognize
+        // corrdinates 0, 0, "z" of Mission Pad 2 and rotate to the yaw value.
     }
 
     public void rc(double a, double b, double c, double d) {
