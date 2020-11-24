@@ -5,7 +5,6 @@ import tellosimulator.TelloSimulator;
 import tellosimulator.log.Logger;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
-import tellosimulator.network.CommandConnection;
 import tellosimulator.network.VideoConnection;
 import tellosimulator.video.VideoPublisher;
 import tellosimulator.controller.DroneController;
@@ -16,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/** Splits, validates and redirects incoming commands from the CommandConnection}
+/** Splits, validates and redirects incoming commands from the {@code CommandConnection}
  * to the appropriate methods in the {@code DroneController}.
  * @author Daniel Obrist
  * @author Severin Peyer
@@ -46,7 +45,7 @@ public class CommandHandler {
 
 		extractParams(data);
 
-		logger.info("handling command: " + command);
+		logger.info("Handling command: " + command);
 
 		if(!droneController.isAnimationRunning()
 				|| command.equals(TelloControlCommand.EMERGENCY)
@@ -55,13 +54,20 @@ public class CommandHandler {
 
 			switch (command) {
 				case TelloControlCommand.COMMAND:
-					CommandResponseSender.sendOk(commandPackage);
+					if (checkNumberOfParams(commandParams, 0)){
+						CommandResponseSender.sendOk(commandPackage);
+
+					} else {
+						logger.error("Unknown command: " + command);
+						CommandResponseSender.sendUnknownCommand(commandPackage);
+					}
 					break;
 
 				case TelloControlCommand.TAKEOFF:
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.takeoff(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -70,22 +76,19 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.land(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
 
 				case TelloControlCommand.STREAMON:
-					publisher = new VideoPublisher();
-					if (!publisher.isRunning()) {
-						publisher.setRunning(true);
-						publisher.start();
-					}
+					logger.warn("Video is not implemented.");
+					CommandResponseSender.sendOk(commandPackage);
 					break;
 
 				case TelloControlCommand.STREAMOFF:
-					if (publisher.isRunning()) {
-						publisher.setRunning(false);
-					}
+					logger.warn("Video is not implemented.");
+					CommandResponseSender.sendOk(commandPackage);
 					break;
 
 				case TelloControlCommand.EMERGENCY:
@@ -93,6 +96,7 @@ public class CommandHandler {
 						logger.warn("Stopping motors immediately");
 						droneController.emergency();
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -102,6 +106,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xUp = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -118,6 +123,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xDown = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -134,6 +140,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xLeft = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -150,6 +157,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xRight = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -165,6 +173,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xForward = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -181,6 +190,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xBack = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -197,6 +207,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCw = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -213,6 +224,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCcw = Double.parseDouble(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -228,6 +240,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1)){
 						flipDirection = commandParams.get(0);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -365,6 +378,7 @@ public class CommandHandler {
 						c = Double.parseDouble(commandParams.get(2));
 						d = Double.parseDouble(commandParams.get(3));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -384,6 +398,7 @@ public class CommandHandler {
 						droneController.getDroneModel().setWifiPass(wifiPass);
 						CommandResponseSender.sendOk(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
@@ -395,6 +410,7 @@ public class CommandHandler {
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Mission pad detection is not supported by the TelloSimulator.");
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -405,6 +421,7 @@ public class CommandHandler {
 						CommandResponseSender.sendOk(commandPackage);
 						logger.warn("Mission pad detection is not supported by the TelloSimulator.");
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -414,6 +431,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 1) ){
 						xMdirection = Integer.parseInt(commandParams.get(0));
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -428,6 +446,7 @@ public class CommandHandler {
 							CommandResponseSender.sendError(commandPackage);
 						}
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
@@ -440,6 +459,7 @@ public class CommandHandler {
 						ssidAp = commandParams.get(0);
 						passAp = commandParams.get(1);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -447,6 +467,7 @@ public class CommandHandler {
 					if(validateAp(ssidAp, passAp)) {
 						droneController.ap(commandPackage, ssidAp,passAp);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
@@ -455,6 +476,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.sendSpeed(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -463,6 +485,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.sendBattery(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -471,6 +494,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						 droneController.sendFlightTime(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -479,6 +503,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.sendWifi(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -487,6 +512,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.sendSdk(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
@@ -495,16 +521,18 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams, 0)){
 						droneController.sendSerialNumber(commandPackage);
 					} else {
+						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
 					break;
 
 				default:
 					CommandResponseSender.sendError(commandPackage);
-					logger.error("Invalid command:" + command + ". Command unknown - please check for typos.");  //TODO: we could check for similar commands with levenstein?
+					logger.error("Unknown command: " + command);
 			}
 
         } else {
+			logger.error("Error handling command " + command +". Previous command did not finish yet. Please wait for the response before sending another command.");
 			CommandResponseSender.sendErrorNotJoyStick(commandPackage);
         }
 	}
