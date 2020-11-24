@@ -31,6 +31,8 @@
 
 package tellosimulator.view.world;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +47,12 @@ import java.util.ArrayList;
 public class CubeWorld extends Group {
     private Group cubeWorldChildren = new Group();
 
+
+    private final DoubleProperty roomSizeX = new SimpleDoubleProperty();
+    private final DoubleProperty roomSizeY = new SimpleDoubleProperty();
+    private final DoubleProperty roomSizeZ = new SimpleDoubleProperty();
+    private final DoubleProperty grildLineSpacing = new SimpleDoubleProperty();
+
     private double gridLinesOpacity = 1.0;
     private double gridPanelsOpacity = 0.25;
 
@@ -53,10 +61,6 @@ public class CubeWorld extends Group {
     private Color gridLinesWallColor = new Color(47/255, 79/255, 79/255, gridLinesOpacity);
     private Color gridLinesCeilingFloorColor = new Color(211/255, 211/255, 211/255, gridLinesOpacity);
 
-    private double roomSizeX;
-    private double roomSizeY;
-    private double roomSizeZ;
-    private double gridLineSpacing;
     private final double gridThickness = 0.2;
     private final double wallThickness = 0.1;
 
@@ -71,17 +75,6 @@ public class CubeWorld extends Group {
     private Box panelCeiling;
     private Box panelFloor;
 
-    private boolean showPanelFront   = true;
-    private boolean showPanelBack    = true;
-    private boolean showPanelRight   = true;
-    private boolean showPanelLeft    = true;
-    private boolean showPanelCeiling = true;
-    private boolean showPanelFloor   = true;
-
-    private Group xAxesGroup = new Group();
-    private Group yAxesGroup = new Group();
-    private Group zAxesGroup = new Group();
-
     private Group verticalLinesOfPanelFront      = new Group();
     private Group horizontalLinesOfPanelFront    = new Group();
     private Group verticalLinesOfPanelLeft       = new Group();
@@ -95,38 +88,22 @@ public class CubeWorld extends Group {
     private Group zAxisLinesOfPanelCeiling       = new Group();
     private Group xAxisLinesOfPanelCeiling       = new Group();
 
-    private boolean showVerticalLinesOfPanelFront    = true;
-    private boolean showHorizontalLinesOfPanelFront  = true;
-    private boolean showVerticalLinesOfPanelLeft     = true;
-    private boolean showHorizontalLinesOfPanelLeft   = true;
-    private boolean showZAxisLinesOfPanelFloor       = true;
-    private boolean showXAxisLinesOfPanelFloor       = true;
-    private boolean showVerticalLinesOfPanelBack     = true;
-    private boolean showHorizontalLinesOfPanelBack   = true;
-    private boolean showVerticalLinesOfPanelRight    = true;
-    private boolean showHorizontalLinesOfPanelRight  = true;
-    private boolean showZAxisLinesOfPanelCeiling     = true;
-    private boolean showXAxisLinesOfPanelCeiling     = true;
-
     public CubeWorld(double sizeX, double sizeY, double sizeZ, double spacing) {
-        roomSizeX = sizeX;
-        roomSizeY = sizeY;
-        roomSizeZ = sizeZ;
-        gridLineSpacing = spacing;
+        setRoomSizeX(sizeX);
+        setRoomSizeY(sizeY);
+        setRoomSizeZ(sizeZ);
+        setGrildLineSpacing(spacing);
         init();
     }
 
-    private void init(){
-
-        buildPanels(roomSizeX,roomSizeY,roomSizeZ, wallThickness);
-        buildGrids(roomSizeX, roomSizeY, roomSizeZ, gridLineSpacing);
-        buildEventHandlers();
-        getChildren().add(cubeWorldChildren); //Holds ScatterPlot data
+    public void init(){
+        buildPanels(getRoomSizeX(),getRoomSizeY(),getRoomSizeZ(), wallThickness);
+        buildGrids(getRoomSizeX(), getRoomSizeY(), getRoomSizeZ(), getGrildLineSpacing());
 
         //move CubeWorld
-        setTranslateX(-roomSizeX/2);
+        setTranslateX(-getRoomSizeX()/2);
         setTranslateY(5);
-        setTranslateZ(-roomSizeZ/2);
+        setTranslateZ(-getRoomSizeZ()/2);
     }
 
     private void buildPanels(double width, double height, double depth, double wallDepth) {
@@ -237,116 +214,53 @@ public class CubeWorld extends Group {
         return new Group(cyls);
     }
 
+    //getter and setter
 
-    private void adjustPanelsByPos(double rx, double ry, double rz) {
-        cameraRX = rx;
-        cameraRY = ry;
-        cameraRZ = rz;
-
-        if (-85 < ry && ry < 85) {
-            panelFront.setVisible(false);
-            verticalLinesOfPanelFront.setVisible(false);
-            horizontalLinesOfPanelFront.setVisible(false);
-        } else {
-            if(showPanelFront)
-                panelFront.setVisible(true);
-            if(showVerticalLinesOfPanelFront)
-                verticalLinesOfPanelFront.setVisible(true);
-            if(showHorizontalLinesOfPanelFront)
-                horizontalLinesOfPanelFront.setVisible(true);
-        }
-        if ((95 < ry && ry < 180) || (-180 < ry && ry < -95)) {
-            panelBack.setVisible(false);
-            verticalLinesOfPanelBack.setVisible(false);
-            horizontalLinesOfPanelBack.setVisible(false);
-
-        } else {
-            if(showPanelFront)
-                panelBack.setVisible(true);
-            if(showVerticalLinesOfPanelBack)
-                verticalLinesOfPanelBack.setVisible(true);
-            if(showHorizontalLinesOfPanelBack)
-                horizontalLinesOfPanelBack.setVisible(true);
-        }
-
-        if (5 < ry && ry < 175) {
-            panelRight.setVisible(false);
-            verticalLinesOfPanelLeft.setVisible(false);
-            horizontalLinesOfPanelLeft.setVisible(false);
-        } else {
-            if(showPanelRight)
-                panelRight.setVisible(true);
-            if(showVerticalLinesOfPanelLeft)
-                verticalLinesOfPanelLeft.setVisible(true);
-            if(showHorizontalLinesOfPanelLeft)
-                horizontalLinesOfPanelLeft.setVisible(true);
-        }
-        if (-175 < ry && ry < -5) {
-            panelLeft.setVisible(false);
-            verticalLinesOfPanelRight.setVisible(false);
-            horizontalLinesOfPanelRight.setVisible(false);
-        } else {
-            if(showPanelLeft)
-                panelLeft.setVisible(true);
-            if(showVerticalLinesOfPanelRight)
-                verticalLinesOfPanelRight.setVisible(true);
-            if(showHorizontalLinesOfPanelRight)
-                horizontalLinesOfPanelRight.setVisible(true);
-        }
-
-        if (rx > 0) {
-            panelCeiling.setVisible(false);
-            zAxisLinesOfPanelFloor.setVisible(false);
-            xAxisLinesOfPanelFloor.setVisible(false);
-        } else {
-            if(showPanelCeiling)
-                panelCeiling.setVisible(true);
-            if(showZAxisLinesOfPanelFloor)
-                zAxisLinesOfPanelFloor.setVisible(true);
-            if(showXAxisLinesOfPanelFloor)
-                xAxisLinesOfPanelFloor.setVisible(true);
-        }
-        if (rx < 0) {
-            panelFloor.setVisible(false);
-            zAxisLinesOfPanelCeiling.setVisible(false);
-            xAxisLinesOfPanelCeiling.setVisible(false);
-        } else {
-            if(showPanelFloor)
-                panelFloor.setVisible(true);
-            if(showZAxisLinesOfPanelCeiling)
-                zAxisLinesOfPanelCeiling.setVisible(true);
-            if(showXAxisLinesOfPanelCeiling)
-                xAxisLinesOfPanelCeiling.setVisible(true);
-        }
+    public double getRoomSizeX() {
+        return roomSizeX.get();
     }
 
-    private void buildEventHandlers() {
-        xAxesGroup.setOnMouseEntered((MouseEvent t) -> {
-            panelFront.setVisible(true);
-            panelBack.setVisible(true);
-            t.consume();
-        });
-        xAxesGroup.setOnMouseExited((MouseEvent t) -> {
-            adjustPanelsByPos(cameraRX, cameraRY, cameraRZ);
-            t.consume();
-        });
-        yAxesGroup.setOnMouseEntered((MouseEvent t) -> {
-            panelRight.setVisible(true);
-            panelLeft.setVisible(true);
-            t.consume();
-        });
-        yAxesGroup.setOnMouseExited((MouseEvent t) -> {
-            adjustPanelsByPos(cameraRX, cameraRY, cameraRZ);
-            t.consume();
-        });
-        zAxesGroup.setOnMouseEntered((MouseEvent t) -> {
-            panelCeiling.setVisible(true);
-            panelFloor.setVisible(true);
-            t.consume();
-        });
-        zAxesGroup.setOnMouseExited((MouseEvent t) -> {
-            adjustPanelsByPos(cameraRX, cameraRY, cameraRZ);
-            t.consume();
-        });
+    public DoubleProperty roomSizeXProperty() {
+        return roomSizeX;
+    }
+
+    public void setRoomSizeX(double roomSizeX) {
+        this.roomSizeX.set(roomSizeX);
+    }
+
+    public double getRoomSizeY() {
+        return roomSizeY.get();
+    }
+
+    public DoubleProperty roomSizeYProperty() {
+        return roomSizeY;
+    }
+
+    public void setRoomSizeY(double roomSizeY) {
+        this.roomSizeY.set(roomSizeY);
+    }
+
+    public double getRoomSizeZ() {
+        return roomSizeZ.get();
+    }
+
+    public DoubleProperty roomSizeZProperty() {
+        return roomSizeZ;
+    }
+
+    public void setRoomSizeZ(double roomSizeZ) {
+        this.roomSizeZ.set(roomSizeZ);
+    }
+
+    public double getGrildLineSpacing() {
+        return grildLineSpacing.get();
+    }
+
+    public DoubleProperty grildLineSpacingProperty() {
+        return grildLineSpacing;
+    }
+
+    public void setGrildLineSpacing(double grildLineSpacing) {
+        this.grildLineSpacing.set(grildLineSpacing);
     }
 }

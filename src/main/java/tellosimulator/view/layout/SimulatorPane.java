@@ -27,23 +27,17 @@ public class SimulatorPane extends BorderPane {
     private StackPane subSceneHolder;
     private SimulatorControls simulatorControls;
     private NetworkControls networkControls;
+    private CubeWorld cubeWorld;
 
     private Log log;
     private LogBox logBox;
 
-    private double roomWidth, roomDepth, roomHeight, gridSize;
-
-
-    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log, double roomWidth, double roomDepth, double roomHeight, double gridSize) throws IOException {
+    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) throws IOException {
         this.stage = stage;
         this.droneController = droneController;
         this.droneModel = droneModel;
         this.droneView = droneView;
         this.log = log;
-        this.roomWidth = roomWidth;
-        this.roomDepth = roomDepth;
-        this.roomHeight = roomHeight;
-        this.gridSize = gridSize;
         initializeParts();
         layoutParts();
         setupValueChangedListeners();
@@ -51,13 +45,14 @@ public class SimulatorPane extends BorderPane {
     }
 
     private void initializeParts() throws IOException {
+
         simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
         subSceneHolder = new StackPane(simulator3DScene);
         subSceneHolder.setMinWidth(160);
         subSceneHolder.setMinHeight(90);
         subSceneHolder.setPrefSize(1280, 720);
 
-        simulatorControls = new SimulatorControls(droneModel, droneController);
+        simulatorControls = new SimulatorControls(droneModel, droneController, cubeWorld);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
 
@@ -87,7 +82,7 @@ public class SimulatorPane extends BorderPane {
     }
 
     private Parent buildSceneGraph() {
-        CubeWorld cubeWorld = new CubeWorld(roomWidth*100, roomHeight*100, roomDepth*100, gridSize);
+        cubeWorld = new CubeWorld(1000, 500, 800, 40);
 
         // we have to add all 3D elements as a Group to the Scene Graph
         Group root = new Group();
