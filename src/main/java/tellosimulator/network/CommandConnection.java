@@ -54,7 +54,7 @@ public class CommandConnection extends Thread {
 
 	public void run() {
 		sdkModeInitiated = false;
-		CommandHandler commandHandler = new CommandHandler(telloDroneController, this);
+		CommandHandler commandHandler = new CommandHandler(telloDroneController);
 		telloDroneController.setCommandHandler(commandHandler);
 
 		while (isRunning()) {

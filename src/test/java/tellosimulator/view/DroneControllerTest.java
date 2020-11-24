@@ -31,7 +31,7 @@ class DroneControllerTest {
         droneView = new DroneView(droneModel);
         droneController = new DroneController(droneModel, droneView);
         commandConnection = new CommandConnection(droneController);
-        commandHandler = new CommandHandler(droneController, commandConnection);
+        commandHandler = new CommandHandler(droneController);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
     }
 

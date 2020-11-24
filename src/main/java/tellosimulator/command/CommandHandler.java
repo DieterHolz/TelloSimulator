@@ -16,6 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/** Splits, validates and redirects incoming commands from the CommandConnection}
+ * to the appropriate methods in the {@code DroneController}.
+ * @author Daniel Obrist
+ * @author Severin Peyer
+ * */
 public class CommandHandler {
 	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
 
@@ -23,11 +28,7 @@ public class CommandHandler {
 	VideoPublisher publisher;
 	ArrayList<String> commandParams;
 
-	public List<String> getCommandParams() {
-		return commandParams;
-	}
-
-    public CommandHandler(DroneController droneController, CommandConnection commandConnection) {
+    public CommandHandler(DroneController droneController) {
         this.droneController = droneController;
     }
 
@@ -297,6 +298,7 @@ public class CommandHandler {
 						speedCurve = Double.parseDouble(commandParams.get(6));
 						midCurve = commandParams.get(7);
 					} else {
+						//TODO log to gui
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
@@ -338,16 +340,15 @@ public class CommandHandler {
 					break;
 
 				case TelloSetCommand.SPEED:
-					double xSpeed;
+					double speed;
 					if (checkNumberOfParams(commandParams, 1)) {
-						xSpeed = Double.parseDouble(commandParams.get(0));
+						speed = Double.parseDouble(commandParams.get(0));
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
 					}
-					if (checkRange(TelloSetCommand.SPEED, xSpeed, 10, 100)){
-						droneController.getDroneModel().setSpeed(xSpeed);
-						CommandResponseSender.sendOk(commandPackage);
+					if (checkRange(TelloSetCommand.SPEED, speed, 10, 100)){
+						droneController.setSpeed(commandPackage, speed);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -392,7 +393,7 @@ public class CommandHandler {
 						droneController.getDroneModel().setMissionPadDetection(true);
 						droneController.getDroneModel().setMissionPadDetectionMode(2);
 						CommandResponseSender.sendOk(commandPackage);
-						logger.warn("Mission pad detection is not supported by the TelloSimulator");
+						logger.warn("Mission pad detection is not supported by the TelloSimulator.");
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -402,7 +403,7 @@ public class CommandHandler {
 					if (checkNumberOfParams(commandParams , 0)){
 						droneController.getDroneModel().setMissionPadDetection(false);
 						CommandResponseSender.sendOk(commandPackage);
-						logger.warn("Mission pad detection is not supported by the TelloSimulator");
+						logger.warn("Mission pad detection is not supported by the TelloSimulator.");
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -421,7 +422,7 @@ public class CommandHandler {
 						if (droneController.getDroneModel().isMissionPadDetection()) {
 							droneController.getDroneModel().setMissionPadDetectionMode(xMdirection);
 							CommandResponseSender.sendOk(commandPackage);
-							logger.warn("Mission pad detection is not supported by the TelloSimulator");
+							logger.warn("Mission pad detection is not supported by the TelloSimulator.");
 						} else {
 							logger.error("Perform 'mon' command before performing this command.");
 							CommandResponseSender.sendError(commandPackage);
@@ -444,9 +445,7 @@ public class CommandHandler {
 					}
 
 					if(validateAp(ssidAp, passAp)) {
-						droneController.ap(ssidAp, passAp);
-						CommandResponseSender.sendOk(commandPackage);
-						logger.warn("Station mode is not supported by the TelloSimulator");
+						droneController.ap(commandPackage, ssidAp,passAp);
 					} else {
 						CommandResponseSender.sendError(commandPackage);
 					}
@@ -454,8 +453,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.SPEED:
 					if (checkNumberOfParams(commandParams, 0)){
-						double speed = droneController.getDroneModel().getSpeed();
-						//TODO: format of response?
+						droneController.sendSpeed(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -463,10 +461,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.BATTERY:
 					if (checkNumberOfParams(commandParams, 0)){
-						//TODO: Send current battery percentage (0-100)
-						//TODO: format of response?
-						droneController.getBatteryCharge();
-
+						droneController.sendBattery(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -474,10 +469,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.TIME:
 					if (checkNumberOfParams(commandParams, 0)){
-						//TODO: Send current flight time
-						//TODO: format of response?
-						long flightTimeInMilliSeconds = droneController.getFlightTime();
-						CommandResponseSender.sendReadResponse(commandPackage, "current flight time as string in correct format");
+						 droneController.sendFlightTime(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -485,10 +477,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.WIFI:
 					if (checkNumberOfParams(commandParams, 0)){
-						//TODO: Send Wi-Fi SNR
-						//TODO: format of response?
-						String wifi = droneController.getDroneModel().getWifiSsid();
-						CommandResponseSender.sendReadResponse(commandPackage, "Wi-Fi SNR as string in correct format");
+						droneController.sendWifi(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -496,9 +485,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.SDK:
 					if (checkNumberOfParams(commandParams, 0)){
-						//TODO: Send the Tello SDK version
-						//TODO: format of response
-						CommandResponseSender.sendReadResponse(commandPackage, "Tello SDK 2.0");
+						droneController.sendSdk(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -506,9 +493,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.SN:
 					if (checkNumberOfParams(commandParams, 0)){
-						//TODO: Send the Tello serial number
-						//TODO: format of response
-						CommandResponseSender.sendReadResponse(commandPackage, "Tello 1337");
+						droneController.sendSerialNumber(commandPackage);
 					} else {
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 					}
@@ -547,7 +532,7 @@ public class CommandHandler {
 		}
 	}
 
-	//validate methods
+	//validation methods
 	private boolean checkRange(String command, double value, double min, double max) {
 		if (value >= min && value <= max) {
 			return true;
@@ -639,7 +624,7 @@ public class CommandHandler {
 			return false;
 		}
 
-		// yaw value ist not documented in the sdk todo: find out the valid value for yaw
+		// valid yaw values not documented in the sdk
 		if(!(mid1.equals("m1") || mid1.equals("m2") || mid1.equals("m3") || mid1.equals("m4") || mid1.equals("m5") || mid1.equals("m6") || mid1.equals("m7") || mid1.equals("m8"))) {
 			return false;
 		}
@@ -681,5 +666,9 @@ public class CommandHandler {
 			return false;
 		}
 		return true;
+	}
+
+	public List<String> getCommandParams() {
+		return commandParams;
 	}
 }

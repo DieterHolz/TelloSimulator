@@ -9,6 +9,8 @@ public class DroneModel {
 
     private int mid = -1, tempLow, tempHigh, tofDistance; //todo: tempLow? tempHigh? barometer?
     private double barometer, accelerationX, accelerationY, accelerationZ;
+    private String telloSdkVersion = "Tello SDK 2.0";
+    private String telloSerialNumber = "Tello-1337";
     private String wifiSsid = "TelloSimulator";
     private String wifiPass = "Tello<3";
     private boolean missionPadDetection;
@@ -317,6 +319,22 @@ public class DroneModel {
 
     public void setYawDiff(double yawDiff) {
         this.yawDiff.set(yawDiff);
+    }
+
+    public String getTelloSdkVersion() {
+        return telloSdkVersion;
+    }
+
+    public void setTelloSdkVersion(String telloSdkVersion) {
+        this.telloSdkVersion = telloSdkVersion;
+    }
+
+    public String getTelloSerialNumber() {
+        return telloSerialNumber;
+    }
+
+    public void setTelloSerialNumber(String telloSerialNumber) {
+        this.telloSerialNumber = telloSerialNumber;
     }
 
     public boolean isDroneCameraActive() {

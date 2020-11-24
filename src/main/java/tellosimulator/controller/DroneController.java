@@ -15,6 +15,8 @@ import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.drone.Rotor;
 
+import java.util.concurrent.TimeUnit;
+
 public class DroneController {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "DroneController");
 
@@ -584,6 +586,12 @@ public class DroneController {
         sendNotImplemented(commandPackage);
     }
 
+    public void setSpeed(CommandPackage commandPackage, double speed) {
+        this.commandPackage = commandPackage;
+        getDroneModel().setSpeed(speed);
+        CommandResponseSender.sendOk(commandPackage);
+    }
+
     public void rc(double a, double b, double c, double d) {
         droneModel.setLeftRightDiff(a);
         droneModel.setForwardBackwardDiff(b);
@@ -591,11 +599,8 @@ public class DroneController {
         droneModel.setYawDiff(-d);
     }
 
-    public void ap(String ssid, String pass) {
-        //TODO: Set the Tello to station mode, and connect to a new access point with the access points ssid and password.
-        // Sets the Wi-Fi SSID and password. The Tello will reboot afterwords
-        droneModel.setWifiSsid(ssid);
-        droneModel.setWifiPass(pass);
+    public void ap(CommandPackage commandPackage, String ssid, String pass) {
+        sendNotImplemented(commandPackage);
     }
 
     public String getDroneState() {
@@ -615,7 +620,7 @@ public class DroneController {
                 ";temph:" + droneModel.getTempHigh() +
                 ";tof:" + droneModel.getTofDistance() +
                 ";h:" + droneModel.yPositionProperty().negate().doubleValue() +
-                ";bat:" + getBatteryCharge() +
+                ";bat:" + getBattery() +
                 ";baro:" + droneModel.getBarometer() +
                 ";time:" + getFlightTime() +
                 ";agx:" + droneModel.getAccelerationX() +
@@ -624,13 +629,51 @@ public class DroneController {
                 ";";
     }
 
-    public long getFlightTime() {
+    // read commands
+    public void sendSpeed(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        double currentSpeed = getDroneModel().getSpeed();
+        //TODO: format of response?
+        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(currentSpeed));
+    }
+
+    public void sendBattery(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        //assuming linear battery decrease
+        //TODO: format of response?
+        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(getBattery()));
+    }
+
+    public void sendFlightTime(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        //TODO: format of response?
+        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf((int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime())));
+    }
+
+    public void sendWifi(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        //TODO: format of response?
+        CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getWifiSsid());
+    }
+
+    public void sendSdk(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        //TODO: format of response
+        CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getTelloSdkVersion());
+    }
+
+    public void sendSerialNumber(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        //TODO: format of response
+        CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getTelloSerialNumber());
+    }
+
+    private long getFlightTime() {
         return System.currentTimeMillis() - droneModel.getTakeoffTime();
     }
 
-    public int getBatteryCharge() {
-        //todo: note down that we assume a linear battery decrease
-        return 100 - (int)getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
+    public int getBattery() {
+        return 100 - (int) getFlightTime()/(DefaultValueHelper.BATTERY_LIFETIME/100);
     }
 
     private void sendNotImplemented(CommandPackage commandPackage) {

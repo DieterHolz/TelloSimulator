@@ -42,7 +42,7 @@ class CommandHandlerTest {
     @BeforeEach
     void setUp() throws IOException {
         droneController = mock(DroneController.class);
-        commandHandler = new CommandHandler(droneController, commandConnection);
+        commandHandler = new CommandHandler(droneController);
         commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
     }
 
