@@ -54,10 +54,8 @@ public class StateConnection extends Thread {
                 DatagramPacket statePacket = new DatagramPacket(droneState.getBytes(), droneState.getBytes().length, address, TelloSDKValues.OP_STATE_PORT);
                 stateSocket.send(statePacket);
                 TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e1) {
-                logger.error("StateConnection error: " + e1);
-            } catch (IOException e2) {
-                logger.error("StateConnection error: " + e2);
+            } catch (InterruptedException | IOException e1) {
+                logger.error("error: " + e1);
             }
         }
     }
@@ -73,7 +71,7 @@ public class StateConnection extends Thread {
     public void setRunning(boolean running) {
         this.running.set(running);
         if (running) {
-            logger.debug("running. Sending state every 10 ms.");
+            logger.debug("running. Sending state every 100 ms.");
         } else {
             logger.debug("stopped.");
         }
