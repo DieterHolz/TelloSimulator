@@ -1,14 +1,14 @@
 package tellosimulator.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 
 public class DroneModel {
 
-    private int mid = -1, tempLow, tempHigh, tofDistance; //todo: tempLow? tempHigh? barometer?
-    private double barometer, accelerationX, accelerationY, accelerationZ;
+    private int mid = -1;
+    private int tempLow = 0;
+    private int tempHigh = 0;
+
+    private double barometer = 281.96;
     private String telloSdkVersion = "Tello SDK 2.0";
     private String telloSerialNumber = "Tello-1337";
     private String wifiSsid = "TelloSimulator";
@@ -35,6 +35,12 @@ public class DroneModel {
     private final DoubleProperty leftRightDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty upDownDiff = new SimpleDoubleProperty(0);
     private final DoubleProperty yawDiff = new SimpleDoubleProperty(0);
+
+    private final DoubleProperty accelerationX = new SimpleDoubleProperty(0.00);
+    private final DoubleProperty accelerationY = new SimpleDoubleProperty(0.00);
+    private final DoubleProperty accelerationZ = new SimpleDoubleProperty(0.00);
+
+    private final IntegerProperty tof = new SimpleIntegerProperty();
 
     private BooleanProperty droneCameraActive = new SimpleBooleanProperty(false);
 
@@ -137,14 +143,6 @@ public class DroneModel {
         this.tempHigh = tempHigh;
     }
 
-    public int getTofDistance() {
-        return tofDistance;
-    }
-
-    public void setTofDistance(int tofDistance) {
-        this.tofDistance = tofDistance;
-    }
-
     public double getBarometer() {
         return barometer;
     }
@@ -154,27 +152,39 @@ public class DroneModel {
     }
 
     public double getAccelerationX() {
+        return accelerationX.get();
+    }
+
+    public DoubleProperty accelerationXProperty() {
         return accelerationX;
     }
 
     public void setAccelerationX(double accelerationX) {
-        this.accelerationX = accelerationX;
+        this.accelerationX.set(accelerationX);
     }
 
     public double getAccelerationY() {
+        return accelerationY.get();
+    }
+
+    public DoubleProperty accelerationYProperty() {
         return accelerationY;
     }
 
     public void setAccelerationY(double accelerationY) {
-        this.accelerationY = accelerationY;
+        this.accelerationY.set(accelerationY);
     }
 
     public double getAccelerationZ() {
+        return accelerationZ.get();
+    }
+
+    public DoubleProperty accelerationZProperty() {
         return accelerationZ;
     }
 
     public void setAccelerationZ(double accelerationZ) {
-        this.accelerationZ = accelerationZ;
+        this.accelerationZ.set(accelerationZ);
     }
 
     public String getWifiSsid() {
@@ -335,6 +345,18 @@ public class DroneModel {
 
     public void setTelloSerialNumber(String telloSerialNumber) {
         this.telloSerialNumber = telloSerialNumber;
+    }
+
+    public int getTof() {
+        return tof.get();
+    }
+
+    public IntegerProperty tofProperty() {
+        return tof;
+    }
+
+    public void setTof(int tof) {
+        this.tof.set(tof);
     }
 
     public boolean isDroneCameraActive() {

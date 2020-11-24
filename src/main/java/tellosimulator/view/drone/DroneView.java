@@ -73,6 +73,7 @@ public class DroneView extends Group {
         this.getDrone().rotateProperty().bind(droneModel.yawProperty());
         this.getRollContainer().rotateProperty().bind(droneModel.rollProperty());
         this.getPitchContainer().rotateProperty().bind(droneModel.pitchProperty());
+        droneModel.tofProperty().bind(this.translateYProperty().negate());
     }
 
     public Group getDrone() {

@@ -605,24 +605,24 @@ public class DroneController {
 
     public String getDroneState() {
 
-        //TODO: check if mission pad detection feature is enabled/disbled
         return  "mid:" + droneModel.getMid() +
-                ";x:" + droneModel.getxPosition() +
-                ";y:" + droneModel.getyPosition() +
-                ";z:" + droneModel.getzPosition() +
-                ";pitch:" + droneModel.getPitch() +
-                ";roll:" + droneModel.getRoll() +
-                ";yaw:" + droneModel.getYaw() +
+                ";x:" + "-100" +
+                ";y:" + "-100" +
+                ";z:" + "-100" +
+                ";mpry:" + "-1,-1,-1" +
+                ";pitch:" + droneModel.pitchProperty().intValue() +
+                ";roll:" + droneModel.rollProperty().intValue() +
+                ";yaw:" + droneModel.yawProperty().intValue() +
                 ";vgx:" + droneModel.getLeftRightDiff() +
                 ";vgy:" + droneModel.getUpDownDiff() +
                 ";vgz:" + droneModel.getForwardBackwardDiff() +
                 ";templ:" + droneModel.getTempLow() +
                 ";temph:" + droneModel.getTempHigh() +
-                ";tof:" + droneModel.getTofDistance() +
-                ";h:" + droneModel.yPositionProperty().negate().doubleValue() +
+                ";tof:" + droneModel.getTof() +
+                ";h:" + droneModel.yPositionProperty().negate().intValue() +
                 ";bat:" + getBattery() +
                 ";baro:" + droneModel.getBarometer() +
-                ";time:" + getFlightTime() +
+                ";time:" + (int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime()) +
                 ";agx:" + droneModel.getAccelerationX() +
                 ";agy:" + droneModel.getAccelerationY() +
                 ";agz:" + droneModel.getAccelerationZ() +
