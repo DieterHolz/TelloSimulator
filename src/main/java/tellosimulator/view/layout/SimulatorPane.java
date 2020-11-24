@@ -16,8 +16,6 @@ import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.log.LogBox;
 import tellosimulator.view.world.Simulator3DScene;
 
-import java.io.IOException;
-
 public class SimulatorPane extends BorderPane {
     private final Stage stage;
     private final DroneController droneController;
@@ -32,7 +30,7 @@ public class SimulatorPane extends BorderPane {
     private Log log;
     private LogBox logBox;
 
-    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) throws IOException {
+    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) {
         this.stage = stage;
         this.droneController = droneController;
         this.droneModel = droneModel;
@@ -44,7 +42,7 @@ public class SimulatorPane extends BorderPane {
         setupBindings();
     }
 
-    private void initializeParts() throws IOException {
+    private void initializeParts() {
 
         simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
         subSceneHolder = new StackPane(simulator3DScene);

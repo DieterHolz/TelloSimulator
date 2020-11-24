@@ -242,6 +242,8 @@ public class DroneController {
             if (landing){
                 spinDownRotors();
             }
+            droneModel.setRoll(0);
+            droneModel.setPitch(0);
             animationRunning = false;
             CommandResponseSender.sendOk(commandPackage);
         });
@@ -489,17 +491,12 @@ public class DroneController {
     }
 
     public void emergency() {
-        if (motorsRunning) {
             emergency = true;
             resetDiffs();
             resetSpeed();
             stopAnimation();
             spinDownRotors();
             playFallAnimation();
-        } else {
-            logger.error("Failed to execute command. Motor not running.");
-            CommandResponseSender.sendMotorStop(commandPackage);
-        }
     }
 
     private void playFallAnimation() {

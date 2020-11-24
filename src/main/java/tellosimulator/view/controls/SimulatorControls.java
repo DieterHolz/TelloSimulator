@@ -19,14 +19,21 @@ public class SimulatorControls extends GridPane {
     private static final Locale LOCALE_CH = new Locale("de", "CH");
 
     private Button resetButton;
+
     private Label xPositionLabel;
     private Text xPositionText;
     private Label yPositionLabel;
     private Text yPositionText;
     private Label zPositionLabel;
     private Text zPositionText;
+
     private Label yawAngleLabel;
     private Text yawAngleText;
+    private Label pitchAngleLabel;
+    private Text pitchAngleText;
+    private Label rollAngleLabel;
+    private Text rollAngleText;
+
     private Button cameraButton;
 
     private Label roomWidthLabel;
@@ -41,8 +48,6 @@ public class SimulatorControls extends GridPane {
     private Label gridSizeLabel;
     private Slider gridSizeSlider;
     private Label gridSize;
-
-    //TODO: add all other values
 
     public SimulatorControls(DroneModel droneModel, DroneController droneController, CubeWorld cubeWorld){
         this.droneModel = droneModel;
@@ -61,20 +66,23 @@ public class SimulatorControls extends GridPane {
         setVgap(5);
         setPadding(new Insets(4,4,4,4));
         setMinWidth(200);
+        setPrefWidth(200);
     }
 
     private void initializeParts() {
         xPositionLabel = new Label("X-Position:");
-        xPositionText = new Text();
-
+        xPositionText = new Text("0");
+        yPositionLabel = new Label("Y-Position:");
+        yPositionText = new Text("0");
         zPositionLabel = new Label("Z-Position:");
-        zPositionText = new Text();
+        zPositionText = new Text("0");
 
-        yPositionLabel = new Label("Height:");
-        yPositionText = new Text();
-
-        yawAngleLabel = new Label("Rotation/Yaw:");
+        yawAngleLabel = new Label("Yaw:");
         yawAngleText = new Text("0");
+        pitchAngleLabel = new Label("Pitch:");
+        pitchAngleText = new Text("0");
+        rollAngleLabel = new Label("Roll:");
+        rollAngleText = new Text("0");
 
         cameraButton = new Button("Change to Drone Camera");
 
@@ -99,8 +107,6 @@ public class SimulatorControls extends GridPane {
         gridSizeSlider = new Slider(5, 100, 40);
         gridSizeSlider.setBlockIncrement(0.1);
         gridSize = new Label("40");
-        //TODO: init all other values
-
     }
 
     private void layoutParts() {
@@ -112,24 +118,29 @@ public class SimulatorControls extends GridPane {
         add(yPositionText, 2, 3);
         add(yawAngleLabel, 1, 4);
         add(yawAngleText, 2, 4);
+        add(pitchAngleLabel, 1, 5);
+        add(pitchAngleText, 2, 5);
+        add(rollAngleLabel, 1, 6);
+        add(rollAngleText, 2, 6);
 
-        add(cameraButton, 1, 5);
-        setMargin(cameraButton, new Insets(20,0,0,0));
-        add(resetButton, 1, 6);
+        add(resetButton, 1, 7);
         setMargin(resetButton, new Insets(20,0,0,0));
 
-        add(roomWidthLabel, 1, 8);
-        add(roomWidthSlider, 2, 8);
-        add(roomWidth, 3, 8);
-        add(roomDepthLabel, 1, 9);
-        add(roomDepthSlider, 2, 9);
-        add(roomDepth, 3, 9);
-        add(roomHeightLabel, 1, 10);
-        add(roomHeightSlider, 2, 10);
-        add(roomHeight, 3, 10);
-        add(gridSizeLabel, 1, 11);
-        add(gridSizeSlider, 2, 11);
-        add(gridSize, 3, 11);
+        add(cameraButton, 1, 8, 2, 1);
+        setMargin(cameraButton, new Insets(20,0,20,0));
+
+        add(roomWidthLabel, 1, 11);
+        add(roomWidthSlider, 1, 12);
+        add(roomWidth, 2, 12);
+        add(roomDepthLabel, 1, 13);
+        add(roomDepthSlider, 1, 14);
+        add(roomDepth, 2, 14);
+        add(roomHeightLabel, 1, 15);
+        add(roomHeightSlider, 1, 16);
+        add(roomHeight, 2, 16);
+        add(gridSizeLabel, 1, 17);
+        add(gridSizeSlider, 1, 18);
+        add(gridSize, 2, 18);
     }
 
     private void setupEventHandlers() {
@@ -145,6 +156,14 @@ public class SimulatorControls extends GridPane {
     private void setupValueChangedListeners() {
         droneModel.yawProperty().addListener((observable, oldValue, newValue) -> {
             yawAngleText.textProperty().setValue(String.valueOf(Math.round((360 - newValue.doubleValue()) % 360)));
+        });
+
+        droneModel.pitchProperty().addListener((observable, oldValue, newValue) -> {
+            pitchAngleText.textProperty().setValue(String.valueOf(Math.round((360 - newValue.doubleValue()) % 360)));
+        });
+
+        droneModel.rollProperty().addListener((observable, oldValue, newValue) -> {
+            rollAngleText.textProperty().setValue(String.valueOf(Math.round((360 - newValue.doubleValue()) % 360)));
         });
 
         droneModel.droneCameraActiveProperty().addListener((observable, oldValue, newValue) -> {
@@ -182,14 +201,13 @@ public class SimulatorControls extends GridPane {
     }
 
     private void setupBindings() {
-        xPositionText.textProperty().bind(droneModel.xPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        yPositionText.textProperty().bind(droneModel.yPositionProperty().negate().asString(LOCALE_CH, NUMBER_FORMAT));
-        zPositionText.textProperty().bind(droneModel.zPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
+        yPositionText.textProperty().bind(droneModel.xPositionProperty().negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        zPositionText.textProperty().bind(droneModel.yPositionProperty().negate().asString(LOCALE_CH, NUMBER_FORMAT));
+        xPositionText.textProperty().bind(droneModel.zPositionProperty().asString(LOCALE_CH, NUMBER_FORMAT));
 
         roomWidth.textProperty().bind(roomWidthSlider.valueProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         roomDepth.textProperty().bind(roomDepthSlider.valueProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         roomHeight.textProperty().bind(roomHeightSlider.valueProperty().asString(LOCALE_CH, NUMBER_FORMAT));
         gridSize.textProperty().bind(gridSizeSlider.valueProperty().asString(LOCALE_CH, NUMBER_FORMAT));
-        //TODO: bind other values
     }
 }
