@@ -1,60 +1,51 @@
 package tellosimulator.view.world;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.PerspectiveCamera;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import tellosimulator.common.VectorHelper;
-import tellosimulator.view.drone.DroneView;
+import tellosimulator.model.DroneModel;
 
 public class DroneCamera extends PerspectiveCamera {
 
-    private  DroneView droneView;
+    private  DroneModel droneModel;
 
-    private Translate pivotPosition = new Translate();
-    private Translate cameraPosition = new Translate();
-
-    private Rotate cameraRotateX = new Rotate();
-
-    private DoubleProperty viewingAngle = new SimpleDoubleProperty();
-
-    private double cameraZOffset = -10;
-    private double cameraYOffset = -10;
-
-    DroneCamera(DroneView droneView) {
+    DroneCamera(DroneModel droneModel) {
         super(true);
 
-        this.droneView = droneView;
+        this.droneModel = droneModel;
         setNearClip(1.0);
         setFarClip(10000.0);
 
-        cameraPosition.setZ(cameraZOffset);
-        cameraPosition.setY(cameraYOffset);
-
-        cameraRotateX.setAxis(Rotate.X_AXIS);
-        cameraRotateX.setAngle(viewingAngle.doubleValue());
-
         setRotationAxis(VectorHelper.getUpwardsNormalVector());
-        getTransforms().addAll(pivotPosition, cameraRotateX, cameraPosition);
+        updateDroneCameraPosition(droneModel.xPositionProperty().doubleValue(), droneModel.yPositionProperty().doubleValue(), droneModel.zPositionProperty().doubleValue(), droneModel.yawProperty().doubleValue());
 
         setupValueChangedListeners();
-        setupBindings();
     }
 
     private void setupValueChangedListeners() {
 
-        droneView.getDrone().rotateProperty().addListener((observable, oldValue, newValue) -> {
-            setRotate(newValue.doubleValue());
+        droneModel.yawProperty().addListener((observable, oldValue, newValue) -> {
+            updateDroneCameraPosition(droneModel.xPositionProperty().doubleValue(), droneModel.yPositionProperty().doubleValue(), droneModel.zPositionProperty().doubleValue(), newValue.doubleValue());
         });
+
+        droneModel.xPositionProperty().addListener(((observable, oldValue, newValue) -> {
+            updateDroneCameraPosition(newValue.doubleValue(), droneModel.yPositionProperty().doubleValue(), droneModel.zPositionProperty().doubleValue(), droneModel.yawProperty().doubleValue());
+        }));
+
+        droneModel.yPositionProperty().addListener(((observable, oldValue, newValue) -> {
+            updateDroneCameraPosition(droneModel.xPositionProperty().doubleValue(), newValue.doubleValue(), droneModel.zPositionProperty().doubleValue(), droneModel.yawProperty().doubleValue());
+        }));
+
+        droneModel.zPositionProperty().addListener(((observable, oldValue, newValue) -> {
+            updateDroneCameraPosition(droneModel.xPositionProperty().doubleValue(), droneModel.yPositionProperty().doubleValue(), newValue.doubleValue(), droneModel.yawProperty().doubleValue());
+        }));
 
     }
 
-    private void setupBindings() {
-        pivotPosition.xProperty().bind(droneView.translateXProperty());
-        pivotPosition.yProperty().bind(droneView.translateYProperty());
-        pivotPosition.zProperty().bind(droneView.translateZProperty());
-        //viewingAngle.bind(droneView.rotateProperty());
+    private void updateDroneCameraPosition(double xTranslate, double yTranslate, double zTranslate, double yawRotation) {
+        setTranslateX(xTranslate);
+        setTranslateY(yTranslate);
+        setTranslateZ(zTranslate);
+        setRotate(yawRotation);
     }
 
 }

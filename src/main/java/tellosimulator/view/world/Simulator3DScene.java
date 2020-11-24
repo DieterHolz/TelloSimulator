@@ -1,20 +1,17 @@
 package tellosimulator.view.world;
 
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.*;
-import javafx.scene.input.*;
-import javafx.scene.paint.Color;
-import tellosimulator.TelloSimulator;
-import tellosimulator.log.Logger;
+import javafx.scene.Parent;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 
-import java.awt.*;
-
 
 public class Simulator3DScene extends SubScene {
-    private Camera simulatorCamera;
+    private SimulatorCamera simulatorCamera;
     private DroneCamera droneCamera;
 
     private double mousePosX;
@@ -29,8 +26,8 @@ public class Simulator3DScene extends SubScene {
     public Simulator3DScene(Parent sceneGraph, DroneView droneView, DroneModel droneMod) {
         super( sceneGraph, 1280, 720, true, SceneAntialiasing.BALANCED);
         droneModel = droneMod;
-        simulatorCamera = new Camera(droneView, 200, 25, -10);
-        droneCamera = new DroneCamera(droneView);
+        simulatorCamera = new SimulatorCamera(droneView, 200, 25, -10);
+        droneCamera = new DroneCamera(droneModel);
         setCamera(simulatorCamera);
         setupEventHandlers();
     }
@@ -92,7 +89,7 @@ public class Simulator3DScene extends SubScene {
         }
     };
 
-    public Camera getSimulatorCamera() {
+    public SimulatorCamera getSimulatorCamera() {
         return simulatorCamera;
     }
 
