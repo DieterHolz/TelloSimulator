@@ -24,6 +24,9 @@ public final class CommandResponseSender {
     private static DatagramSocket socket;
 
     public static void sendOk(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.OK.getBytes(), TelloResponse.OK.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
@@ -36,6 +39,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendError(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR.getBytes(), TelloResponse.ERROR.getBytes().length, commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
@@ -48,6 +54,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendErrorNotJoyStick(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR_NOT_JOYSTICK.getBytes(), TelloResponse.ERROR_NOT_JOYSTICK.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
@@ -60,6 +69,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendUnknownCommand(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             String response = TelloResponse.UNKNOWN_COMMAND + commandPackage.getCommand();
             DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
@@ -73,6 +85,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendOutOfRange(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.OUT_OF_RANGE.getBytes(), TelloResponse.OUT_OF_RANGE.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
@@ -85,6 +100,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendMotorStop(CommandPackage commandPackage) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(TelloResponse.ERROR_MOTOR_STOP.getBytes(), TelloResponse.ERROR_MOTOR_STOP.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);
@@ -97,6 +115,9 @@ public final class CommandResponseSender {
     }
 
     public static void sendReadResponse(CommandPackage commandPackage, String response) {
+        if (commandPackage == null) {
+            return;
+        }
         try {
             DatagramPacket responsePacket = new DatagramPacket(response.getBytes(), response.getBytes().length,	commandPackage.getOriginAddress(), commandPackage.getOriginPort());
             socket.send(responsePacket);

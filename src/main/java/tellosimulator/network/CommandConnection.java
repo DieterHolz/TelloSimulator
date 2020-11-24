@@ -11,11 +11,10 @@ import tellosimulator.controller.DroneController;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class CommandConnection extends Thread {
-	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "UDPCommandConnection");
+	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandConnection");
 
 	private DatagramSocket commandSocket;
 	private DroneController telloDroneController;
@@ -34,8 +33,7 @@ public class CommandConnection extends Thread {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
 			CommandResponseSender.setSocket(commandSocket);
 			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
-			//TODO: uncomment to set timeout in final version
-			//commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
+			commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 		} catch (IOException e2) {
 			logger.error("Command server error: " + e2);
 		}
@@ -84,42 +82,28 @@ public class CommandConnection extends Thread {
 
 			} catch (SocketTimeoutException e1) {
 				logger.error("Socket timeout: " + e1.getMessage());
-				logger.warn("Safety feature triggered: Tello will land automatically");
-				// TODO: land the drone
+				logger.warn("Did not receive a command for " +
+						TimeUnit.MILLISECONDS.toSeconds(TelloSDKValues.COMMAND_SOCKET_TIMEOUT) +
+						" seconds. Safety feature triggered: Tello will land automatically");
 				telloDroneController.land(null);
 				setRunning(false);
 			} catch (SocketException e2) {
 				if (e2.getMessage().equals("socket closed")) {
-					logger.info("Socket closed");
+					logger.warn("socket closed");
 				} else {
-					logger.warn(e2.getMessage());
+					logger.error(e2.getMessage());
 				}
-				//TODO: land the drone
+				telloDroneController.land(null);
 				setRunning(false);
 			} catch (IOException e3) {
 				logger.error(e3.getMessage());
-				e3.printStackTrace();
 			}
 		}
 	}
 
-	private void initiateStateConnection(InetAddress address) throws SocketException {
+	private void initiateStateConnection(InetAddress address) {
 		stateConnection = new StateConnection(telloDroneController, address);
 		stateConnection.start();
-	}
-
-	private byte[] readBytes() throws IOException {
-		byte[] data = new byte[256];
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		commandSocket.receive(packet);
-		return Arrays.copyOf(data, packet.getLength());
-	}
-
-	String readString() throws IOException {
-		byte[] data = readBytes();
-		String str = new String(data, StandardCharsets.UTF_8);
-		if (TelloSDKValues.DEBUG) System.out.println("[IN ] " + str.trim());
-		return str;
 	}
 
 	public boolean isRunning() {
