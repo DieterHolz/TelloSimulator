@@ -23,8 +23,6 @@ public class NetworkControls extends VBox {
     private ToggleButton startButton;
     private Label simulatorExternalIpLabel;
     private TextField simulatorExternalIpField;
-    private Label simulatorLocalIpLabel;
-    private TextField simulatorLocalIpField;
     private Label commandsLabel;
     private Label commandPortLabel;
     private TextField commandPortField;
@@ -33,14 +31,12 @@ public class NetworkControls extends VBox {
     private TextField statePortField;
     private Label statePortLabelNetwork;
     private TextField statePortFieldNetwork;
-    private Label videoPortLabel;
-    private TextField videoPortField;
 
-    private final String BUTTON_TEXT_START_DRONE = "Start Virtual Drone";
-    private final String BUTTON_TEXT_STOP_DRONE = "Stop Virtual Drone";
+    private final String BUTTON_TEXT_START_DRONE = "Start Drone";
+    private final String BUTTON_TEXT_STOP_DRONE = "Stop Drone";
 
 
-    public NetworkControls(DroneController droneController) throws IOException {
+    public NetworkControls(DroneController droneController) {
         this.droneController = droneController;
 
         getExternalIPAddress();
@@ -53,32 +49,36 @@ public class NetworkControls extends VBox {
         setupBindings();
     }
 
-    private void getExternalIPAddress() throws IOException {
-        Socket s = new Socket("www.google.com", 80);
-        myIp = s.getLocalAddress().getHostAddress();
-        s.close();
+    private void getExternalIPAddress() {
+        try {
+            Socket s = new Socket("www.google.com", 80);
+            myIp = s.getLocalAddress().getHostAddress();
+            s.close();
+        } catch (IOException e) {
+            myIp = "127.0.0.1";
+            logger.debug("No internet connection?.");
+        }
     }
 
     private void initializeSelf() {
         setPadding(new Insets(4,4,4,4));
         setMinWidth(150);
+        setPrefWidth(200);
     }
 
     private void initializeParts() {
         startButton = new ToggleButton(BUTTON_TEXT_START_DRONE);
-        simulatorExternalIpLabel = new Label("IP Address in Network:");
+        setMargin(startButton, new Insets(0,0,20,0));
+
+        simulatorExternalIpLabel = new Label("IP Address:");
         simulatorExternalIpField = new TextField(myIp);
         simulatorExternalIpField.setEditable(false);
 
-        simulatorLocalIpLabel = new Label("Local Loopback IP Address:");
-        simulatorLocalIpField = new TextField(TelloSDKValues.SIM_LOCAL_ADDRESS);
-        simulatorLocalIpField.setEditable(false);
-
-        commandsLabel = new Label("Send your commands to following ports:");
+        commandsLabel = new Label("Send your commands to:");
         commandPortLabel = new Label("Command Port:");
         commandPortField = new TextField(String.valueOf(TelloSDKValues.SIM_COMMAND_PORT));
 
-        stateLabel = new Label("Listen for the drone state on following ports:");
+        stateLabel = new Label("Listen for the drone state on:");
         statePortLabel = new Label("State Port (Client Local):");
         statePortField = new TextField(String.valueOf(TelloSDKValues.SIM_STATE_PORT));
 
@@ -94,8 +94,6 @@ public class NetworkControls extends VBox {
                 startButton,
                 simulatorExternalIpLabel,
                 simulatorExternalIpField,
-                simulatorLocalIpLabel,
-                simulatorLocalIpField,
                 commandsLabel,
                 commandPortLabel,
                 commandPortField,
