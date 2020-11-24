@@ -18,10 +18,15 @@ public class SettingsPane extends BorderPane {
     public SettingsPane(ParentPane parent) {
         this.parent = parent;
 
+        initializeSelf();
         initializeParts();
         layoutParts();
         setupValueChangedListeners();
         setupBindings();
+    }
+
+    private void initializeSelf() {
+        setPadding(new Insets(15,30,0,30));
     }
 
     private void initializeParts() {
@@ -39,7 +44,6 @@ public class SettingsPane extends BorderPane {
     }
 
     private void layoutParts() {
-        setPadding(new Insets(10));
         setCenter(roomSizeControls);
         setBottom(nextScreenButton);
     }

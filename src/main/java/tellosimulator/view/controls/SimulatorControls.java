@@ -81,7 +81,9 @@ public class SimulatorControls extends GridPane {
         add(yawAngleText, 2, 4);
         //TODO: add all other values to grid
         add(cameraButton, 1, 5);
+        setMargin(cameraButton ,new Insets(20,0,0,0));
         add(resetButton, 1, 6);
+        setMargin(resetButton ,new Insets(20,0,0,0));
     }
 
     private void setupEventHandlers() {

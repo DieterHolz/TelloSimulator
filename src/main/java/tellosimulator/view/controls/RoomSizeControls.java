@@ -31,9 +31,8 @@ public class RoomSizeControls extends GridPane {
     }
 
     private void initializeSelf() {
-        setHgap(10);
-        setVgap(5);
-        setPadding(new Insets(4,4,4,4));
+        setVgap(10);
+        setPadding(new Insets(0,0,20,0));
         setMinWidth(300);
     }
 
