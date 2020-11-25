@@ -2,10 +2,6 @@ package tellosimulator.common;
 
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
-import tellosimulator.controller.DroneController;
-
-import java.awt.*;
-import java.math.BigDecimal;
 
 public class VectorHelper {
 
@@ -25,84 +21,35 @@ public class VectorHelper {
         return Rotate.Y_AXIS;
     }
 
-    private static Point3D normalVectorOfAPlane(Point3D point1, Point3D point2, Point3D point3) {
-        return ((point2.subtract(point1)).crossProduct(point3.subtract(point1)));
-    }
-
-    private static Point3D directionVectorOfBisection(Point3D point1, Point3D point2, Point3D point3) {
-        return (point2.subtract(point1)).crossProduct(normalVectorOfAPlane(point2, point1, point3));
-    }
-
-    private static Point3D intersectionPointOf2Vectors(Point3D midPointAB, Point3D directionVectorOfBisectionAB, Point3D midPointAC, Point3D directionVectorOfBisectionAC) {
-//        double a1 = midPointAB.getX();
-//        double a2 = midPointAB.getY();
-//        double a3 = midPointAB.getZ();
-//        double b1 = midPointAC.getX();
-//        double b2 = midPointAC.getY();
-//        double b3 = midPointAC.getZ();
-//        double u1 = directionVectorOfBisectionAB.normalize().getX();
-//        double u2 = directionVectorOfBisectionAB.normalize().getY();
-//        double u3 = directionVectorOfBisectionAB.normalize().getZ();
-//        double v1 = directionVectorOfBisectionAC.normalize().getX();
-//        double v2 = directionVectorOfBisectionAC.normalize().getY();
-//        double v3 = directionVectorOfBisectionAC.normalize().getZ();
-//
-//        double D = (u1*v2 - u2*v1);
-//        if (D != 0) {
-//            //schneiden sich evtl.
-//            double D1 = (b1-a1)*v2 - v1*(b2-a2);
-//            double D2 = u1*(b2-a2) - u2*(b1-a1);
-//            double lambda = D1/D;
-//            double my = -D2/D;
-//            if(lambda*u3 - my*v3 == b3-a3) {
-//                //schneiden sich, Punkt lässt sich mit gegebenen Lambda oder my berechnen
-//                double p1 = a1 + lambda*u1;
-//                double p2 = a2 + lambda*u2;
-//                double p3 = a3 + lambda*u3;
-//                return new Point3D(p1, p2, p3);
-//            } else {
-//                // lediglich die Projektion in die x-y-Ebene schneidet sich ...
-//                return null;
-//            }
-//        } else {
-//            return null;
-//        }
-
-        double d = directionVectorOfBisectionAB.getX();
-        double e = -directionVectorOfBisectionAC.getX();
-        double h = midPointAC.getX()-midPointAB.getX();
-
-        double f = directionVectorOfBisectionAB.getY();
-        double g = -directionVectorOfBisectionAC.getY();
-        double i = midPointAC.getY()-midPointAB.getY();
-
-        double det = ((d) * (g) - (e) * (f));  //instead of 1/
-        double r = ((g) * (h) - (e) * (i)) / det;
-        double s = ((d) * (i) - (f) * (h)) / det;
-
-        //TODO: this check does not work properly for some values (see Test curveInvalidRange())
-        // check if intersection point exists
-        BigDecimal foo = new BigDecimal(midPointAB.getZ() + r * directionVectorOfBisectionAB.getZ());
-        BigDecimal bar = new BigDecimal(midPointAC.getZ() + s * directionVectorOfBisectionAC.getZ());
-        if(foo.compareTo(bar) == 0) {
-            //schnittpunkt existiert
+    // Source: https://github.com/sergarrido/random/tree/master/circle3d
+    public static Point3D midPointOfcircumscribedCircle(Point3D p1, Point3D p2, Point3D p3) {
+        // Estimate v1 and v2
+        Point3D v1 = p2.subtract(p1);
+        Point3D v2 = p3.subtract(p1);
+        // Estimate dot products
+        double v11 = v1.dotProduct(v1);
+        double v22 = v2.dotProduct(v2);
+        double v12 = v1.dotProduct(v2);
+        // Estimate scalars k1 and k2
+        double divider = (v11 * v22 - v12 * v12);
+        if (divider == 0) {
+            // no circle construction possible, points are collinear
+            return null;
         }
-        return midPointAB.add(directionVectorOfBisectionAB.multiply(r));
-
+        double base = 0.5/divider;
+        double k1 = base * v22 * (v11 - v12);
+        double k2 = base * v11 * (v22 - v12);
+        // Estimate circle center
+        Point3D center = p1.add((v1.multiply(k1))).add((v2.multiply(k2)));
+        return center;
     }
 
-    public static Point3D midPointOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
-        Point3D midPointAB = a.midpoint(b);
-        Point3D midPointAC = a.midpoint(c);
-
-        Point3D directionVectorOfBisectionAB = directionVectorOfBisection(a, b, c);
-        Point3D directionVectorOfBisectionAC = directionVectorOfBisection(a, c, b);
-
-        return intersectionPointOf2Vectors(midPointAB, directionVectorOfBisectionAB, midPointAC, directionVectorOfBisectionAC);
-    }
-
-    public static double radiusOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
-        return a.distance(midPointOfcircumscribedCircle(a,b,c));
+    public static Double radiusOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
+        Point3D midPoint = midPointOfcircumscribedCircle(a,b,c);
+        if (midPoint != null){
+            return a.distance(midPoint);
+        }
+        return null;
     }
 
     // rotate a vector v around an axis vector for a certain amount/angle (clockwise!)

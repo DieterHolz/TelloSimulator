@@ -40,7 +40,7 @@ public class DroneController {
 
     private boolean flyCurve = false;
     //TODO curve stuff, needs a refactoring
-    double curveRadius;
+    Double curveRadius;
     double arcLength;
     double arcAngle;
     double rotateDiffAnglePerFrame;

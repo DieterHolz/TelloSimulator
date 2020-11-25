@@ -668,12 +668,12 @@ public class CommandHandler {
 	private boolean radiusOutOfRange(double x1, double y1, double z1, double x2, double y2, double z2) {
     	Double radius = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
     	if (radius == null) {
-    		logger.error("No midpoint for curve found. Could not calculate radius.");
+    		logger.error("No curve construction possible. Points are collinear.");
     		return true;
 		}
 
     	if(radius < 50 || radius > 1000) {
-    		logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", Command: " + TelloControlCommand.CURVE + ", ");
+    		logger.error("Illegal Arguments. Command: " + TelloControlCommand.CURVE + ", radius: " + radius.intValue() + " cm");
     		logger.error("Arc radius is not within a range of 0.5-10 meters.");
     		return true;
     	}
