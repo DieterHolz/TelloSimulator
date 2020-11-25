@@ -40,11 +40,11 @@ Die nachfolgenden Abschnitte dokumentieren die Simulator-API und geben beispielh
 
 === Commands senden & Responses empfangen
 
-. Command-Socket auf Port *8889* erstellen, um Commands zu senden:
+. Command-Socket mit bind zu Port *8889* erstellen, um Responses zu empfangen:
 [source,java]
 ds = new DatagramSocket(8889);
 
-. Connection zur Simulator-IP (sichtbar im Simulator-UI) auf Port *8879*, um Command-Responses vom Simulator zu empfangen:
+. Connection zur Simulator-IP (sichtbar im Simulator-UI) auf Port *8879*, um Commands an den Simulator zu schicken:
 [source,java]
 ds.connect(InetAddress.getByName(simulatorIP), 8879)
 
@@ -58,7 +58,7 @@ ds.receive(packet);
 
 . State-Socket auf Port *8890* erstellen, um State vom Simulator zu empfangen:
 [source,java]
-ds = new DatagramSocket(8890, InetAddress.getByName("0.0.0.0"));
+ds = new DatagramSocket(8890);
 
 . State-Pakete empfangen:
 [source,java]
