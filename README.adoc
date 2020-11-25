@@ -1,6 +1,7 @@
 :icons: font
 :stem:
 :imagesdir: assets
+:experimental:
 
 = TelloSimulator
 
