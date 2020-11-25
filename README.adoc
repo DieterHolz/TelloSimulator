@@ -5,12 +5,11 @@
 = TelloSimulator
 
 
-link:README.en.adoc[English Version]
+link:README.en.adoc[English Readme]
 
 Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtuellen Tello Drohne. Die Applikation
 bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
-und verfügt über ein UI mit 3D-Welt, in welcher die virtuelle Drohne fliegt. Eine ausführliche Dokumentation zu diesem
-Projekt ist im link:BERICHT.adoc[Bericht] zu finden.
+und verfügt über ein UI mit 3D-Welt, in welcher die virtuelle Drohne fliegt.
 
 == Installationsanleitung:
 
@@ -29,7 +28,9 @@ gradlew run
 TIP: Eine detailliertere Installationsanleitung, inkl. IntelliJ IDEA Setup, ist im link:SETUP.adoc[SETUP.adoc] zu finden.
 
 NOTE: Um den Simulator zu verwenden, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und
-somit auch den Simulator ansteuern kann. Für Testzwecke steht hierzu unterhttps://github.com/danielobrist/TelloDemoCommander eine Demo-Applikation zur Verfügung.
+somit auch den Simulator ansteuern kann. Falls kein eigener Client verfügbar ist, steht
+https://github.com/danielobrist/TelloDemoCommander[hier] eine Demo-Applikation zur Verfügung.
+
 
 == Simulator-API:
 
@@ -42,24 +43,15 @@ Die nachfolgenden Abschnitte dokumentieren die Simulator-API und geben beispielh
 [source,java]
 ds = new DatagramSocket(8889);
 
-. Connection zur Simulator-IP, um Command-Responses vom Simulator zu empfangen:
-** *Variante 1: Simulator & Operator auf gleichem Gerät:* Connection zur *Loopback-IP* auf Port *8879* herstellen:
-[source,java]
-ds.connect(InetAddress.getLoopbackAddress(), 8879)
-
-** *Variante 2: Simulator & Operator auf verschiedenen Geräten:*
-Connection zur *IP des Simulators* (sichtbar im Simulator-UI) auf Port *8879* herstellen:
+. Connection zur Simulator-IP (sichtbar im Simulator-UI) auf Port *8879*, um Command-Responses vom Simulator zu empfangen:
 [source,java]
 ds.connect(InetAddress.getByName(simulatorIP), 8879)
 
 . UDP-Pakete senden und empfangen:
 [source,java]
 DatagramPacket packet = new DatagramPacket(...);
-
- ds.send(packet);
-
- ds.receive(packet);
-
+ds.send(packet);
+ds.receive(packet);
 
 === State empfangen
 
@@ -71,13 +63,49 @@ ds = new DatagramSocket(8890, InetAddress.getByName("0.0.0.0"));
 [source,java]
 ds.receive(packet);
 
-NOTE: Der State wird alle 10 ms versendet. Er wird an die Adresse geschickt, von der *das erste command* empfangen wurde.
+NOTE: Der State wird alle 100 ms versendet. Er wird an die Adresse geschickt, von der *das erste command* empfangen wurde.
 
 === Video empfangen
 
 WARNING: Der TelloSimulator versendet in der aktuellen Version noch keinen Videostream.
 
-== Literaturverzeichnis
 
+== Simulator UI
+//TODO: Screenshot und ein paar basic Erklärungen zum Simulator User Interface
 
----
+|===
+|Key |Purpose
+
+|kbd:[LeftMouse]
+|Rotate Drone Camera
+
+|kbd:[Ctrl+LeftMouse]
+|Rotate Drone Camera slowly
+
+|kbd:[Shift+LeftMouse]
+|Rotate Drone Camera fast
+
+|kbd:[RightMouse]
+|Move Drone Camera
+
+|kbd:[Ctrl+LeftMouse]
+|Move Drone Camera slowly
+
+|kbd:[Shift+LeftMouse]
+|Move Drone Camera fast
+
+|kbd:[Scroll]
+|Increase/Decrease zoom
+
+|kbd:[Ctrl+Scroll]
+|Increase/Decrease zoom slowly
+|===
+
+'''
+
+.Mehr Informationen
+****
+Dieses Projekt wurde im Rahmen des IP5-Projekts im Studiengang Informatik mit Vertiefung in Design und Management an
+der Fachhochschule Nordwestschweiz FHNW entwickelt. Eine ausführliche Dokumentation ist im link:BERICHT.adoc[Bericht]
+zu finden.
+****
