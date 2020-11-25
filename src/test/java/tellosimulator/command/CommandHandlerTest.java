@@ -55,6 +55,7 @@ class CommandHandlerTest {
         commandPackage.setCommand(TelloControlCommand.COMMAND);
         commandHandler.handle(commandPackage);
         verify(droneController, atLeastOnce()).isAnimationRunning();
+        verify(droneController, atLeastOnce()).isEmergency();
         verifyNoMoreInteractions(droneController);
     }
 
@@ -667,9 +668,16 @@ class CommandHandlerTest {
 
     @Test
     void curveValid() throws IOException {
+        commandPackage.setCommand(TelloControlCommand.CURVE + " 70 70 70 0 0 140 50");
+        commandHandler.handle(commandPackage);
+        verify(droneController, times(1)).curve(commandPackage, 70, 70, 70, 0, 0, 140, 50);
+    }
+
+    @Test
+    void curveInvalidPointsAreCollinear() throws IOException {
         commandPackage.setCommand(TelloControlCommand.CURVE + " 100 100 100 40 40 40 50");
         commandHandler.handle(commandPackage);
-        verify(droneController, times(1)).curve(commandPackage, 100, 100, 100, 40, 40, 40, 50);
+        verify(droneController, times(0)).curve(commandPackage, 100, 100, 100, 40, 40, 40, 50);
     }
 
     @ParameterizedTest
@@ -677,7 +685,7 @@ class CommandHandlerTest {
     void curveInvalidRange(double x) throws IOException {
         commandPackage.setCommand(TelloControlCommand.CURVE + " " + x + " 101 100 40 40 40 50");
         commandHandler.handle(commandPackage);
-        verify(droneController, times(0)).curve(commandPackage, x, 100, 100, 40, 40, 40, 50);
+        verify(droneController, times(0)).curve(commandPackage, x, 101, 100, 40, 40, 40, 50);
     }
 
     @Test
