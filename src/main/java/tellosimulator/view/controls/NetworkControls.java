@@ -27,8 +27,6 @@ public class NetworkControls extends VBox {
     private Label commandPortLabel;
     private TextField commandPortField;
     private Label stateLabel;
-    private Label statePortLabel;
-    private TextField statePortField;
     private Label statePortLabelNetwork;
     private TextField statePortFieldNetwork;
 
@@ -79,10 +77,7 @@ public class NetworkControls extends VBox {
         commandPortField = new TextField(String.valueOf(TelloSDKValues.SIM_COMMAND_PORT));
 
         stateLabel = new Label("Listen for the drone state on:");
-        statePortLabel = new Label("State Port (Client Local):");
-        statePortField = new TextField(String.valueOf(TelloSDKValues.SIM_STATE_PORT));
-
-        statePortLabelNetwork = new Label("State Port (Client in Network):");
+        statePortLabelNetwork = new Label("State Port:");
         statePortFieldNetwork  = new TextField(String.valueOf(TelloSDKValues.OP_STATE_PORT));
 
         //TODO: video label and field
@@ -98,8 +93,6 @@ public class NetworkControls extends VBox {
                 commandPortLabel,
                 commandPortField,
                 stateLabel,
-                statePortLabel,
-                statePortField,
                 statePortLabelNetwork,
                 statePortFieldNetwork
         );

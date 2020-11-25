@@ -30,8 +30,8 @@ public class StateConnection extends Thread {
             stateSocket.connect(address, TelloSDKValues.OP_STATE_PORT);
         } catch (BindException bindException) {
             logger.error("could not establish connection. Address: " + address + "Port: " + TelloSDKValues.SIM_STATE_PORT + " " +
-                    "is already in use. If your client program runs locally, please receive the state on port " +
-                    TelloSDKValues.OP_STATE_PORT + " instead. Details: " + bindException);
+                    "is already in use. If your client program runs locally, " +
+                    "please bind your state socket to port " + TelloSDKValues.OP_STATE_PORT + ". Details: " + bindException);
         } catch (IOException ex) {
             logger.error("error: " + ex);
         }
