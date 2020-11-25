@@ -68,13 +68,90 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 == Praktischer Teil
 === Use-Cases
 === Architektur
-=== Skalierbarkeit
+
+Hier wird die Software-Architektur des Simulators beschrieben. Die nachfolgende Grafik bietet einen Überblick der
+wichtigsten Klassen. Anschliessend werden diese Klassen und deren Funktionen genauer beschrieben.
+
+<Diagramm mit den wichtigsten Klassen>
+
+==== Frontend
+Das User-Interface des Simulators ist mit den typischen JavaFX-Bausteinen aufgebaut. Die Benutzerfreundlichkeit wurde
+bei der Gestaltung nicht speziell beachtet und hat bestimmt noch ein gewisses Verbesserungspotenzial. Als zukünftige
+Weiterentwicklung könnte man bestimmt noch einen Sprint in das User-Experience stecken. Da sich unser Projekt jedoch auf
+die Grundfunktionalität fokussierte, haben wir nicht viele Ressourcen in die Usabilty investiert.
+
+===== SimulatorPane
+Die SimulatorPane ist die übergeordnete BorderPane, welche alle anderen JavaFX-Nodes enthält. Links befinden sich die
+SimulatorControls zum Setzen und Beobachten von Simulator- und Drohnen-Parametern. Auf der rechten Seite sind die
+NetworkControls, wo alle nötigen Informationen zum Verbindungsaufbau mit dem Simulator angezeigt werden. Unten findet
+der User eine interaktive LogBox, welche dem Debugging dient. Und in der Mitte befindet sich die Simulator3DScene, in
+welcher die 3D-Welt und die virtuelle Drohne gerendert werden. <Links zum JavaDoc nicht vergessen>
+
+<Screenshot des gesamten GUI>
+
+====== SimulatorControls
+<Kurze Beschreibung der SimulatorControls Komponente und deren Funktion>
+
+====== NetworkControls
+<Kurze Beschreibung der NetworkControls Komponente und deren Funktion>
+
+====== LogBox
+<Kurze Beschreibung der LogBox Komponente und deren Funktion>
+
+====== Simulator3DScene
+<Kurze Beschreibung der Simulator3DScene Komponente und deren Funktion>
+
+==== Backend
+===== CommandConnection
+
+===== StateConnection
+
+===== CommandHandler
+Die Aufgabe der CommandHandler-Klasse <Link zu JavaDoc> ist es, mit den verschiedenen Commands umzugehen. Der
+CommandHandler splittet die über die CommandConnection empfangenen Command-Strings auf und extrahiert die enthaltenen
+Parameter. Anschliessend wird über ein grosses Switch-Statement jedes Command validiert und zu den entsprechenden
+Methoden im DroneController weitergeleitet.
+
+===== DroneController
+
+===== DroneModel
+
+
+
+=== UDP-Schnittstelle
+
+Wie bei der Tello-Drohne findet auch beim Simulator die gesamte Kommunikation über das UDP-Netzwerkprotokoll statt.
+Um den Verbindungsaufbau mit dem Simulator ähnlich wie mit der Tello-Drohne zu gestalten, haben wir die
+Schnittstelle so weit wie möglich gleich gestaltet, wie sie von der Tello-Drohne implementiert wird. Als Grundlage
+diente uns hierbei der offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Dazu führten wir eigene Tests mit der
+Tello-Drohne durch, welche die teilweise lückenhafte Dokumentation im User Guide ergänzten.
+
+==== Die UDP-Schnittstelle der Tello-Drohne
+
+
+
+=== Programmierschnittstelle
+
+In diesem Kapitel wird die Programmierschnittstelle des Simulators beschrieben. Dazu gehören alle Commands, welche vom
+Simulator unterstützt werden.
+
+=== Mögliche Weiterentwicklungen
+
+Obwohl der Simulator in seinem jetzigen Zustand die Grundanforderungen abdeckt, gibt es noch diverse Funktionen,
+die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
+
+==== Video-Stream
+
+
+==== <Weitere Features die wir nicht umsetzen konnten>
+
 == Fazit
 == Danksagung
 == Referenzen
 === Literaturverzeichnis
 [bibliography]
 - [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
+- [[[sdk2.0userguide,2]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
 === Abbildungsverzeichnis
 == Ehrlichkeitserklärung
