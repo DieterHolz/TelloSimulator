@@ -91,38 +91,67 @@ Die SimulatorPane ist die übergeordnete BorderPane, welche alle anderen JavaFX-
 SimulatorControls zum Setzen und Beobachten von Simulator- und Drohnen-Parametern. Auf der rechten Seite sind die
 NetworkControls, wo alle nötigen Informationen zum Verbindungsaufbau mit dem Simulator angezeigt werden. Unten findet
 der User eine interaktive LogBox, welche dem Debugging dient. Und in der Mitte befindet sich die Simulator3DScene, in
-welcher die 3D-Welt und die virtuelle Drohne gerendert werden. <Links zum JavaDoc nicht vergessen>
+welcher die 3D-Welt und die virtuelle Drohne gerendert werden.
 
 <Screenshot des gesamten GUI>
 
 ====== SimulatorControls
-<Kurze Beschreibung der SimulatorControls Komponente und deren Funktion>
+Diese Komponente zeigt die wichtigsten Parameter der Drohne an. Dazu gehören die X-, Y- und Z-Position sowie die Yaw-, Pitch- und Roll-Werte.
+Zusätzlich steht ein Reset-Button zur Verfügung, wodurch alle Werte der virtuellen Drohne zurückgesetzt werden. Mit dem Button darunter kann 
+der User ausserdem zwischen Simulator- und Drohnenkamera wechseln. Zusätzlich befinden sich hier vier Slider zur Konfiguration der Grösse des
+virtuellen Raums. Ist ein Slider angewählt können die Werte auch mit den Pfeiltasteneingestellt werden.
 
 ====== NetworkControls
-<Kurze Beschreibung der NetworkControls Komponente und deren Funktion>
+Die NetworkControls auf der rechten Seite bieten als Erstes den *Start Drone*-Button, mit welchem die virtuelle Drohne ein- und ausgeschaltet
+werden kann. Dieser Button repräsentiert in der Funktionsweise den On-Off-Schalter der echten Tello-Drohne. Denn erst nachdem die Tello-Drohne eingeschaltet wurde kann man sich mit ihr verbinden. Analog müss auch die virtuelle Drohne zuerst gestartet werden. Nach einem
+Betätigen des "Start Drone"-Buttons baut der Simulator die CommandConnection auf und beginnt auf dem entsprechenden Port commands zu empfangen. 
+Eine ensprechende Nachricht wird ebenfalls in den Log geschrieben, um dem User zu zeigen, dass die Drohne auf Commands wartet.
+
+Unterhalb des Start-Buttons befinden sich Informationen zum Verbindungsaufbau mit dem Simulator. Im Feld *IP Address* steht bei aktiver 
+Interntverbindung die IP-Addresse des Geräts, auf welchem der Simulator gerade läuft. Wenn keine Internetverbindung besteht kann der Simulator
+diese Addresse leider nicht ermitteln. Dann steht in diesem Feld standardmässig die Loopback-Addresse 127.0.0.1.
+
+Im Feld *Command Port* wird die Port-Nummer angezeigt, auf welcher der Simulator seinen DatagramSocket zum empfangen von Commands erstellt hat. Hierhin müssen also von einem Client-Programm die commands geschickt werden.
+
+Das nächste Feld *State Port* gibt den Port an, mit welchem sich die StateConnection des Simulators für das Versenden des Drohnen-Status verbindet. Auf diesem Port sollte man also den Drohnen-Status empfangen.
 
 ====== LogBox
-<Kurze Beschreibung der LogBox Komponente und deren Funktion>
+Die LogBox an der Unterseite ist ein mächtiges Tool zum Debuggen. Hierhin werden sozusagen alle Aktivitäten des Simulators geloggt. Die verschiedenen Log-Level sind dabei farblich unterschiedlich dargestelt. Das Log-Level lässt sich je nach Bedarf einstellen, und die ListView wird entsprchend gefiltert. Ebenfalls lässt sich mit *Show Timestamp* ein Zeitstempel ein- und ausblenden. Der Button *Autoscroll to Tail* scrollt automatisch immer nach unten zu dem neusten Log-Eintrag.
 
 ====== Simulator3DScene
-<Kurze Beschreibung der Simulator3DScene Komponente und deren Funktion>
+In dem Mittelpunkt des UI steht die Simulator3DScene, auf welcher die ganze 3D-Welt inklusive virtueller Drohne gerendert werden. Hierzu verwendt der Simulator eine JavaFX-SubScene, welche in der umschliessenden BorderPane im Zentrum platziert ist. Neben der 3D-Welt und der Drohne befinden sich zwei Kameras in dem SceneGraph der Subscene: einerseits die vom User kontrollierbare SimulatorCamera sowie die an die Drohne fixierte DroneCamera.
+
+Die DroneView ist die Repräsentation der Drohne im 3D-Raum als 3D-Modell. Ihr Modell wird mittels einem FXML Source File geladen, inklusive animierten Rotoren. Die Position und Rotation der DroneView sind dabei einseitig an die entsprechenden Properties des DroneModels im Backend gebunden. Das heisst wenn sich im DroneModel was ändert, wird dies durch die DroneView in der 3D-Welt abgebildet.
+
+Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, lässt sich die SimulatorCamera mit der linken Maustaste drehen. Der Pivot-Punkt, um welchen sich die Kamera dreht, transformiet sich dabei gleichmässig mit der Drohne. So fliegt die Drohne nicht plötzlich aus dem Sichtfeld. Ebenfalls lässt sich die Kamera mit der rechten Maustaste oder durch das Drücken des Mausrads nach links und rechts verschieben, um eine andere Perspektive zu erhalten. Die Zoom-Distanz der Kamera lässt sich durch das Scrollen mit dem Mausrad oder dem Touchpad anpassen. Alle diese Manipulationen (Drehen, Verschieben und Zoom) können durch das Halten der Ctrl- bzw. Shift-Taste präzisiert bzw. verstärkt werden.
+
 
 ==== Backend
+Die Netzwerkdschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Ohne Zugang zum Source-Code der Tello-Drohne war dies nicht immer einfach. Als Ausgangslage diente uns die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche wir als Testobjekt verwenden konnten. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren.
+
+Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simulator kann zum Beispiel im Gegensatz der echten Drohne kein eigenes Wireless-Netzwerk aufbauen. Aussderem muss der Simulator auch auf dem gleichen Gerät laufen können wie das Client-Programm. Dabei kann es zu Konflikten mit der Port-Belegung kommen. Bei der Tello-Drohne hat man diese Probleme nicht, da die Drohne immer alle Ports für sich selbst zur Verfügung hat.
+
+Um die zentralen Datenflüsse der Tello-Drohne abzubilden, implementiert der TelloSimulator zwei Threads, welche parallel zu dem Hauptprogramm  laufen: die *CommandConnection* und die *StateConnection*. Die *VideoConnection* als letzter Teil dieser Dreifaltigkeit wurde aus Ressourcengründen leider nicht umgesetzt.
+
 ===== CommandConnection
+Sobald der Benutzer die virtuelle Drohne einschaltet, wird eine neue Instanz der CommandConnection erstellt und der Thread gestartet. Beim Erstellen des Sockets besteht hierbei eine Eigenheit des Simulators. Der Standard-Port der Tello-Drohne wäre 8889, jedoch wird dieser Port in den meisten Fällen schon durch das ebenfalls lokal laufende Client-Programm belegt sein. Deshalb bindet sich der Simulator-DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Danach empfängt der Thread laufend UDP-Pakete auf diesem Socket.
+
+Nach einem initalen `command`-Command wird dann wie bei der echten Tello-Drohe der SDK Mode aktiviert. Ab dann ist die Drohne bereit für andere Commands. Gleichzeitig bewirkt dies die Initierung der StateConnection, welche ab dann regelmässig den Drohnen-Status versendet. 
+
+Alle über die CommandConnection empfangenen Nachrichten werden gewrappt als CommandPackage samt Herkunfts-Addresse und Herkunfts-Port an die CommandHandler-Klasse weitergegeben. 
+
 
 ===== StateConnection
+Die StateConnection ist ein Stück weniger kompliziert, da sie sich nur mit dem Versenden des Drohnen-Status befassen muss. Nach dem Start durch die CommandConnection schickt die StateConnection asynchron alle 100 ms den Status der Drone im entsprechenden Format an die Addresse, von welcher das erste `command`-Command empfangen wurde. Da auf dem State-Port nichts empfangen werden muss, verwendet der Simulator hier den gleichen Port wie die Tello-Drohne.
 
 ===== CommandHandler
-Die Aufgabe der CommandHandler-Klasse <Link zu JavaDoc> ist es, mit den verschiedenen Commands umzugehen. Der
-CommandHandler splittet die über die CommandConnection empfangenen Command-Strings auf und extrahiert die enthaltenen
-Parameter. Anschliessend wird über ein grosses Switch-Statement jedes Command validiert und zu den entsprechenden
-Methoden im DroneController weitergeleitet.
+Die Aufgabe der CommandHandler-Klasse ist es, mit den verschiedenen Commands umzugehen. Der CommandHandler splittet die über die CommandConnection empfangenen Command-Strings auf und extrahiert die enthaltenen Parameter. Anschliessend wird über ein grosses Switch-Statement jedes Command validiert und zu den entsprechenden Methoden im DroneController weitergeleitet.
 
 ===== DroneController
+Diese Klasse steuert die virtuelle Drohne und enthält ihre gesamte Logik. Sie aktualisiert und animiert alle Daten, die in dem DroneModel gespeichert sind, dem sie zugeordnet ist. Die Methoden des DroneControllers führen die Befehle aus, wenn sie vom CommandHandler aufgerufen werden. Ebenfalls sendet der Controller asynchrone Antworten über den CommandResponseSender an das Client-Programm, sobald ein bestimmtes Command fertig ausgeführt wurde.
 
 ===== DroneModel
-
-
+Die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentiert. Die Werte des DroneModel werden nur durch die Logik des DroneControllers verändert und im Frontend durch die an seine Properties gebundene Views dargestellt. Dabei dient das DroneModel als *_single source of truth_* für alle anderen Komponenten, die auf die Parameter der Drohne zugreifen möchten. Dies gewährleistet die Datenintegrität und ermöglicht eine einfachere Skalierbarkeit der Applikation in Zukunft.
 
 === UDP-Schnittstelle
 
