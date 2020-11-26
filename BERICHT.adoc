@@ -62,7 +62,9 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 
 === Lösung
 === Zielpublikum
+
 == Theoretischer Teil
+
 === Beschreibung der Anwendungsdomäne
 Der Simulator wird im Workshop-Modul als Ersatz für die echte Tello-Drohne eingesetzt.
 
@@ -72,6 +74,40 @@ Da der Einsatzbereich sich auf das Workshop-Modul beschränkt, reicht es, wenn d
 werden kann.
 
 == Praktischer Teil
+
+=== Usability Testing
+Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang unter «Usability Testing» zu finden.
+Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchgeführt, die Ansicht des GUIs wird in Abbildung 1 gezeigt.
+
+.GUI zum Stand des Usability Testings
+[#gui-usability-testing]
+[caption="Abbildung 1: "]
+image::tello-simulator-gui-stand-usability-testing.png[width=498]
+
+==== Vorgehensweise
+Um eine unkomplizierte Inbetriebnahme sowie eine einfache Handhabung des Simulators zu gewährleisten, wurde ein Usability Testing durchgeführt.
+
+Das Testing wurde in die folgenden drei Abschnitte unterteilt: «Installation», «Konfiguration des Operators» und «Anwendung TelloSimulator», diese werden im Kapitel «Aufgabenstellung» etwas genauer beschrieben. Per Videotelefonie wurde das Testing mit vier iCompetence-Studierenden der FHNW (2./3. Semester) durchgeführt. Dabei wurde eine Aufgabenstellung per Chat abgegeben und der Proband versuchte die Aufgabe ohne Hilfe des Moderierenden zu lösen. Der Moderierende konnte bei Problemen eingreifen, der Beobachtende notierte die wichtigsten Verhaltensweisen und Aussagen des Probanden. Zusätzlich wurde das Meeting aufgezeichnet, um wichtige Abschnitte nachgehend noch detaillierter zu dokumentieren.
+
+Anschliessend wurden die wichtigsten Erkenntnisse in die folgenden Kategorien unterteilt: «negative Aussagen / beobachtete Probleme», «positive Aussagen» und «Tipps». Diese wurden nach Thema gruppiert. Pro Thema wurde ein Verbesserungsvorschlag definiert und ins Backlog aufgenommen.
+
+==== Erkenntnisse
+Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. Dies ist nur ein Auszug der Wichtigsten, genauere Details sind im Anhang zu finden.
+
+*Installationsanleitung*
+
+** weniger Beschreibungen, warum etwas gemacht wird, dafür genauere Anweisungen
+** Probleme, welche auftreten können, in einen Troubleshooting-Abschnitt extrahieren
+
+*Simulator*
+
+** visuelle Orientierung im Raum ist sehr wichtig, um zu sehen, ob die Drohne sich wie gewünscht verhält
+*** Schatten einbauen
+*** Kameraposition überdenken
+*** Drohne als 3D-Model implementieren oder mindestens ein Pfeil auf dem Quader einblenden, damit die Blickrichtung der Drohne klar ist
+** Drohne/Simulator muss auch wieder ausgeschaltet werden können
+** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden)
+
 === Use-Cases
 === Architektur
 
@@ -189,6 +225,8 @@ die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
 - [[[sdk2.0userguide,2]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
 === Abbildungsverzeichnis
+- [[[gui-usability-testing,1]]] *Abbildung 1:* GUI zum Stand des Usability Testings
+
 == Ehrlichkeitserklärung
 == Anhang
 === Installationsanleitung Tello Simulator
