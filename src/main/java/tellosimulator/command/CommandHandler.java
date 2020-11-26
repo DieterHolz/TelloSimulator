@@ -30,7 +30,7 @@ public class CommandHandler {
 
 	/**
 	 * Handles the incoming {@code CommandPackage} by extracting, validating and redirecting the command.
-	 * @param commandPackage
+	 * @param commandPackage the {@code CommandPackage} to be handled
 	 */
 	public void handle(CommandPackage commandPackage) {
 		if (droneController.isEmergency()) {
@@ -646,7 +646,7 @@ public class CommandHandler {
 		} else if(speed<10 || speed>60) {
 			logger.error("Illegal Argument. Command: "+TelloControlCommand.CURVE + ", param name: speed, input value: " + speed + ", valid value: 10 - 60");
 			return false;
-		} else if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid==null || mid.equals(""))) {
+		} else if(mid != null && !(mid.equals("m1") || mid.equals("m2") || mid.equals("m3") || mid.equals("m4") || mid.equals("m5") || mid.equals("m6") || mid.equals("m7") || mid.equals("m8") || mid.equals(""))) {
 			logger.error("Illegal Argument. Command: " + TelloControlCommand.GO + ", param name: mid, input value: " + mid + ", valid value: m1-m8 or empty");
 			return false;
 		} else {

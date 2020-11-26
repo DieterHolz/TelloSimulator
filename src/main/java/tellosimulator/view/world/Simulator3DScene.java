@@ -11,7 +11,7 @@ import tellosimulator.view.drone.DroneView;
 
 /**
  * The SubScene containing all other 3D-Nodes. Contains also all EventHandlers for user interactions with
- * the {@coee SimulatorCamera}.
+ * the {@code SimulatorCamera}.
  *
  * @see SimulatorCamera
  */

@@ -29,7 +29,7 @@ public class CommandConnection extends Thread {
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512];
 
-	private BooleanProperty running = new SimpleBooleanProperty(false);
+	private final BooleanProperty running = new SimpleBooleanProperty(false);
 
 	public CommandConnection(DroneController telloDroneController) {
 		this.setDaemon(true);

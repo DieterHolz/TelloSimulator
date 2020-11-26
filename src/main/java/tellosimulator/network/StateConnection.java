@@ -21,7 +21,7 @@ public class StateConnection extends Thread {
     private DroneController telloDroneController;
     private InetAddress address;
 
-    private BooleanProperty running = new SimpleBooleanProperty(false);
+    private final BooleanProperty running = new SimpleBooleanProperty(false);
 
     public StateConnection(DroneController telloDroneController, InetAddress address) {
         this.setDaemon(true);

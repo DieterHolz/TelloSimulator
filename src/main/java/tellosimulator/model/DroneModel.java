@@ -48,8 +48,8 @@ public class DroneModel {
 
     private final IntegerProperty tof = new SimpleIntegerProperty();
 
-    private BooleanProperty droneCameraActive = new SimpleBooleanProperty(false);
-    private BooleanProperty motorsRunning = new SimpleBooleanProperty(false);
+    private final BooleanProperty droneCameraActive = new SimpleBooleanProperty(false);
+    private final BooleanProperty motorsRunning = new SimpleBooleanProperty(false);
 
     public DroneModel() {
     }

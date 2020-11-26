@@ -9,7 +9,7 @@ public class VectorHelper {
 
     /**
      * Computes the cross product of the vector pointing upwards (0, -1, 0) and the specific input vector.
-     * @param vector
+     * @param vector input vector
      * @return the vector pointing left of the input vector, parallel to the flying plane
      */
     public static Point3D getLeftNormalVector(Point3D vector){
@@ -18,7 +18,7 @@ public class VectorHelper {
 
     /**
      * Computes the cross product of the the specific input vector and vector pointing upwards (0, -1, 0) .
-     * @param vector
+     * @param vector input vector
      * @return the vector pointing right of the input vector, parallel to the flying plane
      */
     public static Point3D getRightNormalVector(Point3D vector){
@@ -45,9 +45,9 @@ public class VectorHelper {
 
     /**
      * Computes the center point of a circle given three points in 3D space.
-     * @param p1
-     * @param p2
-     * @param p3
+     * @param p1 Point 1
+     * @param p2 Point 2
+     * @param p3 Point 3
      * @return the center point of the circle, or {@code null} if the given points are collinear.
      * @see <a href="https://github.com/sergarrido/random/tree/master/circle3d">Source</a>
      */
@@ -75,9 +75,9 @@ public class VectorHelper {
 
     /**
      * Computes the radius of a circle given three points in 3D space.
-     * @param p1
-     * @param p2
-     * @param p3
+     * @param p1 Point 1
+     * @param p2 Point 2
+     * @param p3 Point 3
      * @return the radius of the circle, or {@code null} if the given points are collinear.
      */
     public static Double getRadiusOfCircle(Point3D p1, Point3D p2, Point3D p3) {
@@ -90,9 +90,9 @@ public class VectorHelper {
 
     /**
      * Rotates a vector around a given axis by a certain angle. Rotation is clockwise to the axis (viewed from above).
-     * @param v
-     * @param axis
-     * @param angle
+     * @param v the vector to be rotated
+     * @param axis the axis to be rotated around
+     * @param angle how much the vector should be rotated clockwise
      * @return the rotated vector
      */
     public static Point3D rotateVector(Point3D v, Point3D axis, double angle){
@@ -110,8 +110,8 @@ public class VectorHelper {
 
     /**
      * Rotates a vector around the y-axis by a certain angle. Rotation is clockwise to the y-axis (viewed from above).
-     * @param v
-     * @param angle
+     * @param v the vector to be rotated
+     * @param angle how much the vector should be rotated clockwise
      * @return the rotated vector
      */
     public static Point3D rotateAroundYAxis(Point3D v, double angle) {

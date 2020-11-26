@@ -619,7 +619,7 @@ public class DroneController {
     public void sendBattery(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
         //assuming linear battery decrease
-        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(getBattery()) + "\r\n");
+        CommandResponseSender.sendReadResponse(commandPackage, getBattery() + "\r\n");
     }
 
     public void sendFlightTime(CommandPackage commandPackage) {
