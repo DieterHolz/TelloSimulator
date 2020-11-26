@@ -2,10 +2,8 @@ package tellosimulator.controller;
 
 import javafx.animation.*;
 import javafx.geometry.Point3D;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import tellosimulator.TelloSimulator;
-import tellosimulator.command.CommandHandler;
 import tellosimulator.common.DefaultValueHelper;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.common.VectorHelper;
@@ -13,14 +11,20 @@ import tellosimulator.log.Logger;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
-import tellosimulator.view.drone.Rotor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Controls the virtual drone and contains all its business logic. It updates and animates all the data
+ * stored in the {@code DroneModel}.
+ * @see DroneModel
+ */
 public class DroneController {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "DroneController");
 
     private DroneModel droneModel;
-    private DroneView droneView;
+    private AnimationTimer animationTimer;
+    private Timeline timeline = new Timeline();
+    private CommandPackage commandPackage;
 
     private final int FRAMES_PER_SECOND = 60;
 
@@ -28,23 +32,15 @@ public class DroneController {
     public static double INITIAL_Y_POSITION = 0;
     public static double INITIAL_Z_POSITION = 0;
 
-    private AnimationTimer animationTimer;
-    private Timeline timeline = new Timeline();
-
     private boolean animationRunning;
-    private boolean motorsRunning = false;
-    private CommandHandler commandHandler;
-    private CommandPackage commandPackage;
 
     boolean emergency = false;
-
     private boolean flyCurve = false;
-    //TODO curve stuff, needs a refactoring
+
     Double curveRadius;
     double arcLength;
     double arcAngle;
     double rotateDiffAnglePerFrame;
-
     Point3D curveP1;
     Point3D curveEnd;
     Point3D curveCenter;
@@ -58,9 +54,8 @@ public class DroneController {
         PITCH
     }
 
-    public DroneController(DroneModel droneModel, DroneView droneView) {
+    public DroneController(DroneModel droneModel) {
         this.droneModel = droneModel;
-        this.droneView = droneView;
         resetValues();
         animationRunning = false;
         createAnimationLoop();
@@ -77,7 +72,7 @@ public class DroneController {
         stopAnimation();
         emergency = false;
         flyCurve = false;
-        spinDownRotors();
+        droneModel.setMotorsRunning(false);
     }
 
     private void resetPosition() {
@@ -151,7 +146,7 @@ public class DroneController {
     }
 
     /**
-     * Lands the drone on ground level and spins down rotors.
+     * Lands the drone on ground level.
      */
     private void land () {
         double distanceToGround = -droneModel.getyPosition()+INITIAL_Y_POSITION;
@@ -239,7 +234,7 @@ public class DroneController {
     private void animate(Timeline timeline, boolean landing) {
         timeline.setOnFinished(event -> {
             if (landing){
-                spinDownRotors();
+                droneModel.setMotorsRunning(false);
             }
             droneModel.setRoll(0);
             droneModel.setPitch(0);
@@ -321,33 +316,6 @@ public class DroneController {
         animationTimer.start();
     }
 
-    private void spinUpRotors() {
-        if (!motorsRunning) {
-            motorsRunning = true;
-            for (Rotor rotor : droneView.getRotors()) {
-                RotateTransition rotateTransition = new RotateTransition();
-                rotateTransition.setAxis(Rotate.Y_AXIS);
-                rotateTransition.setDuration( Duration.seconds(0.1) );
-                rotateTransition.setByAngle( 360 );
-                rotateTransition.setNode(rotor.getNode());
-                rotateTransition.setCycleCount( Animation.INDEFINITE );
-                rotor.setRotateTransition(rotateTransition);
-                rotateTransition.play();
-            }
-        }
-    }
-
-    private void spinDownRotors() {
-        if (motorsRunning){
-            motorsRunning = false;
-            for (Rotor rotor : droneView.getRotors()) {
-                if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
-                    rotor.getRotateTransition().stop();
-                }
-            }
-        }
-    }
-
     public Point3D getDroneOrientation(){
         return new Point3D(droneModel.getxOrientation(), droneModel.getyOrientation(), droneModel.getzOrientation());
     }
@@ -358,7 +326,7 @@ public class DroneController {
 
     // control commands
     public void takeoff(CommandPackage commandPackage) {
-        spinUpRotors();
+        droneModel.setMotorsRunning(true);
         droneModel.setTakeoffTime(System.currentTimeMillis());
         this.commandPackage = commandPackage;
         move(VectorHelper.getUpwardsNormalVector(), DefaultValueHelper.TAKEOFF_DISTANCE);
@@ -371,7 +339,7 @@ public class DroneController {
         }
         this.commandPackage = commandPackage;
 
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             land();
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -381,7 +349,7 @@ public class DroneController {
 
     public void down(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(VectorHelper.getDownwardsNormalVector(), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -391,7 +359,7 @@ public class DroneController {
 
     public void up(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(VectorHelper.getUpwardsNormalVector(), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -401,7 +369,7 @@ public class DroneController {
 
     public void left(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(VectorHelper.getLeftNormalVector(getDroneOrientation()), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -411,7 +379,7 @@ public class DroneController {
 
     public void right(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(VectorHelper.getRightNormalVector(getDroneOrientation()), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -421,7 +389,7 @@ public class DroneController {
 
     public void forward(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(getDroneOrientation(), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -431,7 +399,7 @@ public class DroneController {
 
     public void back(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             move(getDroneOrientation().multiply(-1), x);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -441,7 +409,7 @@ public class DroneController {
 
     public void cw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             rotate(-x, Rotation.YAW);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -451,7 +419,7 @@ public class DroneController {
 
     public void ccw(CommandPackage commandPackage, double x) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             rotate(x, Rotation.YAW);
         } else {
             logger.error("Failed to execute command. Motor not running.");
@@ -461,7 +429,7 @@ public class DroneController {
 
     public void flip(CommandPackage commandPackage, String flipDirection) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             switch(flipDirection) {
                 case "r":
                     rotate(360, Rotation.ROLL);
@@ -496,14 +464,14 @@ public class DroneController {
             resetDiffs();
             resetSpeed();
             stopAnimation();
-            spinDownRotors();
+            droneModel.setMotorsRunning(false);
             playFallAnimation();
     }
 
     private void playFallAnimation() {
         Point3D to = new Point3D(droneModel.getxPosition(), 0, droneModel.getzPosition());
-        Duration duration = Duration.seconds(Math.sqrt(2 * Math.abs(droneModel.getyPosition() / DefaultValueHelper.DEFAULT_SPEED_OF_FALL)));
-        KeyValue keyY = new KeyValue(droneModel.yPositionProperty(), to.getY(), Interpolator.EASE_IN); //TODO use a more realistic interpolator
+        Duration duration = Duration.seconds(Math.sqrt(2 * Math.abs(droneModel.getyPosition() / DefaultValueHelper.DEFAULT_FALL_ACCELERATION)));
+        KeyValue keyY = new KeyValue(droneModel.yPositionProperty(), to.getY(), Interpolator.EASE_IN);
 
         KeyFrame keyFrame = new KeyFrame(duration, keyY);
         timeline.getKeyFrames().add(keyFrame);
@@ -513,7 +481,7 @@ public class DroneController {
 
     public void go(CommandPackage commandPackage, double x, double y, double z, double speed) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             dronePosition = getDronePosition();
 
             //adapt values to javafx coordinate system
@@ -539,11 +507,11 @@ public class DroneController {
 
     public void curve(CommandPackage commandPackage, double x1, double y1, double z1, double x2, double y2, double z2, double speed) {
         this.commandPackage = commandPackage;
-        if (motorsRunning) {
+        if (droneModel.isMotorsRunning()) {
             dronePosition = getDronePosition();
 
-            curveRadius = VectorHelper.radiusOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-            Point3D unadaptedCurveCenter = VectorHelper.midPointOfcircumscribedCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+            curveRadius = VectorHelper.getRadiusOfCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
+            Point3D unadaptedCurveCenter = VectorHelper.getCenterOfCircle(Point3D.ZERO, new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
 
             //adapt values to javafx coordinate system
             Point3D inputCurveP1 = new Point3D(-y1, -z1, x1);
@@ -601,6 +569,10 @@ public class DroneController {
         sendNotImplemented(commandPackage);
     }
 
+    /**
+     * Constructs the drone state String based on the current drone data.
+     * @return the correct formatted drone state as a single String
+     */
     public String getDroneState() {
 
         return  "mid:" + droneModel.getMid() +
@@ -683,14 +655,6 @@ public class DroneController {
         return animationRunning;
     }
 
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
-    }
-
-    public void setCommandHandler(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-    }
-
     public boolean isEmergency() {
         return emergency;
     }
@@ -699,11 +663,4 @@ public class DroneController {
         this.emergency = emergency;
     }
 
-    public boolean isMotorsRunning() {
-        return motorsRunning;
-    }
-
-    public void setMotorsRunning(boolean motorsRunning) {
-        this.motorsRunning = motorsRunning;
-    }
 }

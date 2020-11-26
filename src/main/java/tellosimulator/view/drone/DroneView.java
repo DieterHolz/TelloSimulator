@@ -1,10 +1,13 @@
 package tellosimulator.view.drone;
 
+import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.model.DroneModel;
 
@@ -28,6 +31,7 @@ public class DroneView extends Group {
         this.droneModel = droneModel;
         buildDrone();
         setupBindings();
+        setupValueChangedListeners();
     }
 
     private void buildDrone() throws IOException {
@@ -74,6 +78,40 @@ public class DroneView extends Group {
         this.getRollContainer().rotateProperty().bind(droneModel.rollProperty());
         this.getPitchContainer().rotateProperty().bind(droneModel.pitchProperty());
         droneModel.tofProperty().bind(this.translateYProperty().negate());
+    }
+
+
+    private void setupValueChangedListeners() {
+        droneModel.motorsRunningProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                spinUpRotors();
+            } else {
+                spinDownRotors();
+            }
+        });
+    }
+
+    private void spinUpRotors() {
+        droneModel.setMotorsRunning(true);
+        for (Rotor rotor : getRotors()) {
+            RotateTransition rotateTransition = new RotateTransition();
+            rotateTransition.setAxis(Rotate.Y_AXIS);
+            rotateTransition.setDuration( Duration.seconds(0.1) );
+            rotateTransition.setByAngle( 360 );
+            rotateTransition.setNode(rotor.getNode());
+            rotateTransition.setCycleCount( Animation.INDEFINITE );
+            rotor.setRotateTransition(rotateTransition);
+            rotateTransition.play();
+        }
+    }
+
+    private void spinDownRotors() {
+        droneModel.setMotorsRunning(false);
+        for (Rotor rotor : getRotors()) {
+            if (rotor.getRotateTransition().statusProperty().get() == Animation.Status.RUNNING) {
+                rotor.getRotateTransition().stop();
+            }
+        }
     }
 
     public Group getDrone() {

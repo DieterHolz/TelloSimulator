@@ -20,7 +20,7 @@ public class TelloSimulator extends Application {
     public void start(Stage primaryStage) throws Exception{
         DroneModel droneModel = new DroneModel();
         DroneView droneView = new DroneView(droneModel);
-        DroneController telloDroneController = new DroneController(droneModel, droneView);
+        DroneController telloDroneController = new DroneController(droneModel);
 
         Region rootPanel = new SimulatorPane(primaryStage, telloDroneController, droneModel, droneView, MAIN_LOG);
         Scene scene = new Scene(rootPanel);

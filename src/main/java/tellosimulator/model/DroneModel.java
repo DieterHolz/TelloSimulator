@@ -2,6 +2,12 @@ package tellosimulator.model;
 
 import javafx.beans.property.*;
 
+/**
+ * The model class holding all the data of the virtual drone. Controlled by the logic from the {@code DroneController},
+ * and represented in the 3D-Scene by the {@code DroneView}.
+ * @see tellosimulator.controller.DroneController
+ * @see tellosimulator.view.drone.DroneView
+ */
 public class DroneModel {
 
     private int mid = -1;
@@ -43,6 +49,7 @@ public class DroneModel {
     private final IntegerProperty tof = new SimpleIntegerProperty();
 
     private BooleanProperty droneCameraActive = new SimpleBooleanProperty(false);
+    private BooleanProperty motorsRunning = new SimpleBooleanProperty(false);
 
     public DroneModel() {
     }
@@ -369,5 +376,17 @@ public class DroneModel {
 
     public void setDroneCameraActive(boolean droneCameraActive) {
         this.droneCameraActive.set(droneCameraActive);
+    }
+
+    public boolean isMotorsRunning() {
+        return motorsRunning.get();
+    }
+
+    public BooleanProperty motorsRunningProperty() {
+        return motorsRunning;
+    }
+
+    public void setMotorsRunning(boolean motorsRunning) {
+        this.motorsRunning.set(motorsRunning);
     }
 }
