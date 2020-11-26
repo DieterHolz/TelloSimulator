@@ -87,7 +87,7 @@ image::tello-simulator-gui-stand-usability-testing.png[width=498]
 ==== Vorgehensweise
 Um eine unkomplizierte Inbetriebnahme sowie eine einfache Handhabung des Simulators zu gewährleisten, wurde ein Usability Testing durchgeführt.
 
-Das Testing wurde in die folgenden drei Abschnitte unterteilt: «Installation», «Konfiguration des Operators» und «Anwendung TelloSimulator», diese werden im Kapitel «Aufgabenstellung» etwas genauer beschrieben. Per Videotelefonie wurde das Testing mit vier iCompetence-Studierenden der FHNW (2./3. Semester) durchgeführt. Dabei wurde eine Aufgabenstellung per Chat abgegeben und der Proband versuchte die Aufgabe ohne Hilfe des Moderierenden zu lösen. Der Moderierende konnte bei Problemen eingreifen, der Beobachtende notierte die wichtigsten Verhaltensweisen und Aussagen des Probanden. Zusätzlich wurde das Meeting aufgezeichnet, um wichtige Abschnitte nachgehend noch detaillierter zu dokumentieren.
+Das Testing wurde in die folgenden drei Abschnitte unterteilt: «Installation», «Konfiguration des Operators» und «Anwendung TelloSimulator», diese sind im Testkonept im Anhang etwas genauer beschrieben. Per Videotelefonie wurde das Testing mit vier iCompetence-Studierenden der FHNW (2./3. Semester) durchgeführt. Dabei wurde eine Aufgabenstellung per Chat abgegeben und der Proband versuchte die Aufgabe ohne Hilfe des Moderierenden zu lösen. Der Moderierende konnte bei Problemen eingreifen, der Beobachtende notierte die wichtigsten Verhaltensweisen und Aussagen des Probanden. Zusätzlich wurde das Meeting aufgezeichnet, um wichtige Abschnitte nachgehend noch detaillierter zu dokumentieren.
 
 Anschliessend wurden die wichtigsten Erkenntnisse in die folgenden Kategorien unterteilt: «negative Aussagen / beobachtete Probleme», «positive Aussagen» und «Tipps». Diese wurden nach Thema gruppiert. Pro Thema wurde ein Verbesserungsvorschlag definiert und ins Backlog aufgenommen.
 
@@ -232,3 +232,17 @@ die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
 === Installationsanleitung Tello Simulator
 === Operator-Programm mit der Simulator-API verbinden
 === Benutzerhandbuch Tello Simulator
+=== Usability-Testkonzept
+=== Usability-Testskript
+=== Testprotokolle
+=== Auswertung Usability Testing
+.Auswertung Usability Testing Teil 1 - Installation
+[caption="Abbildung x: "]
+image::usability-testing-teil1-installation.jpg[width=600]
+.Auswertung Usability Testing Teil 2 -Einrichtung Operator
+[caption="Abbildung x: "]
+image::usability-testing-teil2-operator.jpg[width=600]
+.Auswertung Usability Testing Teil 3 - Anwendung Simulator
+[caption="Abbildung x: "]
+image::usability-testing-teil3-simulator.jpg[width=600]
+
