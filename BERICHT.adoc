@@ -64,7 +64,13 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 === Zielpublikum
 == Theoretischer Teil
 === Beschreibung der Anwendungsdomäne
+Der Simulator wird im Workshop-Modul als Ersatz für die echte Tello-Drohne eingesetzt.
+
+
 === Beschreibung der verwendeten Methoden
+Da der Einsatzbereich sich auf das Workshop-Modul beschränkt, reicht es, wenn die Applikation mit Gradle gebuildet
+werden kann.
+
 == Praktischer Teil
 === Use-Cases
 === Architektur

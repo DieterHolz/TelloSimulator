@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * Class holding the log entries in a BlockingDeque<LogRecord>.
+ * Class holding the log entries in a BlockingDeque of LogRecords.
  * @see LogRecord
  */
 public class Log {

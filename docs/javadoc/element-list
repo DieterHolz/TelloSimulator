@@ -1,0 +1,14 @@
+tellosimulator
+tellosimulator.command
+tellosimulator.common
+tellosimulator.controller
+tellosimulator.log
+tellosimulator.model
+tellosimulator.network
+tellosimulator.video
+tellosimulator.view
+tellosimulator.view.controls
+tellosimulator.view.drone
+tellosimulator.view.layout
+tellosimulator.view.log
+tellosimulator.view.world

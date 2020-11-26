@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Controls the virtual drone and contains all its logic. It updates and animates all the data
  * stored in the {@code DroneModel} which it is assigned to. Its methods execute the commands when called
- * from the {@code CommandHandler}. The class also sends asynchronous responses via the {@codeCommandResponseSender}
+ * from the {@code CommandHandler}. The class also sends asynchronous responses via the {@code CommandResponseSender}
  * to the operator once a certain command execution has finished.
  * @see DroneModel
  * @see tellosimulator.command.CommandHandler
