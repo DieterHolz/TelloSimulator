@@ -2,23 +2,18 @@ package tellosimulator.command;
 
 import java.net.InetAddress;
 
+/**
+ * Wrapper class for a command, containing its command String, as well as the originating IP-address and Port.
+ */
 public class CommandPackage {
     private String command;
     private InetAddress originAddress;
     private int originPort;
-    private String response;
 
     public CommandPackage(String command, InetAddress originAddress, int originPort) {
         this.command = command;
         this.originAddress = originAddress;
         this.originPort = originPort;
-    }
-
-    public CommandPackage(String command, InetAddress originAddress, int originPort, String response) {
-        this.command = command;
-        this.originAddress = originAddress;
-        this.originPort = originPort;
-        this.response = response;
     }
 
     public String getCommand() {
@@ -43,13 +38,5 @@ public class CommandPackage {
 
     public void setOriginPort(int originPort) {
         this.originPort = originPort;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
     }
 }

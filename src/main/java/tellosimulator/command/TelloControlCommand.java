@@ -1,7 +1,6 @@
 package tellosimulator.command;
 
 public class TelloControlCommand {
-
 	public static final String COMMAND = "command";
 	public static final String TAKEOFF = "takeoff";
 	public static final String LAND = "land";
@@ -17,9 +16,8 @@ public class TelloControlCommand {
 	public static final String CW = "cw";
 	public static final String CCW = "ccw";
 	public static final String FLIP = "flip";
-	public static final String GO = "go"; //TODO with "mid" and without
+	public static final String GO = "go";
 	public static final String STOP = "stop";
 	public static final String CURVE = "curve";
 	public static final String JUMP = "jump";
-
 }

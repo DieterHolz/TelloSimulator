@@ -6,9 +6,8 @@ import javafx.scene.layout.VBox;
 import tellosimulator.TelloSimulator;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Logger;
-import tellosimulator.network.TelloSDKValues;
+import tellosimulator.common.TelloSDKValues;
 import tellosimulator.network.CommandConnection;
-import tellosimulator.network.StateConnection;
 
 import java.io.IOException;
 import java.net.*;
@@ -78,7 +77,7 @@ public class NetworkControls extends VBox {
 
         stateLabel = new Label("Listen for the drone state on:");
         statePortLabelNetwork = new Label("State Port:");
-        statePortFieldNetwork  = new TextField(String.valueOf(TelloSDKValues.OP_STATE_PORT));
+        statePortFieldNetwork  = new TextField(String.valueOf(TelloSDKValues.TELLO_STATE_PORT));
 
         //TODO: video label and field
 

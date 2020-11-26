@@ -5,11 +5,8 @@ import tellosimulator.TelloSimulator;
 import tellosimulator.log.Logger;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.network.CommandResponseSender;
-import tellosimulator.network.VideoConnection;
-import tellosimulator.video.VideoPublisher;
 import tellosimulator.controller.DroneController;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,19 +16,24 @@ import java.util.regex.Pattern;
  * to the appropriate methods in the {@code DroneController}.
  * @author Daniel Obrist
  * @author Severin Peyer
+ * @see tellosimulator.network.CommandConnection
+ * @see DroneController
  * */
 public class CommandHandler {
 	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandHandler");
 
-	DroneController droneController;
-	VideoPublisher publisher;
-	ArrayList<String> commandParams;
+	private DroneController droneController;
+	private ArrayList<String> commandParams;
 
     public CommandHandler(DroneController droneController) {
         this.droneController = droneController;
     }
 
-    public void handle(CommandPackage commandPackage) throws IOException {
+	/**
+	 * Handles the incoming {@code CommandPackage} by extracting, validating and redirecting the command.
+	 * @param commandPackage
+	 */
+	public void handle(CommandPackage commandPackage) {
 		if (droneController.isEmergency()) {
 			return;
 		}
@@ -41,7 +43,6 @@ public class CommandHandler {
 		String received = commandPackage.getCommand();
 		List<String> data = Arrays.asList(received.split(" "));
 		String command = data.get(0);
-		VideoConnection videoConnection = new VideoConnection();
 
 		extractParams(data);
 
@@ -666,7 +667,7 @@ public class CommandHandler {
 	}
 
 	private boolean radiusOutOfRange(double x1, double y1, double z1, double x2, double y2, double z2) {
-    	Double radius = VectorHelper.radiusOfcircumscribedCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
+    	Double radius = VectorHelper.getRadiusOfCircle(new Point3D(0,0,0), new Point3D(x1,y1,z1), new Point3D(x2,y2,z2));
     	if (radius == null) {
     		logger.error("No curve construction possible. Points are collinear.");
     		return true;

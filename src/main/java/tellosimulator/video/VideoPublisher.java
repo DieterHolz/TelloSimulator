@@ -83,8 +83,5 @@ public class VideoPublisher extends Thread implements TelloVideoConstants {
 
     public static void startPublisher() throws Exception, FrameGrabber.Exception {
 
-
-
-
     }
 }

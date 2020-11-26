@@ -10,29 +10,34 @@ import tellosimulator.common.VectorHelper;
 import tellosimulator.log.Logger;
 import tellosimulator.network.CommandResponseSender;
 import tellosimulator.model.DroneModel;
-import tellosimulator.view.drone.DroneView;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Controls the virtual drone and contains all its business logic. It updates and animates all the data
- * stored in the {@code DroneModel}.
+ * Controls the virtual drone and contains all its logic. It updates and animates all the data
+ * stored in the {@code DroneModel} which it is assigned to. Its methods execute the commands when called
+ * from the {@code CommandHandler}. The class also sends asynchronous responses via the {@codeCommandResponseSender}
+ * to the operator once a certain command execution has finished.
  * @see DroneModel
+ * @see tellosimulator.command.CommandHandler
+ * @see CommandResponseSender
  */
 public class DroneController {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "DroneController");
 
     private DroneModel droneModel;
-    private AnimationTimer animationTimer;
-    private Timeline timeline = new Timeline();
     private CommandPackage commandPackage;
 
+    private AnimationTimer animationTimer;
+    private Timeline timeline = new Timeline();
     private final int FRAMES_PER_SECOND = 60;
-
-    public static double INITIAL_X_POSITION = 0;
-    public static double INITIAL_Y_POSITION = 0;
-    public static double INITIAL_Z_POSITION = 0;
-
     private boolean animationRunning;
+
+    private final double INITIAL_X_POSITION = 0;
+    private final double INITIAL_Y_POSITION = 0;
+    private final double INITIAL_Z_POSITION = 0;
+    private final double INITIAL_X_ORIENTATION = 0;
+    private final double INITIAL_Y_ORIENTATION = 0;
+    private final double INITIAL_Z_ORIENTATION = 1;
 
     boolean emergency = false;
     private boolean flyCurve = false;
@@ -48,7 +53,7 @@ public class DroneController {
     Point3D circleNormalVector;
     Point3D midDrone;
 
-    enum Rotation {
+    private enum Rotation {
         YAW,
         ROLL,
         PITCH
@@ -57,10 +62,12 @@ public class DroneController {
     public DroneController(DroneModel droneModel) {
         this.droneModel = droneModel;
         resetValues();
-        animationRunning = false;
         createAnimationLoop();
     }
 
+    /**
+     * Resets all drone values to default, moves the drone to its initial position and stops all animations.
+     */
     public void resetValues() {
         resetDiffs();
         resetOrientation();
@@ -82,9 +89,9 @@ public class DroneController {
     }
 
     private void resetOrientation() {
-        droneModel.setxOrientation(0);
-        droneModel.setyOrientation(0);
-        droneModel.setzOrientation(1);
+        droneModel.setxOrientation(INITIAL_X_ORIENTATION);
+        droneModel.setyOrientation(INITIAL_Y_ORIENTATION);
+        droneModel.setzOrientation(INITIAL_Z_ORIENTATION);
     }
 
     private void resetDiffs() {
@@ -108,16 +115,6 @@ public class DroneController {
         timeline.stop();
         timeline.getKeyFrames().clear();
         animationRunning = false;
-    }
-
-    /**
-     * Moves the drone to the given target coordinates (view coordinate system, not drone coordinate system!).
-     * @param target the position vector/coordinates of the target
-     */
-    private void moveToPoint(Point3D target, double speed){
-        Point3D from = new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
-        Duration duration = Duration.seconds(from.distance(target) / speed);
-        animate(createMoveAnimation(target, duration));
     }
 
     /**
@@ -146,7 +143,7 @@ public class DroneController {
     }
 
     /**
-     * Lands the drone on ground level.
+     * Calculates the distance to the ground, and plays the animation landing the drone.
      */
     private void land () {
         double distanceToGround = -droneModel.getyPosition()+INITIAL_Y_POSITION;
@@ -156,6 +153,12 @@ public class DroneController {
         animate(createMoveAnimation(to, duration), true);
     }
 
+    /**
+     * Builds the Timeline for an animated movement to a target point in a straight line.
+     * @param target the target Point3D where the movement should end
+     * @param duration the duration of the animation
+     * @return the timeline to animate
+     */
     private Timeline createMoveAnimation(Point3D target, Duration duration){
         timeline.getKeyFrames().clear();
 
@@ -177,6 +180,12 @@ public class DroneController {
         animate(createRotateAnimation(axis, angle));
     }
 
+    /**
+     * Builds the Timeline for an animated rotation by a certain angle.
+     * @param rotation Rotation.YAW, Rotation.PITCH or Rotation.ROLL
+     * @param angle the rotation angle
+     * @return the timeline to animate
+     */
     private Timeline createRotateAnimation(Rotation rotation, Double angle) {
         timeline.getKeyFrames().clear();
 
@@ -283,7 +292,7 @@ public class DroneController {
         if (curveEnd != null){
             double newArcAngle = curveCenter.angle(dronePosition, curveEnd);
 
-            //TODO: this should really be checked differently, but works for now
+            // this should really be checked differently, but works for now
             if (newArcAngle > 1) {
                 Point3D newMidDrone = VectorHelper.rotateVector(midDrone, circleNormalVector, rotateDiffAnglePerFrame);
                 Point3D newPointOnCurve = curveCenter.add(newMidDrone);
@@ -305,7 +314,7 @@ public class DroneController {
     private void createAnimationLoop() {
         animationTimer = new AnimationTimer() {
             @Override
-            public void handle(long now) {  // called in every frame!
+            public void handle(long now) {  // called in every frame
                 updateRcYaw();
                 updateRcPosition();
                 if (flyCurve){
@@ -316,12 +325,42 @@ public class DroneController {
         animationTimer.start();
     }
 
-    public Point3D getDroneOrientation(){
+    private Point3D getDroneOrientation(){
         return new Point3D(droneModel.getxOrientation(), droneModel.getyOrientation(), droneModel.getzOrientation());
     }
 
     private Point3D getDronePosition() {
         return new Point3D(droneModel.getxPosition(), droneModel.getyPosition(), droneModel.getzPosition());
+    }
+
+    /**
+     * Constructs the drone state String based on the current drone data.
+     * @return the correct formatted drone state as a single String
+     */
+    public String getDroneState() {
+
+        return  "mid:" + droneModel.getMid() +
+                ";x:" + "0" +
+                ";y:" + "0" +
+                ";z:" + "0" +
+                ";mpry:" + "-1,-1,-1" +
+                ";pitch:" + droneModel.pitchProperty().intValue() +
+                ";roll:" + droneModel.rollProperty().intValue() +
+                ";yaw:" + droneModel.yawProperty().intValue() +
+                ";vgx:" + droneModel.getLeftRightDiff() +
+                ";vgy:" + droneModel.getUpDownDiff() +
+                ";vgz:" + droneModel.getForwardBackwardDiff() +
+                ";templ:" + droneModel.getTempLow() +
+                ";temph:" + droneModel.getTempHigh() +
+                ";tof:" + droneModel.getTof() +
+                ";h:" + droneModel.yPositionProperty().negate().intValue() +
+                ";bat:" + getBattery() +
+                ";baro:" + droneModel.getBarometer() +
+                ";time:" + (int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime()) +
+                ";agx:" + droneModel.getAccelerationX() +
+                ";agy:" + droneModel.getAccelerationY() +
+                ";agz:" + droneModel.getAccelerationZ() +
+                ";\r\n";
     }
 
     // control commands
@@ -552,6 +591,7 @@ public class DroneController {
         sendNotImplemented(commandPackage);
     }
 
+    // set commands
     public void setSpeed(CommandPackage commandPackage, double speed) {
         this.commandPackage = commandPackage;
         getDroneModel().setSpeed(speed);
@@ -567,36 +607,6 @@ public class DroneController {
 
     public void ap(CommandPackage commandPackage, String ssid, String pass) {
         sendNotImplemented(commandPackage);
-    }
-
-    /**
-     * Constructs the drone state String based on the current drone data.
-     * @return the correct formatted drone state as a single String
-     */
-    public String getDroneState() {
-
-        return  "mid:" + droneModel.getMid() +
-                ";x:" + "0" +
-                ";y:" + "0" +
-                ";z:" + "0" +
-                ";mpry:" + "-1,-1,-1" +
-                ";pitch:" + droneModel.pitchProperty().intValue() +
-                ";roll:" + droneModel.rollProperty().intValue() +
-                ";yaw:" + droneModel.yawProperty().intValue() +
-                ";vgx:" + droneModel.getLeftRightDiff() +
-                ";vgy:" + droneModel.getUpDownDiff() +
-                ";vgz:" + droneModel.getForwardBackwardDiff() +
-                ";templ:" + droneModel.getTempLow() +
-                ";temph:" + droneModel.getTempHigh() +
-                ";tof:" + droneModel.getTof() +
-                ";h:" + droneModel.yPositionProperty().negate().intValue() +
-                ";bat:" + getBattery() +
-                ";baro:" + droneModel.getBarometer() +
-                ";time:" + (int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime()) +
-                ";agx:" + droneModel.getAccelerationX() +
-                ";agy:" + droneModel.getAccelerationY() +
-                ";agz:" + droneModel.getAccelerationZ() +
-                ";\r\n";
     }
 
     // read commands
@@ -646,7 +656,7 @@ public class DroneController {
         CommandResponseSender.sendOk(commandPackage);
     }
 
-    //getter and setter
+    // getter and setter
     public DroneModel getDroneModel() {
         return droneModel;
     }
@@ -662,5 +672,4 @@ public class DroneController {
     public void setEmergency(boolean emergency) {
         this.emergency = emergency;
     }
-
 }

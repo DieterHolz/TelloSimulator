@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testfx.framework.junit5.ApplicationExtension;
 import tellosimulator.network.CommandResponseSender;
-import tellosimulator.network.TelloSDKValues;
+import tellosimulator.common.TelloSDKValues;
 import tellosimulator.network.CommandConnection;
 import tellosimulator.controller.DroneController;
 
@@ -43,7 +43,7 @@ class CommandHandlerTest {
     void setUp() throws IOException {
         droneController = mock(DroneController.class);
         commandHandler = new CommandHandler(droneController);
-        commandPackage = new CommandPackage(null, InetAddress.getByName(TelloSDKValues.getOperatorIpAddress()), TelloSDKValues.SIM_COMMAND_PORT);
+        commandPackage = new CommandPackage(null, InetAddress.getByName("127.0.0.1"), TelloSDKValues.SIM_COMMAND_PORT);
     }
 
     /**

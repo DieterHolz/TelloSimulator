@@ -10,7 +10,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import tellosimulator.log.Level;
+import tellosimulator.log.LogLevel;
 import tellosimulator.log.Log;
 import tellosimulator.log.Logger;
 
@@ -19,7 +19,7 @@ public class LogBox extends VBox {
     Logger logger;
     LogListView logListView;
 
-    ChoiceBox<Level> filterLevel;
+    ChoiceBox<LogLevel> filterLevel;
     ToggleButton showTimestamp;
     ToggleButton tail;
     Slider rate;
@@ -43,10 +43,10 @@ public class LogBox extends VBox {
 
         filterLevel = new ChoiceBox<>(
                 FXCollections.observableArrayList(
-                        Level.values()
+                        LogLevel.values()
                 )
         );
-        filterLevel.getSelectionModel().select(Level.DEBUG);
+        filterLevel.getSelectionModel().select(LogLevel.DEBUG);
 
         showTimestamp = new ToggleButton("Show Timestamp");
 

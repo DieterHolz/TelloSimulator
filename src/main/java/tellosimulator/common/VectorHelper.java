@@ -1,28 +1,57 @@
 package tellosimulator.common;
 
 import javafx.geometry.Point3D;
-import javafx.scene.transform.Rotate;
 
+/**
+ * A static helper class for frequently used vector calculations.
+ */
 public class VectorHelper {
 
+    /**
+     * Computes the cross product of the vector pointing upwards (0, -1, 0) and the specific input vector.
+     * @param vector
+     * @return the vector pointing left of the input vector, parallel to the flying plane
+     */
     public static Point3D getLeftNormalVector(Point3D vector){
         return getUpwardsNormalVector().crossProduct(vector);
     }
 
+    /**
+     * Computes the cross product of the the specific input vector and vector pointing upwards (0, -1, 0) .
+     * @param vector
+     * @return the vector pointing right of the input vector, parallel to the flying plane
+     */
     public static Point3D getRightNormalVector(Point3D vector){
         return vector.crossProduct(getUpwardsNormalVector());
     }
 
+    /**
+     * Convenience method to access the vector pointing straight upwards.
+     * (equals the negative y-axis in the JavaFX coordinate system).
+     * @return the normalized vector pointing upwards
+     */
     public static Point3D getUpwardsNormalVector(){
         return new Point3D(0,-1,0);
     }
 
+    /**
+     * Convenience method to access the vector pointing straight downwards
+     * (equals y-axis in the JavaFX coordinate system).
+     * @return the normalized vector pointing upwards
+     */
     public static Point3D getDownwardsNormalVector(){
-        return Rotate.Y_AXIS;
+        return new Point3D(0,1,0);
     }
 
-    // Source: https://github.com/sergarrido/random/tree/master/circle3d
-    public static Point3D midPointOfcircumscribedCircle(Point3D p1, Point3D p2, Point3D p3) {
+    /**
+     * Computes the center point of a circle given three points in 3D space.
+     * @param p1
+     * @param p2
+     * @param p3
+     * @return the center point of the circle, or {@code null} if the given points are collinear.
+     * @see <a href="https://github.com/sergarrido/random/tree/master/circle3d">Source</a>
+     */
+    public static Point3D getCenterOfCircle(Point3D p1, Point3D p2, Point3D p3) {
         // Estimate v1 and v2
         Point3D v1 = p2.subtract(p1);
         Point3D v2 = p3.subtract(p1);
@@ -44,15 +73,28 @@ public class VectorHelper {
         return center;
     }
 
-    public static Double radiusOfcircumscribedCircle(Point3D a, Point3D b, Point3D c) {
-        Point3D midPoint = midPointOfcircumscribedCircle(a,b,c);
-        if (midPoint != null){
-            return a.distance(midPoint);
+    /**
+     * Computes the radius of a circle given three points in 3D space.
+     * @param p1
+     * @param p2
+     * @param p3
+     * @return the radius of the circle, or {@code null} if the given points are collinear.
+     */
+    public static Double getRadiusOfCircle(Point3D p1, Point3D p2, Point3D p3) {
+        Point3D center = getCenterOfCircle(p1,p2,p3);
+        if (center != null){
+            return p1.distance(center);
         }
         return null;
     }
 
-    // rotate a vector v around an axis vector for a certain amount/angle (clockwise!)
+    /**
+     * Rotates a vector around a given axis by a certain angle. Rotation is clockwise to the axis (viewed from above).
+     * @param v
+     * @param axis
+     * @param angle
+     * @return the rotated vector
+     */
     public static Point3D rotateVector(Point3D v, Point3D axis, double angle){
         double xRotated = axis.getX()*(axis.getX()*v.getX() + axis.getY()*v.getY() + axis.getZ()*v.getZ())*(1d - Math.cos(angle))
                 + v.getX()*Math.cos(angle)
@@ -66,6 +108,12 @@ public class VectorHelper {
         return new Point3D(xRotated, yRotated, zRotated);
     }
 
+    /**
+     * Rotates a vector around the y-axis by a certain angle. Rotation is clockwise to the y-axis (viewed from above).
+     * @param v
+     * @param angle
+     * @return the rotated vector
+     */
     public static Point3D rotateAroundYAxis(Point3D v, double angle) {
         double x1 = v.getX();
         double z1 = v.getZ();

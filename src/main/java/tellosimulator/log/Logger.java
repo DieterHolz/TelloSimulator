@@ -1,5 +1,10 @@
 package tellosimulator.log;
 
+/**
+ * The Logger class which adds {@code LogRecords} to the {@code Log}
+ * @see LogRecord
+ * @see Log
+ */
 public class Logger {
 
     private final Log log;
@@ -15,19 +20,19 @@ public class Logger {
     }
 
     public void debug(String msg) {
-        log(new LogRecord(Level.DEBUG, context, msg));
+        log(new LogRecord(LogLevel.DEBUG, context, msg));
     }
 
     public void info(String msg) {
-        log(new LogRecord(Level.INFO, context, msg));
+        log(new LogRecord(LogLevel.INFO, context, msg));
     }
 
     public void warn(String msg) {
-        log(new LogRecord(Level.WARN, context, msg));
+        log(new LogRecord(LogLevel.WARN, context, msg));
     }
 
     public void error(String msg) {
-        log(new LogRecord(Level.ERROR, context, msg));
+        log(new LogRecord(LogLevel.ERROR, context, msg));
     }
 
     public Log getLog() {

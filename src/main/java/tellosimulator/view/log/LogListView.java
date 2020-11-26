@@ -11,7 +11,7 @@ import javafx.css.PseudoClass;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Duration;
-import tellosimulator.log.Level;
+import tellosimulator.log.LogLevel;
 import tellosimulator.log.LogRecord;
 import tellosimulator.log.Logger;
 
@@ -29,7 +29,7 @@ public class LogListView extends ListView<LogRecord> {
     private final static SimpleDateFormat timestampFormatter = new SimpleDateFormat("HH:mm:ss.SSS");
 
     private final BooleanProperty showTimestamp = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Level> filterLevel   = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<LogLevel> filterLevel   = new SimpleObjectProperty<>(null);
     private final BooleanProperty       tail          = new SimpleBooleanProperty(false);
     private final BooleanProperty       paused        = new SimpleBooleanProperty(false); //pause button removed, always false
     private final DoubleProperty refreshRate   = new SimpleDoubleProperty(60); // rate slider removed, always 60 fps
@@ -40,7 +40,7 @@ public class LogListView extends ListView<LogRecord> {
         return showTimestamp;
     }
 
-    public ObjectProperty<Level> filterLevelProperty() {
+    public ObjectProperty<LogLevel> filterLevelProperty() {
         return filterLevel;
     }
 
@@ -110,7 +110,7 @@ public class LogListView extends ListView<LogRecord> {
                     )
             );
         });
-        filterLevel.set(Level.DEBUG);
+        filterLevel.set(LogLevel.DEBUG);
 
         setCellFactory(param -> new ListCell<LogRecord>() {
             {

@@ -6,23 +6,30 @@ import tellosimulator.TelloSimulator;
 import tellosimulator.command.CommandHandler;
 import tellosimulator.command.CommandPackage;
 import tellosimulator.command.TelloControlCommand;
+import tellosimulator.common.TelloSDKValues;
 import tellosimulator.log.Logger;
 import tellosimulator.controller.DroneController;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This Thread receives UDP-Packets, wraps them into a {@code CommandPackage}, and passes them on to the
+ * {@code CommandHandler} for further processing. It also initiates the {@code StateConnection} Thread.
+ *
+ * @see CommandHandler
+ * @see StateConnection
+ */
 public class CommandConnection extends Thread {
 	private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "CommandConnection");
 
 	private DatagramSocket commandSocket;
 	private DroneController telloDroneController;
 	private StateConnection stateConnection;
-
-	private BooleanProperty running = new SimpleBooleanProperty(false);
 	private boolean sdkModeInitiated;
 	private byte[] buffer = new byte[512];
+
+	private BooleanProperty running = new SimpleBooleanProperty(false);
 
 	public CommandConnection(DroneController telloDroneController) {
 		this.setDaemon(true);
@@ -32,7 +39,6 @@ public class CommandConnection extends Thread {
 		try {
 			commandSocket = new DatagramSocket(TelloSDKValues.SIM_COMMAND_PORT);
 			CommandResponseSender.setSocket(commandSocket);
-			InetAddress address = InetAddress.getByName(TelloSDKValues.getOperatorIpAddress());
 			commandSocket.setSoTimeout(TelloSDKValues.COMMAND_SOCKET_TIMEOUT);
 		} catch (IOException e2) {
 			logger.error("Command server error: " + e2);
@@ -53,7 +59,6 @@ public class CommandConnection extends Thread {
 	public void run() {
 		sdkModeInitiated = false;
 		CommandHandler commandHandler = new CommandHandler(telloDroneController);
-		telloDroneController.setCommandHandler(commandHandler);
 
 		while (isRunning()) {
 
@@ -62,7 +67,7 @@ public class CommandConnection extends Thread {
 				logger.debug("Waiting for commands on port " + TelloSDKValues.SIM_COMMAND_PORT);
 				commandSocket.receive(receivedPacket);
 				if (isRunning()){ // check needed if drone is turned off during receiving
-					String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());				// old: String received = readString();
+					String received = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength());
 					InetAddress address = receivedPacket.getAddress();
 					int port = receivedPacket.getPort();
 					logger.info("Received command: '" + received + "' from " + address.getCanonicalHostName() + ":" + port);
