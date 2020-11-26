@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 
 /** Splits, validates and redirects incoming commands from the {@code CommandConnection}
  * to the appropriate methods in the {@code DroneController}.
- * @author Daniel Obrist
- * @author Severin Peyer
+ *
  * @see tellosimulator.network.CommandConnection
  * @see DroneController
  * */

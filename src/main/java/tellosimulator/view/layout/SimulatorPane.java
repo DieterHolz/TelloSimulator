@@ -5,7 +5,6 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import tellosimulator.controller.DroneController;
 import tellosimulator.log.Log;
 import tellosimulator.model.DroneModel;
@@ -16,8 +15,10 @@ import tellosimulator.view.drone.DroneView;
 import tellosimulator.view.log.LogBox;
 import tellosimulator.view.world.Simulator3DScene;
 
+/**
+ * The Borderpane containing all other Nodes. Mainly serves layout purposes.
+ */
 public class SimulatorPane extends BorderPane {
-    private final Stage stage;
     private final DroneController droneController;
     private final DroneModel droneModel;
     private final DroneView droneView;
@@ -30,8 +31,7 @@ public class SimulatorPane extends BorderPane {
     private Log log;
     private LogBox logBox;
 
-    public SimulatorPane(Stage stage, DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) {
-        this.stage = stage;
+    public SimulatorPane(DroneController droneController, DroneModel droneModel, DroneView droneView, Log log) {
         this.droneController = droneController;
         this.droneModel = droneModel;
         this.droneView = droneView;
@@ -43,7 +43,6 @@ public class SimulatorPane extends BorderPane {
     }
 
     private void initializeParts() {
-
         simulator3DScene = new Simulator3DScene(buildSceneGraph(), droneView, droneModel);
         subSceneHolder = new StackPane(simulator3DScene);
         subSceneHolder.setMinWidth(160);
@@ -53,7 +52,6 @@ public class SimulatorPane extends BorderPane {
         simulatorControls = new SimulatorControls(droneModel, droneController, cubeWorld);
         networkControls = new NetworkControls(droneController);
         logBox = new LogBox(log);
-
     }
 
     private void layoutParts() {

@@ -9,10 +9,16 @@ import javafx.scene.input.ScrollEvent;
 import tellosimulator.model.DroneModel;
 import tellosimulator.view.drone.DroneView;
 
-
+/**
+ * The SubScene containing all other 3D-Nodes. Contains also all EventHandlers for user interactions with
+ * the {@coee SimulatorCamera}.
+ *
+ * @see SimulatorCamera
+ */
 public class Simulator3DScene extends SubScene {
     private SimulatorCamera simulatorCamera;
     private DroneCamera droneCamera;
+    private DroneModel droneModel;
 
     private double mousePosX;
     private double mousePosY;
@@ -21,13 +27,11 @@ public class Simulator3DScene extends SubScene {
     private double mouseDeltaX;
     private double mouseDeltaY;
 
-    private DroneModel droneModel;
-
-    public Simulator3DScene(Parent sceneGraph, DroneView droneView, DroneModel droneMod) {
+    public Simulator3DScene(Parent sceneGraph, DroneView droneView, DroneModel droneModel) {
         super( sceneGraph, 1280, 720, true, SceneAntialiasing.BALANCED);
-        droneModel = droneMod;
-        simulatorCamera = new SimulatorCamera(droneView, 200, 25, -10);
-        droneCamera = new DroneCamera(droneModel);
+        this.droneModel = droneModel;
+        simulatorCamera = new SimulatorCamera(droneView, 100, -33);
+        droneCamera = new DroneCamera(this.droneModel);
         setCamera(simulatorCamera);
         setupEventHandlers();
     }

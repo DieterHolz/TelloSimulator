@@ -4,8 +4,13 @@ import javafx.scene.PerspectiveCamera;
 import tellosimulator.common.VectorHelper;
 import tellosimulator.model.DroneModel;
 
+/**
+ * The PerspectiveCamera bound to the position and yaw in the DroneModel. Represents the integrated forward facing
+ * camera found in the Tello.
+ *
+ * @see DroneModel
+ */
 public class DroneCamera extends PerspectiveCamera {
-
     private  DroneModel droneModel;
 
     DroneCamera(DroneModel droneModel) {
@@ -41,11 +46,11 @@ public class DroneCamera extends PerspectiveCamera {
 
     }
 
-    private void updateDroneCameraPosition(double xTranslate, double yTranslate, double zTranslate, double yawRotation) {
+    private void updateDroneCameraPosition(double xTranslate, double yTranslate, double zTranslate, double yaw) {
         setTranslateX(xTranslate);
         setTranslateY(yTranslate);
         setTranslateZ(zTranslate);
-        setRotate(yawRotation);
+        setRotate(yaw);
     }
 
 }

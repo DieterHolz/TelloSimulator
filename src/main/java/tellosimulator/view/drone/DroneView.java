@@ -15,6 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The 3D representation of the drone. It loads the FXML source file of the drone 3D-Model and displays it in the
+ * 3D-Scene. The position and orientation of this Node are bound to the properties set in the
+ * {@code DroneModel} class.
+ *
+ * @see DroneModel
+ */
 public class DroneView extends Group {
     private DroneModel droneModel;
 
@@ -35,7 +42,6 @@ public class DroneView extends Group {
     }
 
     private void buildDrone() throws IOException {
-
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/TelloDroneLowpoly.fxml"));
         drone3DModel = loader.load();
@@ -63,6 +69,7 @@ public class DroneView extends Group {
         drone3DModel.setScaleY(droneScalingFactor);
         drone3DModel.setScaleZ(droneScalingFactor);
         drone3DModel.setRotate(180);
+
         pitchContainer.getChildren().add(drone3DModel);
         rollContainer.getChildren().add(pitchContainer);
         drone.getChildren().add(rollContainer);

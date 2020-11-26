@@ -1,41 +1,10 @@
-/**
- * CubeWorld.java
- *
- * https://github.com/FXyz/FXyz/blob/master/FXyz-Core/src/main/java/org/fxyz3d/scene/CubeWorld.java
- *
- * Copyright (c) 2013-2016, F(X)yz
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *     * Neither the name of F(X)yz, any associated website, nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL F(X)yz BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package tellosimulator.view.world;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -44,29 +13,27 @@ import javafx.scene.transform.Rotate;
 
 import java.util.ArrayList;
 
+/**
+ * A cubic world consisting of six walls. Modified version of the referenced CubeWorld linked as Source.
+ *
+ * @see <a href="https://github.com/FXyz/FXyz/blob/master/FXyz-Core/src/main/java/org/fxyz3d/scene/CubeWorld.java">Source</a>
+ */
 public class CubeWorld extends Group {
-    private Group cubeWorldChildren = new Group();
-
-
     private final DoubleProperty roomSizeX = new SimpleDoubleProperty();
     private final DoubleProperty roomSizeY = new SimpleDoubleProperty();
     private final DoubleProperty roomSizeZ = new SimpleDoubleProperty();
-    private final DoubleProperty grildLineSpacing = new SimpleDoubleProperty();
+    private final DoubleProperty gridLineSpacing = new SimpleDoubleProperty();
 
-    private double gridLinesOpacity = 1.0;
-    private double gridPanelsOpacity = 0.25;
+    private final double gridLinesOpacity = 1.0;
+    private final double gridPanelsOpacity = 0.25;
 
-    private Color panelWallColor = new Color(47/255, 79/255, 79/255, gridPanelsOpacity);
-    private Color panelFloorCeilingColor = new Color(169/255, 169/255, 169/255, gridPanelsOpacity);
-    private Color gridLinesWallColor = new Color(47/255, 79/255, 79/255, gridLinesOpacity);
-    private Color gridLinesCeilingFloorColor = new Color(211/255, 211/255, 211/255, gridLinesOpacity);
+    private final Color panelWallColor = new Color(47f/255f, 79f/255f, 79f/255f, gridPanelsOpacity);
+    private final Color panelFloorCeilingColor = new Color(169f/255f, 169f/255f, 169f/255f, gridPanelsOpacity);
+    private final Color gridLinesWallColor = new Color(47f/255f, 79f/255f, 79f/255f, gridLinesOpacity);
+    private final Color gridLinesCeilingFloorColor = new Color(211f/255f, 211f/255f, 211f/255f, gridLinesOpacity);
 
     private final double gridThickness = 0.2;
     private final double wallThickness = 0.1;
-
-    private double cameraRX = 0;
-    private double cameraRY = 0;
-    private double cameraRZ = 0;
 
     private Box panelFront;
     private Box panelBack;
@@ -92,15 +59,14 @@ public class CubeWorld extends Group {
         setRoomSizeX(sizeX);
         setRoomSizeY(sizeY);
         setRoomSizeZ(sizeZ);
-        setGrildLineSpacing(spacing);
+        setGridLineSpacing(spacing);
         init();
     }
 
     public void init(){
         buildPanels(getRoomSizeX(),getRoomSizeY(),getRoomSizeZ(), wallThickness);
-        buildGrids(getRoomSizeX(), getRoomSizeY(), getRoomSizeZ(), getGrildLineSpacing());
+        buildGrids(getRoomSizeX(), getRoomSizeY(), getRoomSizeZ(), getGridLineSpacing());
 
-        //move CubeWorld
         setTranslateX(-getRoomSizeX()/2);
         setTranslateY(5);
         setTranslateZ(-getRoomSizeZ()/2);
@@ -164,7 +130,7 @@ public class CubeWorld extends Group {
     }
 
     private Group gridLinesXVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateY, double translateZ, Point3D rotationAxis) {
-        ArrayList cyls = new ArrayList<>();
+        ArrayList<Node> cyls = new ArrayList<>();
         for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
             Cylinder cyl = new Cylinder(gridThickness, lineLength);
             cyl.setMaterial(lineMaterial);
@@ -181,7 +147,7 @@ public class CubeWorld extends Group {
     }
 
     private Group gridLinesYVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateX, double translateZ, Point3D rotationAxis) {
-        ArrayList cyls = new ArrayList<>();
+        ArrayList<Node> cyls = new ArrayList<>();
         for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
             Cylinder cyl = new Cylinder(gridThickness, lineLength);
             cyl.setMaterial(lineMaterial);
@@ -198,7 +164,7 @@ public class CubeWorld extends Group {
     }
 
     private Group gridLinesZVariable(double sizeOfArea, double spacingBetweenLines, double lineLength, PhongMaterial lineMaterial, double translateX, double translateY, Point3D rotationAxis) {
-        ArrayList cyls = new ArrayList<>();
+        ArrayList<Node> cyls = new ArrayList<>();
         for (int i = 0; i <= sizeOfArea; i += spacingBetweenLines) {
             Cylinder cyl = new Cylinder(gridThickness, lineLength);
             cyl.setMaterial(lineMaterial);
@@ -252,15 +218,15 @@ public class CubeWorld extends Group {
         this.roomSizeZ.set(roomSizeZ);
     }
 
-    public double getGrildLineSpacing() {
-        return grildLineSpacing.get();
+    public double getGridLineSpacing() {
+        return gridLineSpacing.get();
     }
 
-    public DoubleProperty grildLineSpacingProperty() {
-        return grildLineSpacing;
+    public DoubleProperty gridLineSpacingProperty() {
+        return gridLineSpacing;
     }
 
-    public void setGrildLineSpacing(double grildLineSpacing) {
-        this.grildLineSpacing.set(grildLineSpacing);
+    public void setGridLineSpacing(double gridLineSpacing) {
+        this.gridLineSpacing.set(gridLineSpacing);
     }
 }

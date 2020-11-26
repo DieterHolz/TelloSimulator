@@ -5,6 +5,13 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import tellosimulator.view.drone.DroneView;
 
+/**
+ * The PerspectiveCamera in the 3D-Scene. Position is bound to the {@code DroneView}. Pivot and zoom is controllable
+ * by the user (MouseEvents for rotating and moving the camera are handled on the {@code Simulator3DScene}).
+ *
+ * @see DroneView
+ * @see Simulator3DScene
+ */
 public class SimulatorCamera extends PerspectiveCamera {
     private DroneView droneView;
 
@@ -14,27 +21,18 @@ public class SimulatorCamera extends PerspectiveCamera {
     public Rotate cameraRotateX = new Rotate();
     public Rotate cameraRotateY = new Rotate();
 
-    private double cameraZOffset;
-    private double cameraYOffset;
-    private double viewingAngle;
-
-    public SimulatorCamera(DroneView droneView, double camZOffset, double camYOffset, double camViewingAngle) {
+    public SimulatorCamera(DroneView droneView, double camZOffset, double camViewingAngle) {
         super(true);
         this.droneView = droneView;
         setNearClip(1.0);
         setFarClip(10000.0);
 
-        cameraZOffset = camZOffset;
-        cameraYOffset = camYOffset;
-        viewingAngle = camViewingAngle;
-
         cameraRotateX.setAxis(Rotate.X_AXIS);
-        cameraRotateX.setAngle(viewingAngle);
+        cameraRotateX.setAngle(camViewingAngle);
 
         cameraRotateY.setAxis(Rotate.Y_AXIS);
 
-        cameraPosition.setZ(-cameraZOffset);
-        cameraPosition.setY(-cameraYOffset);
+        cameraPosition.setZ(-camZOffset);
 
         getTransforms().addAll(pivotPosition, cameraRotateY, cameraRotateX, cameraPosition); //order matters!
 

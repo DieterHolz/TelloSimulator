@@ -1,6 +1,5 @@
 package tellosimulator.view.log;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.*;
@@ -17,6 +16,11 @@ import tellosimulator.log.Logger;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * A ListView for displaying the simulator log.
+ *
+ * @see LogListView
+ */
 public class LogListView extends ListView<LogRecord> {
 
     private static final int MAX_ENTRIES = 10_000;
@@ -31,8 +35,6 @@ public class LogListView extends ListView<LogRecord> {
     private final BooleanProperty showTimestamp = new SimpleBooleanProperty(false);
     private final ObjectProperty<LogLevel> filterLevel   = new SimpleObjectProperty<>(null);
     private final BooleanProperty       tail          = new SimpleBooleanProperty(false);
-    private final BooleanProperty       paused        = new SimpleBooleanProperty(false); //pause button removed, always false
-    private final DoubleProperty refreshRate   = new SimpleDoubleProperty(60); // rate slider removed, always 60 fps
 
     private final ObservableList<LogRecord> logItems = FXCollections.observableArrayList();
 
@@ -46,14 +48,6 @@ public class LogListView extends ListView<LogRecord> {
 
     public BooleanProperty tailProperty() {
         return tail;
-    }
-
-    public BooleanProperty pausedProperty() {
-        return paused;
-    }
-
-    public DoubleProperty refreshRateProperty() {
-        return refreshRate;
     }
 
     public LogListView(Logger logger){
@@ -78,25 +72,12 @@ public class LogListView extends ListView<LogRecord> {
         );
 
         logTransfer.setCycleCount(Timeline.INDEFINITE);
-        logTransfer.rateProperty().bind(refreshRateProperty());
-
-        this.pausedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && logTransfer.getStatus() == Animation.Status.RUNNING) {
-                logTransfer.pause();
-            }
-
-            if (!newValue && logTransfer.getStatus() == Animation.Status.PAUSED && getParent() != null) {
-                logTransfer.play();
-            }
-        });
 
         this.parentProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 logTransfer.pause();
             } else {
-                if (!paused.get()) {
-                    logTransfer.play();
-                }
+                logTransfer.play();
             }
         });
 

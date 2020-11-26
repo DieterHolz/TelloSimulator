@@ -11,6 +11,9 @@ import tellosimulator.model.DroneModel;
 import tellosimulator.view.world.CubeWorld;
 import java.util.Locale;
 
+/**
+ * Simple control displaying drone information and providing buttons and slider to control the simulator.
+ */
 public class SimulatorControls extends GridPane {
     private final DroneModel droneModel;
     private final DroneController droneController;
@@ -190,7 +193,7 @@ public class SimulatorControls extends GridPane {
         });
 
         gridSize.textProperty().addListener((observable, oldValue, newValue) -> {
-            cubeWorld.setGrildLineSpacing(Double.valueOf(newValue));
+            cubeWorld.setGridLineSpacing(Double.valueOf(newValue));
             updateCubeWorld();
         });
     }

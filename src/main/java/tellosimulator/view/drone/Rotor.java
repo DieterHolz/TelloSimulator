@@ -3,11 +3,16 @@ package tellosimulator.view.drone;
 import javafx.animation.RotateTransition;
 import javafx.scene.Node;
 
+/**
+ * Wrapper for the DroneView rotor nodes, containing the rotor node itself and a corresponding RotateTransition.
+ *
+ * @see DroneView
+ */
 public class Rotor {
-    Node node;
-    RotateTransition rotateTransition;
+    private Node node;
+    private RotateTransition rotateTransition;
 
-    Rotor(Node node) {
+    public Rotor(Node node) {
         this.node = node;
         this.rotateTransition = new RotateTransition();
     }

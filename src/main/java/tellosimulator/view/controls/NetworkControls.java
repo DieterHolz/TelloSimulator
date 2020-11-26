@@ -12,6 +12,9 @@ import tellosimulator.network.CommandConnection;
 import java.io.IOException;
 import java.net.*;
 
+/**
+ * Simple control displaying network information and providing a "Start"/"Stop"-Button for the drone.
+ */
 public class NetworkControls extends VBox {
     private final Logger logger = new Logger(TelloSimulator.MAIN_LOG, "NetworkControls");
     private final DroneController droneController;
@@ -78,9 +81,6 @@ public class NetworkControls extends VBox {
         stateLabel = new Label("Listen for the drone state on:");
         statePortLabelNetwork = new Label("State Port:");
         statePortFieldNetwork  = new TextField(String.valueOf(TelloSDKValues.TELLO_STATE_PORT));
-
-        //TODO: video label and field
-
     }
 
     private void layoutParts() {
