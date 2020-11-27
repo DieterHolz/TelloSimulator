@@ -493,9 +493,11 @@ public class DroneController {
     }
 
     public void stop(CommandPackage commandPackage) {
+        flyCurve = false;
         resetDiffs();
         stopAnimation();
         CommandResponseSender.sendOk(commandPackage);
+        CommandResponseSender.sendForcedStop(commandPackage);
     }
 
     public void emergency() {

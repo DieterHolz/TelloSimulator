@@ -51,6 +51,10 @@ public final class CommandResponseSender {
         sendResponse(commandPackage, TelloCommandResponse.ERROR_RADIUS_TOO_LAGRE);
     }
 
+    public static void sendForcedStop(CommandPackage commandPackage) {
+        sendResponse(commandPackage, TelloCommandResponse.FORCED_STOP);
+    }
+
     private static void sendResponse(CommandPackage commandPackage, String response) {
         if (commandPackage == null) {
             return;

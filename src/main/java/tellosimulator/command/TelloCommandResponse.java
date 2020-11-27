@@ -8,4 +8,5 @@ public class TelloCommandResponse {
     public static final String OUT_OF_RANGE = "out of range";
     public static final String ERROR_MOTOR_STOP = "error Motor stop";
     public static final String ERROR_RADIUS_TOO_LAGRE = "error Radius is too large!";
+    public static final String FORCED_STOP = "forced stop";
 }
