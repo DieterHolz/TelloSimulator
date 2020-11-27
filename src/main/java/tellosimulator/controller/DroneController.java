@@ -629,9 +629,9 @@ public class DroneController {
         CommandResponseSender.sendReadResponse(commandPackage, (int) TimeUnit.MILLISECONDS.toSeconds(getFlightTime()) + "s\r\n");
     }
 
-    public void sendWifi(CommandPackage commandPackage) {
+    public void sendWifiSNR(CommandPackage commandPackage) {
         this.commandPackage = commandPackage;
-        CommandResponseSender.sendReadResponse(commandPackage, getDroneModel().getWifiSsid());
+        CommandResponseSender.sendReadResponse(commandPackage, String.valueOf(getDroneModel().getWifiSNR()));
     }
 
     public void sendSdk(CommandPackage commandPackage) {

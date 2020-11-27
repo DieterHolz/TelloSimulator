@@ -17,6 +17,7 @@ public class DroneModel {
     private double barometer = 281.96;
     private String telloSdkVersion = "20";
     private String telloSerialNumber = "T3LLOS1MUL4T0R";
+    private int wifiSNR = 90;
     private String wifiSsid = "1337\r\n";
     private String wifiPass = "Tello<3";
     private boolean missionPadDetection;
@@ -388,5 +389,13 @@ public class DroneModel {
 
     public void setMotorsRunning(boolean motorsRunning) {
         this.motorsRunning.set(motorsRunning);
+    }
+
+    public int getWifiSNR() {
+        return wifiSNR;
+    }
+
+    public void setWifiSNR(int wifiSNR) {
+        this.wifiSNR = wifiSNR;
     }
 }

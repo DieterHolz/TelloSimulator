@@ -522,7 +522,7 @@ public class CommandHandler {
 
 				case TelloReadCommand.WIFI:
 					if (checkNumberOfParams(commandParams, 0)){
-						droneController.sendWifi(commandPackage);
+						droneController.sendWifiSNR(commandPackage);
 					} else {
 						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
