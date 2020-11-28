@@ -5,6 +5,8 @@
 :crossedbox: pass:normal[{startsb}&#10006;{endsb}]
 :table-caption: Tabelle
 :figure-caption: Abbildung
+:counter: image-counter: 0
+:counter: table-counter: 0
 :experimental:
 
 = 20FS_IMVS08: Tello Simulator
@@ -92,11 +94,7 @@ bei der Gestaltung nicht speziell beachtet und hat bestimmt noch ein gewisses Ve
 ===== SimulatorPane
 Die SimulatorPane ist die übergeordnete BorderPane, welche alle anderen JavaFX-Nodes enthält. Links befinden sich die SimulatorControls zum Setzen und Beobachten von Simulator- und Drohnen-Parametern. Auf der rechten Seite sind die NetworkControls, welche alle nötigen Informationen zum Verbindungsaufbau mit dem Simulator anzeigen. Unten findet der User eine interaktive LogBox, welche dem Debugging dient. Und in der Mitte befindet sich die Simulator3DScene, in welcher die 3D-Welt und die virtuelle Drohne gerendert werden.
 
-[.text-center]
-.Das User Interface (UI) zum Stand des finalen Releases mit SimulatorControls (links), NetworkControls (rechts), LogBox (unten) und Simulator3DScene (mitte).
-[#gui-final]
-[caption="Abbildung 2: "]
-image::tello-simulator-gui-final.png[width=1200]
+image::tello-simulator-gui-final.png[width=1200, title="Das User Interface (UI) zum Stand des finalen Releases mit SimulatorControls (links), NetworkControls (rechts), LogBox (unten) und Simulator3DScene (mitte).", id="Figure-{counter:image-number}"]
 
 ====== SimulatorControls
 Diese Komponente zeigt die wichtigsten Parameter der Drohne an. Dazu gehören die X-, Y- und Z-Position sowie die Yaw-, Pitch- und Roll-Werte. Zusätzlich steht ein Reset-Button zur Verfügung, wodurch alle Werte der virtuellen Drohne zurückgesetzt werden. Mit dem Button darunter kann der User ausserdem zwischen Simulator- und Drohnenkamera hin und her wechseln. Ebenfalls befinden sich hier vier Slider zur Konfiguration der Grösse des virtuellen Raums. Ist ein Slider angewählt, können die Werte auch mit den Pfeiltasten eingestellt werden.
@@ -121,7 +119,8 @@ Die DroneView ist die Repräsentation der Drohne im 3D-Raum als 3D-Modell. Ihr M
 
 Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, lässt sich die SimulatorCamera mit der linken Maustaste drehen. Der Pivot-Punkt, um welchen sich die Kamera dreht, transformiet sich dabei gleichmässig mit der Drohne. So fliegt die Drohne nicht plötzlich aus dem Sichtfeld. Ebenfalls lässt sich die Kamera mit der rechten Maustaste oder durch Drücken des Mausrads nach links und rechts verschieben, um eine andere Perspektive zu erhalten. Die Zoom-Distanz der Kamera lässt sich durch das Scrollen mit dem Mausrad oder dem Touchpad anpassen. Alle diese Manipulationen (Drehen, Verschieben und Zoom) können durch das Halten der Ctrl- beziehungsweise Shift-Taste präzisiert beziehungsweise verstärkt werden.
 
-.Überblick aller Interaktionsmöglichkeiten mit der Simulaotor3Dscene.
+[title="Überblick aller Interaktionsmöglichkeiten mit der Simulaotor3Dscene.", id="Table-{counter:table-counter}", options="header"]
+
 |===
 |Interaktion |Beschreibung
 
@@ -157,12 +156,7 @@ Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simu
 
 Um die zentralen Datenflüsse der Tello-Drohne abzubilden, implementiert der TelloSimulator zwei Threads, welche parallel zu dem Hauptprogramm  laufen: die *CommandConnection* und die *StateConnection*. Die *VideoConnection* als letzter Teil dieser Dreifaltigkeit wurde aus Ressourcengründen nicht umgesetzt.
 
-
-[.text-center]
-.Ein grober Überblick, wie das Backend des TelloSimulator bezüglich parallel laufender Threads aufgebaut ist.
-[#gui-final]
-[caption="Abbildung 3: "]
-image::tello-simulator-backend-swimlane-diagram.svg[width=800]
+image::tello-simulator-backend-swimlane-diagram.svg[width=800, title="Ein grober Überblick, wie das Backend des TelloSimulator bezüglich parallel laufender Threads aufgebaut ist.", id="Figure-{counter:image-number}"]
 
 ===== CommandConnection
 Sobald der Benutzer die virtuelle Drohne einschaltet, wird eine neue Instanz der CommandConnection erstellt und der Thread gestartet. Beim Erstellen des Sockets besteht hierbei eine Eigenheit des Simulators. Der Standard-Port der Tello-Drohne wäre 8889, jedoch wird dieser Port in den meisten Fällen schon durch das ebenfalls lokal laufende Client-Programm belegt sein. Deshalb bindet sich der Simulator-DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Danach empfängt der Thread laufend UDP-Pakete auf diesem Socket.
@@ -192,24 +186,17 @@ Dies ist die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentier
 Identisch zur Tello-Drohne findet auch beim Simulator die gesamte Kommunikation über das UDP-Netzwerkprotokoll statt. Um den Verbindungsaufbau mit dem Simulator ähnlich wie mit der Tello-Drohne zu gestalten, wurde die Schnittstelle so weit wie möglich gleich gestaltet, wie sie von der Tello-Drohne implementiert wird. Als Grundlage diente hierbei der offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Des Weiteren wurden eigene Tests mit der Tello-Drohne durchgeführt, welche die teilweise lückenhafte Dokumentation im User Guide ergänzen.
 
 ==== Visualisierung der Schnittstellen
-In Abbildung 2 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (genannt Operator) und der Simulator sich auf dem selben Gerät (gleiche IP) befinden, in Abbildung 3, wenn sie sich auf unterschiedlichen Geräten (andere IPs) befinden. Die genauen Erklärungen zur Schnittstelle des Simulators und der Tello-Drohne sind in den nachfolgenden zwei Kaptieln zu finden.
+In Abbildung 3 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (genannt Operator) und der Simulator sich auf dem selben Gerät (gleiche IP) befinden, in Abbildung 4, wenn sie sich auf unterschiedlichen Geräten (andere IPs) befinden. Die genauen Erklärungen zur Schnittstelle des Simulators und der Tello-Drohne sind in den nachfolgenden zwei Kaptieln zu finden.
 
-.Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)
-[#network-diagram-different-host]
-[caption="Abbildung 2: "]
-image::tello-simulator-network-diagram-different-host.png[width=800]
+image::tello-simulator-network-diagram-different-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)", id="Figure-{counter:image-number}"]
 
-
-.Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)
-[#network-diagram-same-host]
-[caption="Abbildung 3: "]
-image::tello-simulator-network-diagram-same-host.png[width=800]
+image::tello-simulator-network-diagram-same-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)", id="Figure-{counter:image-number}"]
 
 ==== Die UDP-Schnittstelle der Tello-Drohne
 Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist ziemlich unkompliziert und statisch. Commands werden auf der fixen Adresse 192.168.10.1:8889 empfangen sowie an den gleichen Port des Client-Programms versendet. Der State wird auf Port 8890 geschickt, der Videostream auf Port 11111.
 
-[cols="1,2,2,2", options="header"]
-.Tello-Drone UDP-Schnittstelle für Commands
+[cols="1,2,2,2", options="header", title="Tello-Drone UDP-Schnittstelle für Commands", id="Table-{counter:table-counter}"]
+
 |===
 | Verbindung | IP-Adresse der Drone | Empfängt Pakete auf Socket mit Port | Sendet Pakete statisch an
 
@@ -234,8 +221,9 @@ Aufgrund der Anforderung, dass der Simulator sowohl vom gleichen Gerät aus als 
 
 Denn wenn das Client-Programm sowie der Simulator auf dem gleichen Gerät laufen, führt dies zu Konflikten in der Port-Belegung. Beispielsweise kann der Port 8889 nicht mehr vom Client-Programm verwendet werden, wenn sich der Simulator schon an diesen gebunden hat. Daher bindet der Tello-Simulator seinen DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Somit kann der Client weiterhin einen Socket auf 8889 erstellen, wie es von der echten Drohne verlangt wird, ohne vom Simulator blockiert zu werden.
 
-[cols="1,2,2,2", options="header"]
-.Tello-Simulator UDP-Schnittstelle für Commands
+[cols="1,2,2,2", options="header", title="Tello-Simulator UDP-Schnittstelle für Commands", id="Table-{counter:table-counter}"]
+
+
 |===
 | Verbindung | IP-Adresse des Simulators | Empfängt Pakete auf Socket mit Port | Sendet Pakete dynamisch an
 
@@ -272,8 +260,8 @@ Simulator unterstützt werden. Grundsätzlich basiert diese Dokumentation der Co
 *Für alle Commands gilt:* Unbekannte oder falsch geschriebene Commands liefern die Antwort 'unknown command:' gefolgt vom gesendeten String. Commands sind dabei case-sensitive, d.h. Gross- und Kleinschriebung muss eingehalten werden.
 ****
 
-[cols="3,5a,2,^1", options="header"]
-.Control Commands
+[cols="3,5a,2,^1", options="header", title="Control Commands", id="Table-{counter:table-counter}"]
+
 |===
 | Command | Beschreibung | Mögliche Antworten | Simulator
 
@@ -401,8 +389,8 @@ Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Dr
 |
 |===
 
-[cols="3,5a,2,^1", options="header"]
-.Set Commands
+[cols="3,5a,2,^1", options="header", title="Set Commands", id="Table-{counter:table-counter}"]
+
 |===
 | Command | Beschreibung | Mögliche Antwort | Simulator
 
@@ -447,8 +435,8 @@ Hinweis 2: Wenn während einer Sekunde nur 20 nach vorne gegeben werden, reicht 
 
 |===
 
-[cols="3,5a,2,^1", options="header"]
-.Read Commands
+[cols="3,5a,2,^1", options="header", title="Read Commands", id="Table-{counter:table-counter}"]
+
 |===
 | Command | Beschreibung | Mögliche Antwort | Simulator
 
@@ -509,12 +497,9 @@ Durch ausführliche Tests mit der Tello-Drohne konnten ausserdem folgende besond
 
 === Usability Testing
 Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang zu finden.
-Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchgeführt, die Ansicht des GUIs wird in Abbildung 1 gezeigt.
+Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchgeführt, die Ansicht des GUIs wird in Abbildung 5 gezeigt.
 
-.GUI zum Stand des Usability Testings
-[#gui-usability-testing]
-[caption="Abbildung 4: "]
-image::tello-simulator-gui-stand-usability-testing.png[width=498]
+image::tello-simulator-gui-stand-usability-testing.png[width=498, title="GUI zum Stand des Usability Testings", id="Figure-{counter:image-number}"]
 
 ==== Vorgehensweise
 Um eine unkomplizierte Inbetriebnahme sowie eine einfache Handhabung des Simulators zu gewährleisten, wurde ein Usability Testing durchgeführt.
@@ -597,14 +582,26 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 === Literaturverzeichnis
 [bibliography]
 
-- [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
-- [[[ws2c-fhnw,2]]] https://www.fhnw.ch/de/studium/module/9052760 +
-- [[[sdk2.0userguide,3]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
+** [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
+** [[[ws2c-fhnw,2]]] https://www.fhnw.ch/de/studium/module/9052760 +
+** [[[sdk2.0userguide,3]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
 === Abbildungsverzeichnis
-- [[gui-usability-testing]] *Abbidung 4:* GUI zum Stand des Usability Testings
 
+** *Abbildung 1* <<Figure-1>>
+** *Abbildung 2* <<Figure-2>>
+** *Abbildung 3* <<Figure-3>>
+** *Abbildung 4* <<Figure-4>>
+** *Abbildung 5* <<Figure-5>>
 
+=== Tabellenverzeichnis
+
+** *Tabelle 1* <<Table-1>>
+** *Tabelle 2* <<Table-2>>
+** *Tabelle 3* <<Table-3>>
+** *Tabelle 4* <<Table-4>>
+** *Tabelle 5* <<Table-5>>
+** *Tabelle 6* <<Table-6>>
 
 == Ehrlichkeitserklärung
 Hiermit erklären wir, die vorliegende Projektarbeit selbstständig, ohne Hilfe Dritter und nur unter Benutzung der angegebenen Quellen verfasst zu haben.
