@@ -66,7 +66,10 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 
 
 === Lösung
+Die umgesetzte Lösung für das Problem ist ein einfacher Simulator, basierend auf JavaFX. Die Funktionen sind zu grossen Teilen identisch mit der Tello-Drohne. Die Verbindung und der Datenaustausch zum Simulator ist, analog zur Drohne, über UDP gelöst.
+
 === Zielpublikum
+Der Simulator dient Studierenden, welche mit der Tello-Drohne arbeiten und die Funktionalitäten der physischen Drohne zuerst softwaretechnisch testen möchten. Im Speziellen wurde er für das Modul «ws2C» an der Fachhochschule Nordwestschweiz  entwickelt. Gemäss der Modulbeschreibung <<ws2c-fhnw>> beherrschen die Studierenden die Grundkonzepte der objektorientierten Programmierung.
 
 == Hauptteil
 
@@ -205,13 +208,14 @@ In Abbildung 2 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (ge
 .Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)
 [#network-diagram-different-host]
 [caption="Abbildung 2: "]
-image::tello-simulator-network-diagram-different-host.png[width=1000]
+image::tello-simulator-network-diagram-different-host.png[width=800]
+
 
 [.text-center]
 .Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)
 [#network-diagram-same-host]
 [caption="Abbildung 3: "]
-image::tello-simulator-network-diagram-same-host.png[width=1000]
+image::tello-simulator-network-diagram-same-host.png[width=800]
 
 ==== Die UDP-Schnittstelle der Tello-Drohne
 Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist ziemlich unkompliziert und statisch. Commands werden auf der fixen Adresse 192.168.10.1:8889 empfangen sowie an den gleichen Port des Client-Programms versendet. Der State wird auf Port 8890 geschickt, bzw. der Videostream auf Port 11111.
@@ -521,7 +525,7 @@ Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchg
 
 .GUI zum Stand des Usability Testings
 [#gui-usability-testing]
-[caption="Abbildung 1: "]
+[caption="Abbildung 4: "]
 image::tello-simulator-gui-stand-usability-testing.png[width=498]
 
 ==== Vorgehensweise
@@ -549,12 +553,12 @@ Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. 
 ** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden
 
 == Fazit
-Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem abschliessenden Kapitel nochmals alle Anfangs definierten Anforderungen betrachtet. Ebenfalls werden angetroffenen Probleme, gewonnenen Erkenntnisse sowie mögliche Weiterentwicklugnen der Software besprochen. 
+Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem abschliessenden Kapitel nochmals alle Anfangs definierten Anforderungen betrachtet. Ebenfalls werden angetroffenen Probleme, gewonnenen Erkenntnisse sowie mögliche Weiterentwicklugnen der Software besprochen.
 
 
 === Erfüllung der Anforderungen
 
-Eine der wohl zentralsten Anforderungen war das *Entgegennehmen von Commands sowie das Versenden von Responses* via UDP. Deshalb wurde bereits zu Projektbeginn der Fokus auf die Entwicklung dieser Schnittstelle gelegt. So konnte bereits vor MVP-Release eine solide Basis für das Backend gebaut werden, auf welcher auch der finale Release noch beruht. 
+Eine der wohl zentralsten Anforderungen war das *Entgegennehmen von Commands sowie das Versenden von Responses* via UDP. Deshalb wurde bereits zu Projektbeginn der Fokus auf die Entwicklung dieser Schnittstelle gelegt. So konnte bereits vor MVP-Release eine solide Basis für das Backend gebaut werden, auf welcher auch der finale Release noch beruht.
 
 Das eng mit der ersten Anforderung zusammenhängende *Versenden des Status* gestalte sich dank der guten Vorabeit mit der CommandConnection entsprechend leicht.
 
@@ -576,13 +580,16 @@ die aus Ressourcengründen im Backlog unseres Projekts geblieben sind. Dazu geh�
 
 ==== Verbesserungen Usability
 
-** Schatten der Drohne generieren und anzeigen
-** Simulator als Fullscreen und die Simulator Controls als darüberliegende Ebene darstellen
-** Simulator Controls als Custom Control gestalten
-** Log und Network Controls ein- und ausblendbar machen, um mehr Platz für den Simulator zu schaffen
-** Button, um das Log zu leeren
-** Startposition der Drohne im Raum festlegen
+** *Schatten der Drohne generieren und anzeigen:* Dadurch würde der Abstand zum Boden und die Position der Drohne im Raum noch besser ersichtlich.
+** *Simulator als Fullscreen und die Simulator Controls als darüberliegende Ebene darstellen:* So würde der Fokus noch mehr auf der Simulation liegen und der Betrachtende fühlt sich als Teil des 3D-Raums.
+** *Simulator Controls als Custom Control gestalten:* Würden die Simulator Controls (x/y/z-Positon, Yaw/Pitch-Roll-Drehung, Reset-Button...) als Custom Control gestaltet, hälfe dies die Bedeutung und die Funktion intuitiver zu erkennen.
+** *Log und Network Controls ein- und ausblendbar machen:* Dadurch kann die 3D-Simulation bei Bedarf vergrössert und besser fokussiert werden.
+** *Button, um das Log zu leeren:* Dies würde helfen, einfacher zu debuggen, da es übersichtlicher wird.
+** *Startposition der Drohne im Raum festlegen:* Trägt zu einer noch realistischeren Funktionsweise des Simulators bei. Dies hilft bei Testings zu erkennen, ob die Drohne beispielsweise in eine Wand fliegt.
 
+==== Drohnen-Schwärme
+
+** Simulator kann Befehele für mehrere Drohnen gleichzeitig entgegennehmen und diese in der 3D-Welt umsetzen
 
 ==== Flugverhalten realistischer gestalten
 
@@ -602,11 +609,13 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 == Referenzen
 === Literaturverzeichnis
 [bibliography]
+
 - [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
-- [[[sdk2.0userguide,2]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
+- [[[ws2c-fhnw,2]]] https://www.fhnw.ch/de/studium/module/9052760 +
+- [[[sdk2.0userguide,3]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
 === Abbildungsverzeichnis
-- [[gui-usability-testing]] *Abbidung 1:* GUI zum Stand des Usability Testings
+- [[gui-usability-testing]] *Abbidung 4:* GUI zum Stand des Usability Testings
 
 
 
@@ -624,16 +633,13 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 [appendix]
 === Usability-Testskript
 [appendix]
+=== link:usability-testing-testkonzept.pdf[Usability-Testkonzept]
+=== link:usability-testing-testskript.pdf[Usability-Testskript]
 === Testprotokolle
-[appendix]
-=== Auswertung Usability Testing
-.Auswertung Usability Testing Teil 1 - Installation
-[caption="Abbildung x: "]
-image::usability-testing-teil1-installation.jpg[width=600]
-.Auswertung Usability Testing Teil 2 -Einrichtung Operator
-[caption="Abbildung x: "]
-image::usability-testing-teil2-operator.jpg[width=600]
-.Auswertung Usability Testing Teil 3 - Anwendung Simulator
-[caption="Abbildung x: "]
-image::usability-testing-teil3-simulator.jpg[width=600]
+link:usability-testing-testprotokoll-testperson01.pdf[Testskript Testperson 01]+
+link:usability-testing-testprotokoll-testperson02.pdf[Testskript Testperson 02]
 
+=== Auswertung Usability Testing
+link:usability-testing-teil1-installation.jpg[Auswertung Usability Testing Teil 1 - Installation Simulator]+
+link:usability-testing-teil2-operator.jpg[Auswertung Usability Testing Teil 2 - Einrichtung Operator]+
+link:usability-testing-teil3-simulator.jpg[Auswertung Usability Testing Teil 3 - Anwendung Simulator]
