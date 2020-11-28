@@ -115,10 +115,10 @@ public class SimulatorControls extends GridPane {
     private void layoutParts() {
         add(xPositionLabel, 1, 1);
         add(xPositionText, 2, 1);
-        add(zPositionLabel, 1, 2);
-        add(zPositionText, 2, 2);
-        add(yPositionLabel, 1, 3);
-        add(yPositionText, 2, 3);
+        add(yPositionLabel, 1, 2);
+        add(yPositionText, 2, 2);
+        add(zPositionLabel, 1, 3);
+        add(zPositionText, 2, 3);
         add(yawAngleLabel, 1, 4);
         add(yawAngleText, 2, 4);
         add(pitchAngleLabel, 1, 5);

@@ -77,10 +77,12 @@ public class NetworkControls extends VBox {
         commandsLabel = new Label("Send your commands to:");
         commandPortLabel = new Label("Command Port:");
         commandPortField = new TextField(String.valueOf(TelloSDKValues.SIM_COMMAND_PORT));
+        commandPortField.setEditable(false);
 
         stateLabel = new Label("Listen for the drone state on:");
         statePortLabelNetwork = new Label("State Port:");
         statePortFieldNetwork  = new TextField(String.valueOf(TelloSDKValues.TELLO_STATE_PORT));
+        statePortFieldNetwork.setEditable(false);
     }
 
     private void layoutParts() {
