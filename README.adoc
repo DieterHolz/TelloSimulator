@@ -1,6 +1,8 @@
 :icons: font
 :stem:
 :imagesdir: assets
+:figure-caption: Abbildung
+:table-caption: Tabelle
 :experimental:
 
 = TelloSimulator
@@ -69,8 +71,10 @@ WARNING: Der TelloSimulator versendet in der aktuellen Version noch keinen Video
 
 
 == Simulator UI
-//TODO: Screenshot und ein paar basic Erklärungen zum Simulator User Interface
+.Das TelloSimulator User Interface.
+image::/docs/assets/tello-simulator-gui-final.png[width=1000]
 
+.Interaktionmöglichkeiten mit dem User Interface.
 |===
 |Key |Purpose
 
