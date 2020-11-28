@@ -199,6 +199,19 @@ Schnittstelle so weit wie möglich gleich gestaltet, wie sie von der Tello-Drohn
 diente uns hierbei der offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Dazu führten wir eigene Tests mit der
 Tello-Drohne durch, welche die teilweise lückenhafte Dokumentation im User Guide ergänzten.
 
+==== Visualisierung der Schnittstellen
+In Abbildung 2 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (genannt Operator) und der Simulator sich auf dem selben Gerät (gleiche IP) befinden, in Abbildung 3, wenn sie sich auf unterschiedlichen Geräten (andere IPs) befinden. Die genauen Erklärungen zur Schnittstelle des Simulators und der Tello-Drohne sind in den nachfolgenden zwei Kaptieln zu finden.
+
+.Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)
+[#network-diagram-different-host]
+[caption="Abbildung 2: "]
+image::tello-simulator-network-diagram-different-host.png[width=500]
+
+.Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)
+[#network-diagram-same-host]
+[caption="Abbildung 3: "]
+image::tello-simulator-network-diagram-same-host.png[width=500]
+
 ==== Die UDP-Schnittstelle der Tello-Drohne
 Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist ziemlich unkompliziert und statisch. Commands werden auf der fixen Adresse 192.168.10.1:8889 empfangen sowie an den gleichen Port des Client-Programms versendet. Der State wird auf Port 8890 geschickt, bzw. der Videostream auf Port 11111.
 
@@ -226,7 +239,7 @@ Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist zi
 ==== Die UDP-Schnittstelle des Simulators
 Aufgrund der Anforderung, dass der Simulator sowohl vom gleichen Gerät aus als auch von jedem sich im lokalen Netzwerk befindenden Client angesteuert werden können muss, ist seine Schnittstelle leicht unterschiedlich gestaltet.
 
-Wenn nämlich das Client-Programm sowie der Simulator auf dem gleichen Gerät laufen kann es zu Konflikten in der Port-Belegung führen. Beispielsweise kann der Port 8889 nicht mehr vom Client-Programm verwendet werden, wenn sich der Simulator schon an diesen gebunden hat. Daher bindet der Tello-Simulator seinen DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Somit kann der Client weiterhin einen Socket auf 8889 erstellen, wie es von der echten Drohne verlangt wird, ohne vom Simulator blockiert zu werden.
+Denn wenn das Client-Programm sowie der Simulator auf dem gleichen Gerät laufen, führt dies zu Konflikten in der Port-Belegung. Beispielsweise kann der Port 8889 nicht mehr vom Client-Programm verwendet werden, wenn sich der Simulator schon an diesen gebunden hat. Daher bindet der Tello-Simulator seinen DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Somit kann der Client weiterhin einen Socket auf 8889 erstellen, wie es von der echten Drohne verlangt wird, ohne vom Simulator blockiert zu werden.
 
 [cols="1,2,2,2", options="header"]
 .Tello-Simulator UDP-Schnittstelle für Commands
@@ -249,7 +262,7 @@ Wenn nämlich das Client-Programm sowie der Simulator auf dem gleichen Gerät la
 | (noch nicht implementiert)
 |===
 
-Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejenige der Drohne. Trotzdem benötigt es Client-seitig nur zwei kleine Anpassungen um mit dem Simulator zu funktionieren: 
+Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejenige der Drohne (Port von welchem das Client-Programm sendet ist beliebig) . Trotzdem benötigt es Client-seitig nur zwei kleine Anpassungen um mit dem Simulator zu funktionieren:
 
 . *Die IP muss von 192.168.10.1 auf die Simulator-IP (ersichtlich im Simulator-UI) eingestellt werden.*
 . *Der UDP-Socket des Clients (gebunden an Port 8889) muss sich in der connect-Methode zu 8879 verbinden anstatt 8889.*
