@@ -379,12 +379,7 @@ public class DroneController {
     }
 
     public void land(CommandPackage commandPackage) {
-        if (commandPackage == null) {
-            // never received any commands, do nothing
-            return;
-        }
         this.commandPackage = commandPackage;
-
         if (droneModel.isMotorsRunning()) {
             land();
         } else {
