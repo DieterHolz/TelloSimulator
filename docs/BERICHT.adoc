@@ -549,6 +549,7 @@ Die Tello-Drohne schickt auf dem Port 11111 ein Live-Video der integrierten Kame
 
 ** Ausbalancieren nach einem ausgeführten Command
 ** Flugverhalten bei Flips (nicht um eigene Achse drehen, sondern als kleiner «Kreis»)
+** Beschleunigung und Geschwindigkeit exakter erfassen
 
 == Fazit
 
