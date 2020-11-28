@@ -78,7 +78,7 @@ werden kann.
 == Praktischer Teil
 
 === Usability Testing
-Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang unter «Usability Testing» zu finden.
+Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang zu finden.
 Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchgeführt, die Ansicht des GUIs wird in Abbildung 1 gezeigt.
 
 .GUI zum Stand des Usability Testings
@@ -169,7 +169,7 @@ Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, läs
 
 
 ==== Backend
-Die Netzwerkdschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Ohne Zugang zum Source-Code der Tello-Drohne war dies nicht immer einfach. Als Ausgangslage diente uns die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche wir als Testobjekt verwenden konnten. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren.
+Die Netzwerkdschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Ohne Zugang zum Source-Code der Tello-Drohne war dies nicht immer einfach. Als Ausgangslage diente uns die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche wir als Testobjekt verwenden konnten. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren. Die aus den Tests mit der Tello-Drohne gewonnenen Erkenntnisse sind unter <<Erkenntnisse aus dem Testing mit der physischen Tello-Drohne>> dokumentiert.
 
 Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simulator kann zum Beispiel im Gegensatz der echten Drohne kein eigenes Wireless-Netzwerk aufbauen. Aussderem muss der Simulator auch auf dem gleichen Gerät laufen können wie das Client-Programm. Dabei kann es zu Konflikten mit der Port-Belegung kommen. Bei der Tello-Drohne hat man diese Probleme nicht, da die Drohne immer alle Ports für sich selbst zur Verfügung hat.
 
@@ -177,7 +177,7 @@ Um die zentralen Datenflüsse der Tello-Drohne abzubilden, implementiert der Tel
 
 
 [.text-center]
-.Ein grober Überblick, wie das Backend des TelloSimulator bezüglich parallel laufender Threads aufgebaut ist. 
+.Ein grober Überblick, wie das Backend des TelloSimulator bezüglich parallel laufender Threads aufgebaut ist.
 [#gui-final]
 [caption="Abbildung 3: "]
 image::tello-simulator-backend-swimlane-diagram.svg[width=1200]
@@ -332,23 +332,23 @@ Hinweis 2: Wenn der Bogenradius nicht innerhalb eines Bereichs von 0,5-10 Metern
 
 Hinweis: x-, y- und z-Werte können nicht gleichzeitig zwischen -20 - 20 eingestellt werden.
 | ok / error / out of range
-| 
+|
 
 | curve x1 y1 z1 x2 y2 z2 speed mid
-| *Fly at a curve according to the two given coordinates of the Mission Pad ID at speed (cm/s)*. _x1, x2 = -500-500, y1, y2 = -500-500, z1, z2 = -500-500, speed = 10 - 60_. 
+| *Fly at a curve according to the two given coordinates of the Mission Pad ID at speed (cm/s)*. _x1, x2 = -500-500, y1, y2 = -500-500, z1, z2 = -500-500, speed = 10 - 60_.
 
 Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Drohne die Antwort 'out of range'.
 
 Hinweis 2: Wenn der Bogenradius nicht innerhalb eines Bereichs von 0,5-10 Metern liegt, schickt die Drohne die Antwort 'error Radius is too large!'.
 | ok / error / out of range / error Radius is too large!
-| 
+|
 
 | jump x y z speed yaw mid1 mid2
 | *Fly to coordinates x, y and z of Mission Pad 1, and recognize coordinates 0, 0, z of Mission Pad 2 and rotate to the yaw value*. _mid = m1-m8, x = -500-500, y = -500-500, z = -500-500, speed = 10 - 100 (cm/s)_.
 
 Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Drohne die Antwort 'out of range'.
 | ok / error / out of range
-| 
+|
 |===
 
 [cols="3,5a,2,^1", options="header"]
@@ -362,7 +362,7 @@ Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Dr
 | {checkedbox}
 
 | rc a b c d
-| *Set remote controller control via four channels*. _a = left/right (-100-100), b = forward/backward (-100-100), c = up/down (-100-100), d = yaw (-100-100)_. Setzt setzt die Bewegungsgeschwindigkeiten in cm/s in die ensprechende Richtung. Die Werte sind unabhängig von der gesetzten speed-Variable auf Drohne. 
+| *Set remote controller control via four channels*. _a = left/right (-100-100), b = forward/backward (-100-100), c = up/down (-100-100), d = yaw (-100-100)_. Setzt setzt die Bewegungsgeschwindigkeiten in cm/s in die ensprechende Richtung. Die Werte sind unabhängig von der gesetzten speed-Variable auf Drohne.
 
 Hinweis 1: Funktioniert zu jeder Zeit und schickt kein ok.
 
@@ -383,17 +383,17 @@ Hinweis 2: Wenn während 1 sekunde nur 20 nach vorne gegeben werden, reicht das 
 | moff
 | *Disable mission pad detection*.
 | ok / error
-| 
+|
 
 | mdirection x
-| *Change mission pad detection mode*. _x = 0/1/2, 0 = Enable downward detection only, 1 = Enable forward detection only, 2 = Enable both forward and downward detection_. 
+| *Change mission pad detection mode*. _x = 0/1/2, 0 = Enable downward detection only, 1 = Enable forward detection only, 2 = Enable both forward and downward detection_.
 | ok / error
 |
 
 | ap ssid pass
 | *Set the Tello to station mode, and connect to a new access point wit the access point's ssid and password*.  _ssid = updated Wi-Fi name, pass = updated Wi-Fi password_.
 | ok / error
-| 
+|
 
 |===
 
@@ -425,7 +425,7 @@ z.B. `*76\r\n*`
 | {checkedbox}
 
 | sdk?
-| *Obtain the Tello SDK version*. Gibt die SDK Version zurück. Z.B. (Tello SDK 2.0) = `20` für den Simulator 
+| *Obtain the Tello SDK version*. Gibt die SDK Version zurück. Z.B. (Tello SDK 2.0) = `20` für den Simulator
 | z.B. `*20\r\n*`
 | {checkedbox}
 
@@ -452,12 +452,22 @@ die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
 
 == Fazit
 == Danksagung
+Gerne möchten wir uns bei den folgenden Personen bedanken:
+
+Dank einem kurzen Pausengespräch ist es überhaupt erst dazu gekommen, dass Dr. Dieter Holz diese Arbeit im Namen der FHNW eingereicht hat. Wir freuen uns, dass er ein Projekt auf die Beiene gestellt hat, welches zu unseren Interessen und Fähigkeiten passt.
+
+Herzlichen Dank an unsere Betreuer*innen, Dr. Barbara Scheuner und Dr. Dieter Holz für die stete Unterstützung und die konstruktiven Gespräche während der Projektarbeit.
+
+Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wir konnten dadurch wertvolles Feedback einholen und den Simulator erheblich weiterentwickeln.
+
 == Referenzen
 === Literaturverzeichnis
 [bibliography]
 - [[[telloedu,1]]] https://www.ryzerobotics.com/tello-edu +
 - [[[sdk2.0userguide,2]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
+=== Abbildungsverzeichnis
+- [[gui-usability-testing]] *Abbildung 1:* GUI zum Stand des Usability Testings
 
 == Ehrlichkeitserklärung
 == Anhang
