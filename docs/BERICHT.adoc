@@ -1,4 +1,4 @@
-:imagesdir: TelloSimulator/assets
+:imagesdir: assets
 :sourcedir: TelloSimulator/src/main/java
 :toc: macro
 :checkedbox: pass:normal[{startsb}&#10004;{endsb}]
