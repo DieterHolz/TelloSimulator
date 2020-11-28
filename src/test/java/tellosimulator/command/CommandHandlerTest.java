@@ -370,15 +370,6 @@ class CommandHandlerTest {
         verify(droneController, times(1)).cw(commandPackage, angle);
     }
 
-    @ParameterizedTest
-    @ValueSource(doubles = {Double.NEGATIVE_INFINITY, 0, 0.9999, 360.00001, 361, Double.POSITIVE_INFINITY})
-    void cwInvalidParam(double dist) throws IOException {
-        commandPackage.setCommand(TelloControlCommand.CW + " " + dist);
-        commandHandler.handle(commandPackage);
-        assertEquals(commandHandler.getCommandParams().size(), 1);
-        assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(droneController, times(0)).cw(commandPackage, dist);
-    }
 
     @Test
     void cwTypo() throws IOException {
@@ -410,16 +401,6 @@ class CommandHandlerTest {
         assertEquals(commandHandler.getCommandParams().size(), 1);
         assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(angle));
         verify(droneController, times(1)).ccw(commandPackage, angle);
-    }
-
-    @ParameterizedTest
-    @ValueSource(doubles = {Integer.MIN_VALUE, 0, 0.9999, 360.00001, 361, Integer.MAX_VALUE})
-    void ccwInvalidParam(double dist) throws IOException {
-        commandPackage.setCommand(TelloControlCommand.CCW + " " + dist);
-        commandHandler.handle(commandPackage);
-        assertEquals(commandHandler.getCommandParams().size(), 1);
-        assertEquals(commandHandler.getCommandParams().get(0), String.valueOf(dist));
-        verify(droneController, times(0)).ccw(commandPackage, dist);
     }
 
     @Test

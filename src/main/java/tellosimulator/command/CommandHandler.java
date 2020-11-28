@@ -131,7 +131,7 @@ public class CommandHandler {
 					if(checkRange(command, xDown, 20, 500)) {
 						droneController.down(commandPackage, xDown);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -148,7 +148,7 @@ public class CommandHandler {
 					if(checkRange(command, xLeft, 20, 500)) {
 						droneController.left(commandPackage, xLeft);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -164,7 +164,7 @@ public class CommandHandler {
 					if(checkRange(command, xRight, 20, 500)) {
 						droneController.right(commandPackage, xRight);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -181,7 +181,7 @@ public class CommandHandler {
 					if(checkRange(command, xForward, 20, 500)) {
 						droneController.forward(commandPackage, xForward);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);;
 					}
 					break;
 
@@ -198,7 +198,7 @@ public class CommandHandler {
 					if(checkRange(command, xBack, 20, 500)) {
 						droneController.back(commandPackage, xBack);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -206,16 +206,11 @@ public class CommandHandler {
 					double xCw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCw = Double.parseDouble(commandParams.get(0));
+						droneController.cw(commandPackage, xCw);
 					} else {
 						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
-					}
-
-					if(checkRange(command, xCw, 1, 360)) {
-						droneController.cw(commandPackage, xCw);
-					} else {
-						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -223,15 +218,11 @@ public class CommandHandler {
 					double xCcw;
 					if (checkNumberOfParams(commandParams, 1)) {
 						xCcw = Double.parseDouble(commandParams.get(0));
+						droneController.ccw(commandPackage, xCcw);
 					} else {
 						logger.error("Unknown command: " + command);
 						CommandResponseSender.sendUnknownCommand(commandPackage);
 						break;
-					}
-					if(checkRange(command, xCcw, 1, 360)) {
-						droneController.ccw(commandPackage, xCcw);
-					} else {
-						CommandResponseSender.sendError(commandPackage);
 					}
 					break;
 
@@ -277,7 +268,7 @@ public class CommandHandler {
 					} else if (midGo != null && validateGo(xGo, yGo, zGo, speedGo, midGo)){
 						droneController.go(commandPackage, xGo, yGo, zGo, speedGo, midGo);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -340,7 +331,7 @@ public class CommandHandler {
 						}
 						droneController.curve(commandPackage, x1Curve, y1Curve, z1Curve, x2Curve, y2Curve, z2Curve, speedCurve, midCurve);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -368,7 +359,7 @@ public class CommandHandler {
 					if(validateJump(xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump)) {
 						droneController.jump(commandPackage, xJump, yJump, zJump, speedJump, yawJump, mid1Jump, mid2Jump);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
@@ -384,7 +375,7 @@ public class CommandHandler {
 					if (checkRange(TelloSetCommand.SPEED, speed, 10, 100)){
 						droneController.setSpeed(commandPackage, speed);
 					} else {
-						CommandResponseSender.sendError(commandPackage);
+						CommandResponseSender.sendOutOfRange(commandPackage);
 					}
 					break;
 
