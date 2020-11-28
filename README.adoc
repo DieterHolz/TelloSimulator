@@ -5,9 +5,6 @@
 
 = TelloSimulator
 
-
-link:README.en.adoc[English Readme]
-
 Der TelloSimulator ermöglicht das Experimentieren und Debuggen mit einer virtuellen Tello Drohne. Die Applikation
 bietet die Programmierschnittstelle des Tello SDK 2.0 an, sendet und empfängt UDP-Pakete analog zur echten Drohne
 und verfügt über ein UI mit 3D-Welt, in welcher die virtuelle Drohne fliegt.
@@ -26,7 +23,7 @@ oder
 gradlew run
 ....
 
-TIP: Eine detailliertere Installationsanleitung, inkl. IntelliJ IDEA Setup, ist im link:SETUP.adoc[SETUP.adoc] zu finden.
+TIP: Eine detailliertere Installationsanleitung, inkl. IntelliJ IDEA Setup, ist im link:/docs/SETUP.adoc[SETUP.adoc] zu finden.
 
 NOTE: Um den Simulator zu verwenden, wird zusätzlich ein Operator-Programm benötigt, welches die Tello-Drohne und
 somit auch den Simulator ansteuern kann. Falls kein eigener Client verfügbar ist, steht
@@ -107,6 +104,6 @@ WARNING: Der TelloSimulator versendet in der aktuellen Version noch keinen Video
 .Mehr Informationen
 ****
 Dieses Projekt wurde im Rahmen des IP5-Projekts im Studiengang Informatik mit Vertiefung in Design und Management an
-der Fachhochschule Nordwestschweiz FHNW entwickelt. Eine ausführliche Dokumentation ist im link:BERICHT.adoc[Bericht]
+der Fachhochschule Nordwestschweiz FHNW entwickelt. Eine ausführliche Dokumentation ist im link:/docs/BERICHT.adoc[Bericht]
 zu finden.
 ****
