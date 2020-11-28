@@ -587,10 +587,6 @@ die aus Ressourcengründen im Backlog unseres Projekts geblieben sind. Dazu geh�
 ** *Button, um das Log zu leeren:* Dies würde helfen, einfacher zu debuggen, da es übersichtlicher wird.
 ** *Startposition der Drohne im Raum festlegen:* Trägt zu einer noch realistischeren Funktionsweise des Simulators bei. Dies hilft bei Testings zu erkennen, ob die Drohne beispielsweise in eine Wand fliegt.
 
-==== Drohnen-Schwärme
-
-** Simulator kann Befehele für mehrere Drohnen gleichzeitig entgegennehmen und diese in der 3D-Welt umsetzen
-
 ==== Flugverhalten realistischer gestalten
 
 ** Ausbalancieren nach einem ausgeführten Command
@@ -619,7 +615,6 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 
 
 
-
 == Ehrlichkeitserklärung
 == Anhang
 [appendix]
@@ -629,16 +624,14 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 [appendix]
 === Benutzerhandbuch Tello Simulator
 [appendix]
-=== Usability-Testkonzept
-[appendix]
-=== Usability-Testskript
-[appendix]
 === link:usability-testing-testkonzept.pdf[Usability-Testkonzept]
+[appendix]
 === link:usability-testing-testskript.pdf[Usability-Testskript]
+[appendix]
 === Testprotokolle
 link:usability-testing-testprotokoll-testperson01.pdf[Testskript Testperson 01]+
 link:usability-testing-testprotokoll-testperson02.pdf[Testskript Testperson 02]
-
+[appendix]
 === Auswertung Usability Testing
 link:usability-testing-teil1-installation.jpg[Auswertung Usability Testing Teil 1 - Installation Simulator]+
 link:usability-testing-teil2-operator.jpg[Auswertung Usability Testing Teil 2 - Einrichtung Operator]+
