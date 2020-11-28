@@ -559,23 +559,23 @@ Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. 
 === Mögliche Weiterentwicklungen
 
 Obwohl der Simulator in seinem jetzigen Zustand die Grundanforderungen abdeckt, gibt es noch diverse Funktionen,
-die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
+die aus Ressourcengründen noch nicht umgesetzt werden konnten.
 
 ==== Video-Stream
 Die Tello-Drohne schickt auf dem Port 11111 ein Live-Video der integrierten Kamera. Diese Funktion ist noch nicht im Simulator integriert, jedoch wurde mit der Möglichkeit den Simulator aus Sicht der Drohen zu sehen, bereits Vorarbeit geleistet.
 
 ==== Verbesserungen Usability
 
-** Schatten der Drohne generieren und anzeigen
-** Simulator als Fullscreen und die Simulator Controls als darüberliegende Ebene darstellen
-** Simulator Controls als Custom Control gestalten
-** Log und Network Controls ein- und ausblendbar machen, um mehr Platz für den Simulator zu schaffen
-** Button, um das Log zu leeren
-** Startposition der Drohne im Raum festlegen
+** *Schatten der Drohne generieren und anzeigen:* Dadurch würde der Abstand zum Boden und die Position der Drohne im Raum noch besser ersichtlich.
+** *Simulator als Fullscreen und die Simulator Controls als darüberliegende Ebene darstellen:* So würde der Fokus noch mehr auf der Simulation liegen und der Betrachtende fühlt sich als Teil des 3D-Raums.
+** *Simulator Controls als Custom Control gestalten:* Würden die Simulator Controls (x/y/z-Positon, Yaw/Pitch-Roll-Drehung, Reset-Button...) als Custom Control gestaltet, hälfe dies die Bedeutung und die Funktion intuitiver zu erkennen.
+** *Log und Network Controls ein- und ausblendbar machen:* Dadurch kann die 3D-Simulation bei Bedarf vergrössert und besser fokussiert werden.
+** *Button, um das Log zu leeren:* Dies würde helfen, einfacher zu debuggen, da es übersichtlicher wird.
+** *Startposition der Drohne im Raum festlegen:* Trägt zu einer noch realistischeren Funktionsweise des Simulators bei. Dies hilft bei Testings zu erkennen, ob die Drohne beispielsweise in eine Wand fliegt.
 
 ==== Drohnen-Schwärme
 
-** Simulator kann Befehele für bis zu  Drohnen gleichzeitig entgegennehmen und diese in der 3D-Welt umsetzen
+** Simulator kann Befehele für mehrere Drohnen gleichzeitig entgegennehmen und diese in der 3D-Welt umsetzen
 
 ==== Flugverhalten realistischer gestalten
 
