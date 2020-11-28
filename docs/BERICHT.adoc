@@ -612,16 +612,10 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 === link:usability-testing-testkonzept.pdf[Usability-Testkonzept]
 === link:usability-testing-testskript.pdf[Usability-Testskript]
 === Testprotokolle
-link:usability-testing-testprotokoll-testperson01.pdf[Testperson 01]
-link:usability-testing-testprotokoll-testperson02.pdf[Testperson 02]
-=== Auswertung Usability Testing
-.Auswertung Usability Testing Teil 1 - Installation
-[caption="Abbildung x: "]
-image::usability-testing-teil1-installation.jpg[width=600]
-.Auswertung Usability Testing Teil 2 -Einrichtung Operator
-[caption="Abbildung x: "]
-image::usability-testing-teil2-operator.jpg[width=600]
-.Auswertung Usability Testing Teil 3 - Anwendung Simulator
-[caption="Abbildung x: "]
-image::usability-testing-teil3-simulator.jpg[width=600]
+link:usability-testing-testprotokoll-testperson01.pdf[Testskript Testperson 01]+
+link:usability-testing-testprotokoll-testperson02.pdf[Testskript Testperson 02]
 
+=== Auswertung Usability Testing
+link:usability-testing-teil1-installation.jpg[Auswertung Usability Testing Teil 1 - Installation Simulator]+
+link:usability-testing-teil2-operator.jpg[Auswertung Usability Testing Teil 2 - Einrichtung Operator]+
+link:usability-testing-teil3-simulator.jpg[Auswertung Usability Testing Teil 3 - Anwendung Simulator]
