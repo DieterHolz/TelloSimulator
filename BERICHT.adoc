@@ -530,12 +530,29 @@ Obwohl der Simulator in seinem jetzigen Zustand die Grundanforderungen abdeckt, 
 die aus Ressourcengründen im Backlog unseres Projekts geblieben sind.
 
 ==== Video-Stream
+Die Tello-Drohne schickt auf dem Port 11111 ein Live-Video der integrierten Kamera. Diese Funktion ist noch nicht im Simulator integriert, jedoch wurde mit der Möglichkeit den Simulator aus Sicht der Drohen zu sehen, bereits Vorarbeit geleistet.
 
 ==== Verbesserungen Usability
 
+** Schatten der Drohne generieren und anzeigen
+** Simulator als Fullscreen und die Simulator Controls als darüberliegende Ebene darstellen
+** Simulator Controls als Custom Control gestalten
+** Log und Network Controls ein- und ausblendbar machen, um mehr Platz für den Simulator zu schaffen
+** Button, um das Log zu leeren
+** Startposition der Drohne im Raum festlegen
+
 ==== Drohnen-Schwärme
 
+** Simulator kann Befehele für bis zu  Drohnen gleichzeitig entgegennehmen und diese in der 3D-Welt umsetzen
+
+==== Flugverhalten realistischer gestalten
+
+** Ausbalancieren nach einem ausgeführten Command
+** Flugverhalten bei Flips (nicht um eigene Achse drehen, sondern als kleiner «Kreis»)
+
 == Fazit
+
+
 == Danksagung
 Gerne möchten wir uns bei den folgenden Personen bedanken:
 
@@ -552,7 +569,7 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 - [[[sdk2.0userguide,2]]] https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf +
 
 === Abbildungsverzeichnis
-- [[gui-usability-testing]] *Abbildung 1:* GUI zum Stand des Usability Testings
+- [[gui-usability-testing]] *Abbidung 1:* GUI zum Stand des Usability Testings
 
 == Ehrlichkeitserklärung
 == Anhang
