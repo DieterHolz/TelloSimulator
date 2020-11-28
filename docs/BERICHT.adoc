@@ -590,6 +590,20 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 - [[gui-usability-testing]] *Abbidung 4:* GUI zum Stand des Usability Testings
 
 == Ehrlichkeitserklärung
+Hiermit erklären wir, die vorliegende Projektarbeit selbstständig, ohne Hilfe Dritter und nur unter Benutzung der angegebenen Quellen verfasst zu haben.
+
+Schlieren, 29.11.2020
+
+image::signature_DO.png[width=200]
+
+Daniel Obrist
+
+Schaffhausen, 29.11.2020
+
+image::signature_SP.png[width=200]
+
+Severin Peyer
+
 == Anhang
 === Installationsanleitung Tello Simulator
 
