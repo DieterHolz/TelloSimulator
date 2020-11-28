@@ -34,7 +34,7 @@ https://github.com/danielobrist/TelloDemoCommander[hier] eine Demo-Applikation z
 
 == Simulator-API:
 
-Die Verbindung mit dem Simulator ist sehr ähnlich wie mit der echten Drohne. Allerdings gibt es systembedingt ein paar Unterschiede.
+Die Verbindung mit dem Simulator ist sehr ähnlich, wie mit der echten Drohne. Allerdings gibt es systembedingt ein paar Unterschiede.
 Die nachfolgenden Abschnitte dokumentieren die Simulator-API und geben beispielhaften Java-Code zum Verbindungsaufbau.
 
 === Commands senden & Responses empfangen
@@ -76,31 +76,31 @@ image::/docs/assets/tello-simulator-gui-final.png[width=1000]
 
 .Interaktionmöglichkeiten mit dem User Interface.
 |===
-|Key |Purpose
+|Interaktion |Beschreibung
 
 |kbd:[LeftMouse]
-|Rotate Drone Camera
+|Rotiert die Kamera
 
 |kbd:[Ctrl+LeftMouse]
-|Rotate Drone Camera slowly
+|Rotiert die Kamera langsam
 
 |kbd:[Shift+LeftMouse]
-|Rotate Drone Camera fast
+|Rotiert die Kamera schnell
 
 |kbd:[RightMouse]
-|Move Drone Camera
+|Bewegt die Kamera nach links/rechts
 
 |kbd:[Ctrl+LeftMouse]
-|Move Drone Camera slowly
+|Bewegt die Kamera langsam nach links/rechts
 
 |kbd:[Shift+LeftMouse]
-|Move Drone Camera fast
+|Bewegt die Kamera schnell nach links/rechts
 
 |kbd:[Scroll]
-|Increase/Decrease zoom
+|Zoom erhöhen/verringern
 
 |kbd:[Ctrl+Scroll]
-|Increase/Decrease zoom slowly
+|Zoom langsam erhöhen/verringern
 |===
 
 '''
