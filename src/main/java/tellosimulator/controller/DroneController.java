@@ -315,10 +315,12 @@ public class DroneController {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {  // called in every frame
-                updateRcYaw();
-                updateRcPosition();
-                if (flyCurve){
-                    moveOnCurve();
+                if (droneModel.isMotorsRunning()){
+                    updateRcYaw();
+                    updateRcPosition();
+                    if (flyCurve){
+                        moveOnCurve();
+                    }
                 }
             }
         };
@@ -365,9 +367,14 @@ public class DroneController {
 
     // control commands
     public void takeoff(CommandPackage commandPackage) {
+        this.commandPackage = commandPackage;
+        if (droneModel.isMotorsRunning()) {
+            // already took off
+            CommandResponseSender.sendError(commandPackage);
+            return;
+        }
         droneModel.setMotorsRunning(true);
         droneModel.setTakeoffTime(System.currentTimeMillis());
-        this.commandPackage = commandPackage;
         move(VectorHelper.getUpwardsNormalVector(), DefaultValueHelper.TAKEOFF_DISTANCE);
     }
 
