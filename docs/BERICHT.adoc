@@ -4,6 +4,7 @@
 :checkedbox: pass:normal[{startsb}&#10004;{endsb}]
 :crossedbox: pass:normal[{startsb}&#10006;{endsb}]
 :table-caption: Tabelle
+:figure-caption: Abbildung
 :experimental:
 
 = 20FS_IMVS08: Tello Simulator
@@ -533,24 +534,27 @@ Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. 
 ** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden
 
 == Fazit
-Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem abschliessenden Kapitel nochmals alle Anfangs definierten Anforderungen betrachtet. Ebenfalls werden angetroffenen Probleme, gewonnenen Erkenntnisse sowie mögliche Weiterentwicklugnen der Software besprochen.
+Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem abschliessenden Kapitel nochmals alle anfangs definierten Anforderungen betrachtet. Ebenfalls sind angetroffene Probleme, gewonnene Erkenntnisse sowie mögliche Weiterentwicklungen der Software festgehalten.
 
 
 === Erfüllung der Anforderungen
 
 Eine der wohl zentralsten Anforderungen war das *Entgegennehmen von Commands sowie das Versenden von Responses* via UDP. Deshalb wurde bereits zu Projektbeginn der Fokus auf die Entwicklung dieser Schnittstelle gelegt. So konnte bereits vor MVP-Release eine solide Basis für das Backend gebaut werden, auf welcher auch der finale Release noch beruht.
 
-Das eng mit der ersten Anforderung zusammenhängende *Versenden des Status* gestalte sich dank der guten Vorabeit mit der CommandConnection entsprechend leicht.
+Das eng mit der ersten Anforderung zusammenhängende *Versenden des Status* gestaltete sich dank der guten Vorabeit mit der CommandConnection entsprechend leicht.
 
 Auch das Umsetzen aller Control-, Read- und Set-Commands konnte bis auf die Mission Pad Detection erfüllt werden. Obwohl beim Ausdruck "realitätsgetreu" wohl gewisse Einschränkungen gemacht wurden (keine Simulation von Schwerkraft, Wind und weiteren komplexen Faktoren) verhält sich die virtuelle Drohne grösstenteils wie die echte Tello-Drohne.
 
-Wo der Simulator ebenfalls glänzt ist das *Error-Handling* von Commands sowie das ganze Logging der Applikation. Mittels Tests mit der echten Tello-Drohne und dem Auslesen des Netzwerk-Verkehrs konnten viele Erkenntnisse bezüglich dem Error-Handling der Drohne gewonnen werden. Diese gingen über die öffentlich zugängliche Tello SDK 2.0 Dokumentation hinaus und halfen dabei, ein möglichst ähnliches Error-Handling zu programmieren. Alle Commands und Parameter werden durch den Simulator validiert und auf den im UI integrierten Log ausgegeben. Dies bietet eine Unterstützung beim Debugging.
+Wo der Simulator ebenfalls glänzt ist das *Error-Handling* von Commands sowie das ganze Logging der Applikation. Mittels Tests mit der echten Tello-Drohne und dem Auslesen des Netzwerk-Verkehrs konnten viele Erkenntnisse bezüglich dem Error-Handling der Drohne gewonnen werden. Diese gingen über die öffentlich zugängliche Tello SDK 2.0 Dokumentation hinaus und halfen dabei, ein möglichst ähnliches Error-Handling zu programmieren. Alle Commands und Parameter werden durch den Simulator validiert und auf das im UI integrierte Log ausgegeben. Dies bietet eine Unterstützung beim Debugging.
 
 Die *Raumgrösse* kann via Slider eingestellt werden. Die Startposition kann via Reset-Button zurückgesetzt werden.
 
-Leider erwies sich das *Versenden des Video-Feeds* als komplizierter als erwartet. Es wurde zwar eine funktionsfähige Videopublisher-Klasse implementiert, welche den Webcam-Feed via UDP überträgt. Die Video-Schnittstelle wurde dabei analog diejenigen der Tello-Drohne mittels H.264-Encoding umgesetzt. Jedoch war es schlussendlich mangels Wissens und Ressourcen nicht möglich, die Funktionalität auf das Versenden der JavaFX-Scene-Snapshops anzuwenden. Aus diesem Grund wurde die Anforderung herunterpriorisiert und in den Backlog verschoben.
+Leider erwies sich das *Versenden des Video-Feeds* als komplizierter als erwartet. Es wurde zwar eine funktionsfähige Videopublisher-Klasse implementiert, welche den Webcam-Feed via UDP überträgt. Die Video-Schnittstelle wurde dabei mittels H.264-Encoding umgesetzt, analog zu derjenigen der Tello-Drohne. Jedoch war es schlussendlich mangels Wissens und Ressourcen nicht möglich, die Funktionalität auf das Versenden der JavaFX-Scene-Snapshots anzuwenden. Aus diesem Grund wurde die Priorität dieser Anforderung nach unten korrigiert und der Task ins Backlog verschoben.
 
-Die Anforderung, mit *Dronhnen-Schwärmen* umzugehen, konnte leider ebenfalls noch nicht angegangen werden. Trotzdem wurde bei der Gestaltung der Software-Architektur darauf geachtet, dass die Applikation skalierbar bleibt. Durch die Entkopplung von CommandHandler, DroneController und DroneModel könnten theoretisch vom CommandHandler aus auch mehrere DroneModels geupdated werden. View-seitig wäre für die Anzeige mehrerer DroneViews ebenfalls keine grössere Veränderung nötig.
+Die Anforderung, mit *Dronhnen-Schwärmen* umzugehen, konnte leider ebenfalls noch nicht angegangen werden. Trotzdem wurde bei der Gestaltung der Software-Architektur darauf geachtet, dass die Applikation skalierbar ist. Durch die Entkopplung von CommandHandler, DroneController und DroneModel könnten theoretisch vom CommandHandler aus auch mehrere DroneModels geupdated werden. Auch vonseiten View wäre für die Anzeige mehrerer DroneViews keine grössere Veränderung nötig.
+
+=== Wahl der Programmiersprache
+Zusammen mit unseren Betreuenden haben wir uns am Anfang des Projekts für das JavaFX-Framework entschieden. Der Hauptgrund dafür war das Vorwissen der Betreuenden und uns Studierenden. Der grosse Vorteil dabei war, dass wir sehr schnell mit dem Programmieren loslegen konnten und uns nicht zuerst in eine neue Sprache eindenken mussten. Als Nachteil betrachten wir, dass das Framework nicht wirklich auf 3D ausgelegt ist. Im Nachhinein würden wir uns aber wieder dafür entscheiden.
 
 === Mögliche Weiterentwicklungen
 
