@@ -71,10 +71,8 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 
 === Architektur
 
-Hier wird die Software-Architektur des Simulators beschrieben. Die nachfolgende Grafik bietet einen Überblick der
-wichtigsten Klassen. Anschliessend werden diese Klassen und deren Funktionen genauer beschrieben.
+Hier wird die Software-Architektur des Simulators beschrieben.
 
-<Diagramm mit den wichtigsten Klassen>
 
 ==== Frontend
 Das User-Interface des Simulators ist mit den typischen JavaFX-Bausteinen aufgebaut. Die Benutzerfreundlichkeit wurde
@@ -228,6 +226,11 @@ Aufgrund der Anforderung, dass der Simulator sowohl vom gleichen Gerät aus als 
 
 Wenn nämlich das Client-Programm sowie der Simulator auf dem gleichen Gerät laufen kann es zu Konflikten in der Port-Belegung führen. Beispielsweise kann der Port 8889 nicht mehr vom Client-Programm verwendet werden, wenn sich der Simulator schon an diesen gebunden hat. Daher bindet der Tello-Simulator seinen DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Somit kann der Client weiterhin einen Socket auf 8889 erstellen, wie es von der echten Drohne verlangt wird, ohne vom Simulator blockiert zu werden.
 
+****
+*Für alle Commands gültig:* Unbekannte oder falsch geschriebene Commands liefern die Antwort `unknown command: `.
+****
+
+
 [cols="1,2,2,2", options="header"]
 .Tello-Simulator UDP-Schnittstelle für Commands
 |===
@@ -262,11 +265,14 @@ Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejen
 
 In diesem Kapitel wird die Programmierschnittstelle des Simulators beschrieben. Dazu gehören alle Commands, welche vom
 Simulator unterstützt werden. Grundsätzlich basiert diese Dokumentation der Commands auf dem Tello SDK 2.0 <<sdk2.0userguide>>. Dank ausführlichen Tests mit der Tello-Drohne beinhalete die folgende Auflistung aber detailliertere und vollständigere Beschreibungen zu den einzelnen Commands.
+****
+*Für alle Commands gilt:* Unbekannte oder falsch geschriebene Commands liefern die Antwort 'unknown command:' gefolgt vom gesendeten Command. Commands sind dabei case-sensitive, d.h. Gross- und Kleinschriebung muss eingehalten werden.
+****
 
 [cols="3,5a,2,^1", options="header"]
 .Control Commands
 |===
-| Command | Beschreibung | Mögliche Antwort | Simulator
+| Command | Beschreibung | Mögliche Antworten | Simulator
 
 | command
 | *Enter SDK mode*. Die Drohne ist ab jetzt via commands steuerbar. Ein zweites command zu senden gibt zwar 'ok' zurück, hat aber keine weiteren Auswirkungen.
@@ -331,13 +337,13 @@ Hinweis: Funktioniert zu jeder Zeit.
 | {checkedbox}
 
 | cw x
-| *Rotate x degrees clockwise*. _x = 1-360_. Dreht die Drohne um x Grad im Uhrzeigersinn um seine Yaw-Achse.
-| ok / error /out of range
+| *Rotate x degrees clockwise*. _[line-through]##x = 1-360##_. Dreht die Drohne um x Grad im Uhrzeigersinn um seine Yaw-Achse. Der Range Check 1-360 Grad ist zwar in der SDK dokumentiert, wird von der Drohne sowie dem Simulator aber nicht angewandt. Auch negative Werte sind möglich.
+| ok / error
 | {checkedbox}
 
 | ccw x
-| *Rotate x degrees counterclockwise*. _x = 1-360_. Dreht die Drohne um x Grad im Gegenuhrzeigersinn um seine Yaw-Achse.
-| ok / error / out of range
+| *Rotate x degrees counterclockwise*. _[line-through]##x = 1-360##_. Dreht die Drohne um x Grad im Gegenuhrzeigersinn um seine Yaw-Achse. Der Range Check 1-360 Grad ist zwar in der SDK dokumentiert, wird von der Drohne sowie dem Simulator aber nicht angewandt. Auch negative Werte sind möglich.
+| ok / error
 | {checkedbox}
 
 | flip x
@@ -479,6 +485,24 @@ z.B. `*76\r\n*`
 ****
 *Hinweis:* Antworten von Read Commands sowie der Status der Drone enthalten teilweise new line characters `*\r\n*`.
 ****
+
+=== Weitere Eigenschaften der Tello-API
+Durch ausführliche Tests mit der Tello-Drohne konnten ausserdem folgende besondere Eigenschaften der Tello-API beobachtet werden:
+
+* Es gibt Commands die ein 'ok' zurückschicken, aber auch *"Fire and Forget"-Commands* wie z.B. das rc-Command, welches zu jedem Zeitpunkt von der Drohne ausgeführt wird und keine Antwort schickt.
+
+* Commands werden von der Drohne *nicht gequeued*. Das heisst das Client-Programm muss entsprechend programmiert werden, damit es der Drohne das nächste Command zum passenden Zeitpunkt schickt. Kommt ein Command während ein vorhergehendes noch nicht fertig ausgeführt wurde, dann wird die Antwort *"error Not joystick"* geschickt. Ausnahmen hierzu sind die rc-, stop- und emergency-Commands, welche zu jeder Zeit funktionieren.
+
+* Mitgeschickte *Parameter der Commands können nicht "genullt"* werden, müssen also immer vorhanden sein. Sonst wird das Command nicht erkannt.
+
+* Die Tello-Drohne beginnt mit dem Senden des Status erst nachdem sie *das erste command-Command* erhalten hat.
+
+* Parameter mit *Kommastellen* wie z.B. forward '35.234234' oder 'cw 35.23453' werden von der Drohne ausgeführt.
+
+* Wird nach dem land-Command ein weiteres Control-Command geschickt, welches laufende Motoren benötigt, kommt *"error Motor stop"* als Antwort zurück.
+
+* Mit dem rc-Command gesetzte Werte bleiben **auch nach der Landung noch aktiv**. Eine Landung setzt die rc-Werte also nicht zurück und müssen vor einem erneuten Start idealerweise manuell mit einem erneuten Befehl "rc(0,0,0,0)" zurückgesetzt werden.
+
 
 === Usability Testing
 Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang zu finden.
