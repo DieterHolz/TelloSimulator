@@ -74,8 +74,7 @@ Der Simulator dient Studierenden, welche mit der Tello-Drohne arbeiten und die F
 == Hauptteil
 
 === Architektur
-
-Hier wird die Software-Architektur des Simulators beschrieben.
+Die Software-Architektur des Simulators ist geprägt durch JavaFX-Komponenten im Frontend. Die Logik im Backend besteht hauptsächlich aus den UDP-Schnittstellen und dem Handling der Commands. Die nachfolgenden zwei Kapitel geben einen Überblick der Applikations-Struktur und beschreiben die wichtigsten Klassen.
 
 
 ==== Frontend
@@ -556,7 +555,7 @@ Die Anforderung, mit *Dronhnen-Schwärmen* umzugehen, konnte leider ebenfalls no
 === Mögliche Weiterentwicklungen
 
 Obwohl der Simulator in seinem jetzigen Zustand die Grundanforderungen abdeckt, gibt es noch diverse Funktionen,
-die aus Ressourcengründen im Backlog unseres Projekts geblieben sind. Dazu gehören die im vorangehenden Abschnitt beschriebenen Funktionen des Video-Streams sowie der Drohnen-Schwärme. Zusätzlich wurden während der Entwicklung und auch im Testing diverse zusätzliche Weiterentwicklungen disskutiert;
+die aus Ressourcengründen im Backlog des Projekts geblieben sind. Dazu gehören die im vorangehenden Abschnitt beschriebenen Funktionen des Video-Streams sowie der Drohnen-Schwärme. Zusätzlich wurden während der Entwicklung und auch im Testing diverse zusätzliche Weiterentwicklungen disskutiert;
 
 
 ==== Verbesserungen Usability
@@ -613,11 +612,7 @@ Severin Peyer
 
 == Anhang
 [appendix]
-=== Installationsanleitung Tello Simulator
-[appendix]
-=== Operator-Programm mit der Simulator-API verbinden
-[appendix]
-=== Benutzerhandbuch Tello Simulator
+=== link:SETUP.adoc[Installationsanleitung Tello Simulator]
 [appendix]
 === link:usability-testing-testkonzept.pdf[Usability-Testkonzept]
 [appendix]
