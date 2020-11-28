@@ -14,7 +14,7 @@
 [.text-center]
 *Implementierung eines Simulators für die Tello Drohne*
 [.text-center]
-image::fhnw_ht_10mm.jpg[width=400]
+image::fhnw_ht_10mm.jpg[width=400, align="center"]
 [.text-center]
 IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz +
 v0.1 +
@@ -38,11 +38,12 @@ Bahnhofstrasse 6 +
 Dr. Dieter Holz +
 Dr. Barbara Scheuner
 
-'''
-[discrete]
+<<<
 
 :toc-title: Inhaltsverzeichnis
 toc::[]
+
+<<<
 
 == Management Summary
 An der Fachhochschule Nordwestschweiz (FHNW) wird im Rahmen des Workshop-Moduls 2 im Studiengang Informatik iCompetence die Drohne «Tello EDU» von Ryze Robotics <<telloedu>> (nachfolgend: Tello-Drohne) eingesetzt. Bei der Entwicklung von Applikationen zur Steuerung der Drohne steht pro Team mit vier Mitgliedern nur eine Drohne zur Verfügung. Um diesem Flaschenhals entgegen zu wirken und um Missgeschicke mit der echten Drohne vorzubeugen hat die FHNW einen Simulator in Auftrag gegeben, welcher das Verhalten der Drohne nachahmt.
@@ -52,6 +53,8 @@ Dabei soll keine Hardware implementiert werden, um nicht eine zusätzliche Abhä
 Der Simulator wurde mit dem JavaFX-Framework (basierend auf Java) umgesetzt. Dieser beinhaltet eine 3D-Szene, in welcher ein quaderförmiger skalierbarer Raum und ein 3D-Modell der Drohne ersichtlich sind. Ebenfalls sind Steuerungselemente für den Simulator, die wichtigsten Parameter für die Drohne sowie einige Parameter für die Verbindung zwischen dem Simulator und dem Steuerungsprogramm vorhanden. Zusätzlich beinhaltet das Layout ein Log, welches das Testen des Codes vereinfacht. Im Hintergrund werden die empfangenen Kommandos und ihre Parameter auf Korrektheit überprüft und das Verhalten fürs User Interface generiert. Die Lösung erlaubt auf einfache Art und Weise eine Steuerungssoftware für die Tello-Drohne zu testen, ohne dabei physische Hilfsmittel zu benötigen.
 
 Der Simulator konnte so weit entwickelt werden, dass wir empfehlen, diesen im Rahmen des Moduls zu verwenden. Es macht Sinn, die einzelnen Kommandos nochmals durchzutesten und das Verhalten der Tello-Drohne und des Simulators zu vergleichen. So kann sichergestellt werden, dass die Drohnensteuerungsapplikation nach dem Testen mit dem Simulator auch die physische Drohne korrekt steuern kann. Mithilfe dieses Berichts kann der Simulator weiterentwickelt und die noch fehelenden Funktionalitäten implementiert werden.
+
+<<<
 
 == Einleitung
 === Ausgangslage
@@ -74,12 +77,15 @@ Für das Extended Product, haben wir folgende Kann-Ziele definiert:
 * Per UI kann eine Raumgrösse eingegeben werden (LxBxH) und eine Startposition der Drohne (x, y und Start am Boden)
 * Der Simulator kann mit mehreren Drohnen (Drohnenschwärme) umgehen
 
+<<<
 
 === Lösung
 Die umgesetzte Lösung für das Problem ist ein einfacher Simulator, basierend auf JavaFX. Die Funktionen sind zu grossen Teilen identisch mit der Tello-Drohne. Die Verbindung und der Datenaustausch zum Simulator ist, analog zur Drohne, über UDP gelöst.
 
 === Zielpublikum
 Der Simulator dient Studierenden, welche mit der Tello-Drohne arbeiten und die Funktionalitäten der physischen Drohne zuerst softwaretechnisch testen möchten. Im Speziellen wurde er für das Modul «ws2C» an der FHNW  entwickelt. Gemäss der Modulbeschreibung <<ws2c-fhnw>> beherrschen die Studierenden die Grundkonzepte der objektorientierten Programmierung.
+
+<<<
 
 == Hauptteil
 
@@ -180,6 +186,8 @@ Diese Klasse steuert die virtuelle Drohne und enthält ihre gesamte Logik. Sie a
 
 ===== DroneModel
 Dies ist die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentiert. Die Werte des DroneModels werden nur durch die Logik des DroneControllers verändert und im Frontend durch die an seine Properties gebundene Views dargestellt. Dabei dient das DroneModel als *_single source of truth_* für alle anderen Komponenten, die auf die Parameter der Drohne zugreifen möchten. Dies gewährleistet die Datenintegrität und ermöglicht eine einfachere Skalierbarkeit der Applikation in Zukunft.
+
+<<<
 
 === UDP-Schnittstelle
 
@@ -525,9 +533,10 @@ Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. 
 ** Drohne/Simulator muss auch wieder ausgeschaltet werden können
 ** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden
 
+<<<
+
 == Fazit
 Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem abschliessenden Kapitel nochmals alle anfangs definierten Anforderungen betrachtet. Ebenfalls sind angetroffene Probleme, gewonnene Erkenntnisse sowie mögliche Weiterentwicklungen der Software festgehalten.
-
 
 === Erfüllung der Anforderungen
 
@@ -569,6 +578,8 @@ die aus Ressourcengründen im Backlog des Projekts geblieben sind. Dazu gehören
 ** Flugverhalten bei Flips (nicht um eigene Achse drehen, sondern als kleiner «Kreis»)
 ** Beschleunigung und Geschwindigkeit exakter erfassen
 
+<<<
+
 == Danksagung
 Gerne möchten wir uns bei den folgenden Personen bedanken:
 
@@ -577,6 +588,8 @@ Dank einem kurzen Pausengespräch ist es überhaupt erst dazu gekommen, dass Dr.
 Herzlichen Dank an unsere Betreuer*innen, Dr. Barbara Scheuner und Dr. Dieter Holz für die stete Unterstützung und die konstruktiven Gespräche während der Projektarbeit.
 
 Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wir konnten dadurch wertvolles Feedback einholen und den Simulator erheblich weiterentwickeln.
+
+<<<
 
 == Referenzen
 === Literaturverzeichnis
@@ -603,6 +616,8 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 ** *Tabelle 5* <<Table-5>>
 ** *Tabelle 6* <<Table-6>>
 
+<<<
+
 == Ehrlichkeitserklärung
 Hiermit erklären wir, die vorliegende Projektarbeit selbstständig, ohne Hilfe Dritter und nur unter Benutzung der angegebenen Quellen verfasst zu haben.
 
@@ -617,6 +632,8 @@ Schaffhausen, 29.11.2020
 image::signature_SP.png[width=200]
 
 Severin Peyer
+
+<<<
 
 == Anhang
 [appendix]
