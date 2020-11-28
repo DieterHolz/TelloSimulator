@@ -2,6 +2,8 @@
 :sourcedir: TelloSimulator/src/main/java
 :toc: macro
 :checkedbox: pass:normal[{startsb}&#10004;{endsb}]
+:table-caption: Tabelle
+:experimental:
 
 = 20FS_IMVS08: Tello Simulator
 
@@ -167,6 +169,34 @@ Die DroneView ist die Repräsentation der Drohne im 3D-Raum als 3D-Modell. Ihr M
 
 Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, lässt sich die SimulatorCamera mit der linken Maustaste drehen. Der Pivot-Punkt, um welchen sich die Kamera dreht, transformiet sich dabei gleichmässig mit der Drohne. So fliegt die Drohne nicht plötzlich aus dem Sichtfeld. Ebenfalls lässt sich die Kamera mit der rechten Maustaste oder durch das Drücken des Mausrads nach links und rechts verschieben, um eine andere Perspektive zu erhalten. Die Zoom-Distanz der Kamera lässt sich durch das Scrollen mit dem Mausrad oder dem Touchpad anpassen. Alle diese Manipulationen (Drehen, Verschieben und Zoom) können durch das Halten der Ctrl- bzw. Shift-Taste präzisiert bzw. verstärkt werden.
 
+.Überblick aller Interaktionsmöglichkeiten mit der Simulaotor3Dscene.
+|===
+|Interaktion |Beschreibung
+
+|kbd:[LeftMouse]
+|Rotiert die Kamera
+
+|kbd:[Ctrl+LeftMouse]
+|Rotiert die Kamera langsam
+
+|kbd:[Shift+LeftMouse]
+|Rotiert die Kamera schnell
+
+|kbd:[RightMouse]
+|Bewegt die Kamera nach links/rechts
+
+|kbd:[Ctrl+LeftMouse]
+|Bewegt die Kamera langsam nach links/rechts
+
+|kbd:[Shift+LeftMouse]
+|Bewegt die Kamera schnell nach links/rechts
+
+|kbd:[Scroll]
+|Zoom erhöhen/verringern
+
+|kbd:[Ctrl+Scroll]
+|Zoom langsam erhöhen/verringern
+|===
 
 ==== Backend
 Die Netzwerkdschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Ohne Zugang zum Source-Code der Tello-Drohne war dies nicht immer einfach. Als Ausgangslage diente uns die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche wir als Testobjekt verwenden konnten. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren. Die aus den Tests mit der Tello-Drohne gewonnenen Erkenntnisse sind unter <<Erkenntnisse aus dem Testing mit der physischen Tello-Drohne>> dokumentiert.
@@ -208,19 +238,74 @@ Die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentiert. Die We
 === UDP-Schnittstelle
 
 Wie bei der Tello-Drohne findet auch beim Simulator die gesamte Kommunikation über das UDP-Netzwerkprotokoll statt.
-Um den Verbindungsaufbau mit dem Simulator ähnlich wie mit der Tello-Drohne zu gestalten, haben wir die
+Um den Verbindungsaufbau mit dem Simulator ähnlich wie mit der Tello-Drohne zu gestalten, wurde die
 Schnittstelle so weit wie möglich gleich gestaltet, wie sie von der Tello-Drohne implementiert wird. Als Grundlage
 diente uns hierbei der offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Dazu führten wir eigene Tests mit der
 Tello-Drohne durch, welche die teilweise lückenhafte Dokumentation im User Guide ergänzten.
 
 ==== Die UDP-Schnittstelle der Tello-Drohne
+Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist ziemlich unkompliziert und statisch. Commands werden auf der fixen Adresse 192.168.10.1:8889 empfangen sowie an den gleichen Port des Client-Programms versendet. Der State wird auf Port 8890 geschickt, bzw. der Videostream auf Port 11111.
 
+[cols="1,2,2,2", options="header"]
+.Tello-Drone UDP-Schnittstelle für Commands
+|===
+| Verbindung | IP-Adresse der Drone | Empfängt Pakete auf Socket mit Port | Sendet Pakete statisch an
 
+| Command
+| 192.168.10.1
+| 8889
+| Client-IP:8889
+
+| State
+| 192.168.10.1
+| -
+| Client-IP:8890
+
+| Video
+| 192.168.10.1
+| -
+| Client-IP:11111
+|===
+
+==== Die UDP-Schnittstelle des Simulators
+Aufgrund der Anforderung, dass der Simulator sowohl vom gleichen Gerät aus als auch von jedem sich im lokalen Netzwerk befindenden Client angesteuert werden können muss, ist seine Schnittstelle leicht unterschiedlich gestaltet.
+
+Wenn nämlich das Client-Programm sowie der Simulator auf dem gleichen Gerät laufen kann es zu Konflikten in der Port-Belegung führen. Beispielsweise kann der Port 8889 nicht mehr vom Client-Programm verwendet werden, wenn sich der Simulator schon an diesen gebunden hat. Daher bindet der Tello-Simulator seinen DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Somit kann der Client weiterhin einen Socket auf 8889 erstellen, wie es von der echten Drohne verlangt wird, ohne vom Simulator blockiert zu werden.
+
+[cols="1,2,2,2", options="header"]
+.Tello-Simulator UDP-Schnittstelle für Commands
+|===
+| Verbindung | IP-Adresse des Simulators | Empfängt Pakete auf Socket mit Port | Sendet Pakete dynamisch an
+
+| Command
+| beliebig \| 127.0.0.1
+| 8879
+| IP und Port aus empfangenen Paket
+
+| State
+| beliebig \| 127.0.0.1
+| -
+| IP und Port aus empfangenen Paket
+
+| Video
+| beliebig \| 127.0.0.1
+| -
+| (noch nicht implementiert)
+|===
+
+Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejenige der Drohne. Trotzdem benötigt es Client-seitig nur zwei kleine Anpassungen um mit dem Simulator zu funktionieren: 
+
+. *Die IP muss von 192.168.10.1 auf die Simulator-IP (ersichtlich im Simulator-UI) eingestellt werden.*
+. *Der UDP-Socket des Clients (gebunden an Port 8889) muss sich in der connect-Methode zu 8879 verbinden anstatt 8889.*
+
+****
+*Hinweis:* Eine detailliere Anleitung zum Verbindungsaufbau mit dem Simulator inkl. beispielhaftem Java-Code ist im Readme des Projekts sowie im Anhang dieses Berichts zu finden.
+****
 
 === Programmierschnittstelle
 
 In diesem Kapitel wird die Programmierschnittstelle des Simulators beschrieben. Dazu gehören alle Commands, welche vom
-Simulator unterstützt werden. Grundsätzlich basiert diese Dokumentation der Commands auf dem Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Dank ausführlichen Tests mit der Tello-Drohne hat die folgende Auflistung aber detailliertere und vollständigere Beschreibungen zu den einzelnen Commands.
+Simulator unterstützt werden. Grundsätzlich basiert diese Dokumentation der Commands auf dem Tello SDK 2.0 <<sdk2.0userguide>>. Dank ausführlichen Tests mit der Tello-Drohne beinhalete die folgende Auflistung aber detailliertere und vollständigere Beschreibungen zu den einzelnen Commands.
 
 [cols="3,5a,2,^1", options="header"]
 .Control Commands
@@ -436,7 +521,7 @@ z.B. `*76\r\n*`
 
 |===
 ****
-Hinweis: Antworten von Read Commands sowie der Status der Drone enthalten new line characters `*\r\n*`.
+*Hinweis:* Antworten von Read Commands sowie der Status der Drone enthalten teilweise new line characters `*\r\n*`.
 ****
 
 === Mögliche Weiterentwicklungen
@@ -472,6 +557,7 @@ Ebenfalls möchten wir uns bei den Probanden des Usability Testings bedanken. Wi
 == Ehrlichkeitserklärung
 == Anhang
 === Installationsanleitung Tello Simulator
+
 === Operator-Programm mit der Simulator-API verbinden
 === Benutzerhandbuch Tello Simulator
 === Usability-Testkonzept
