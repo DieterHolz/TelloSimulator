@@ -1,6 +1,6 @@
 :icons: font
 :stem:
-:imagesdir: assets
+:imagesdir: /docs/assets
 :figure-caption: Abbildung
 :table-caption: Tabelle
 :experimental:
@@ -74,7 +74,33 @@ WARNING: Der TelloSimulator versendet in der aktuellen Version noch keinen Video
 .Das TelloSimulator User Interface.
 image::/docs/assets/tello-simulator-gui-final.png[width=1000]
 
-.Interaktionmöglichkeiten mit dem User Interface.
+.Funktionalität der UI-Elemente.
+|===
+|UI-Element |Funktion
+
+|kbd:[Start Drone]
+|Startet und stoppt die virtuelle Drohne. Entspricht dem On/Off-Button der echten Tello-Drohne.
+
+|kbd:[Reset Drone Position]
+|Setzt das 3D-Modell der Drohne in den Anfangszustand zurück.
+
+|kbd:[Change to Drone Camera]
+|Wechselt zwischen Simulator- und Drohnen-Kamera.
+
+|kbd:[Room-Slider]
+|Anpassung der Grösse der 3D-Welt.
+
+|kbd:[Log-Level DEBUG INFO WARN ERRROR]
+|Setzt das Level für die Filterung der angezeigten Logs.
+
+|kbd:[Show Timestamp]
+|Aktiviert die Zeitstempel der Log-Einträge.
+
+|kbd:[Autoscroll to Tail]
+|Aktiviert das automatische Scrollen zum neusten Eintrag am Ende des Logs.
+|===
+
+.Interaktionmöglichkeiten mit der 3D-Szene.
 |===
 |Interaktion |Beschreibung
 
