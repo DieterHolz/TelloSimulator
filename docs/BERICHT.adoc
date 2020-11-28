@@ -38,18 +38,25 @@ Dr. Barbara Scheuner
 
 '''
 [discrete]
-== Impressum
 
 :toc-title: Inhaltsverzeichnis
 toc::[]
 
 == Management Summary
+An der Fachhochschule Nordwestschweiz (FHNW) wird im Rahmen des Workshop-Moduls 2 im Studiengang Informatik iCompetence die Drohne «Tello EDU» von Ryze Robotics <<telloedu>> (nachfolgend: Tello-Drohne) eingesetzt. Bei der Entwicklung von Applikationen zur Steuerung der Drohne steht pro Team mit vier Mitgliedern nur eine Drohne zur Verfügung. Um diesem Flaschenhals entgegen zu wirken und um Missgeschicke mit der echten Drohne vorzubeugen hat die FHNW einen Simulator in Auftrag gegeben, welcher das Verhalten der Drohne nachahmt.
+
+Dabei soll keine Hardware implementiert werden, um nicht eine zusätzliche Abhängigkeit zu erzeugen. Der Simulator soll die gleichen Befehle wie die Tello-Drohne per UDP-Verbindung entgegennehmen und diese möglichst realitätsgetreu in einer einfachen 3D-Welt abbilden.
+
+Der Simulator wurde mit dem JavaFX-Framework (basierend auf Java) umgesetzt. Dieser beinhaltet eine 3D-Szene, in welcher ein quaderförmiger skalierbarer Raum und ein 3D-Modell der Drohne ersichtlich sind. Ebenfalls sind Steuerungselemente für den Simulator, die wichtigsten Parameter für die Drohne sowie einige Parameter für die Verbindung zwischen dem Simulator und dem Steuerungsprogramm vorhanden. Zusätzlich beinhaltet das Layout ein Log, welches das Testen des Codes vereinfacht. Im Hintergrund werden die empfangenen Kommandos und ihre Parameter auf Korrektheit überprüft und das Verhalten fürs User Interface generiert. Die Lösung erlaubt auf einfache Art und Weise eine Steuerungssoftware für die Tello-Drohne zu testen, ohne dabei physische Hilfsmittel zu benötigen.
+
+Der Simulator konnte so weit entwickelt werden, dass wir empfehlen, diesen im Rahmen des Moduls zu verwenden. Es macht Sinn, die einzelnen Kommandos nochmals durchzutesten und das Verhalten der Tello-Drohne und des Simulators zu vergleichen. So kann sichergestellt werden, dass die Drohnensteuerungsapplikation nach dem Testen mit dem Simulator auch die physische Drohne korrekt steuern kann. Mithilfe dieses Berichts kann der Simulator weiterentwickelt und die noch fehelenden Funktionalitäten implementiert werden.
+
 == Einleitung
 === Ausgangslage
-Im Workshop-Modul 2 / ws2C (Programmieren von Minidrohnen und "intelligente Kleidung") der Fachhochschule Nordwestschweiz (FHNW) wird die Tello EDU von Ryze Robotics <<telloedu>> (nachfolgend: Tello-Drohne) eingesetzt. Dabei werden in Teams von durchschnittlich 4 Mitgliedern Applikationen zur Steuerung der Drohne entwickelt. Jedem Team steht dabei eine Tello-Drohne zur Verfügung.
+Im Workshop-Modul 2 / ws2C (Programmieren von Minidrohnen und "intelligente Kleidung") der Fachhochschule Nordwestschweiz (FHNW) wird die Tello EDU von Ryze Robotics <<telloedu>> (nachfolgend: Tello-Drohne) eingesetzt. Dabei werden in Teams von durchschnittlich vier Mitgliedern Applikationen zur Steuerung der Drohne entwickelt. Jedem Team steht dabei eine Tello-Drohne zur Verfügung.
 
 === Problem
-Es hat sich gezeigt, dass die Drohne sehr schnell zu einem Engpass führt, da insbesondere im frühen Entwicklungsstadium viel mit der Drohne experimentiert werden muss. Dadurch verzögert sich der Projektfortschritt. Des Weiteren ist es auch bereits zu mehreren Missgeschicken mit der Drohne gekommen. Beispielsweise wurde vergessen ein Stopp-Signal einzubauen, weswegen die Drohne in eine Wand geflogen und kaputt gegangen ist.
+Es hat sich gezeigt, dass die Drohne sehr schnell zu einem Engpass führt, da insbesondere im frühen Entwicklungsstadium viel mit der Drohne experimentiert werden muss. Dadurch verzögert sich der Projektfortschritt. Des Weiteren ist es auch bereits zu mehreren Missgeschicken mit der Drohne gekommen. Beispielsweise wurde vergessen ein 'Stopp'/'Land'-Signal einzubauen, weswegen die Drohne in eine Wand geflogen und kaputt gegangen ist.
 
 === Anforderungen
 Um die beiden Probleme zu minimieren, repsektive eleminieren, soll ein Simulator entwickelt werden, welcher sich möglichst gleich verhält wie die echte Tello-Drohne. Dieser soll rein software-technisch umgesetzt werden, damit nicht wieder die Abhängigkeit von einem technischen Gerät entsteht. Der Simulator muss die Programmierschnittstelle des Tello SDK 2.0 anbieten. Folgende Anforderungen wurden definiert:
