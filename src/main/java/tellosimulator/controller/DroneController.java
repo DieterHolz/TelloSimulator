@@ -315,10 +315,12 @@ public class DroneController {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {  // called in every frame
-                updateRcYaw();
-                updateRcPosition();
-                if (flyCurve){
-                    moveOnCurve();
+                if (droneModel.isMotorsRunning()){
+                    updateRcYaw();
+                    updateRcPosition();
+                    if (flyCurve){
+                        moveOnCurve();
+                    }
                 }
             }
         };
