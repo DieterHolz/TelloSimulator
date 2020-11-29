@@ -64,7 +64,7 @@ Im Workshop-Modul 2 / ws2C (Programmieren von Minidrohnen und "intelligente Klei
 Es hat sich gezeigt, dass die Drohne sehr schnell zu einem Engpass führt, da insbesondere im frühen Entwicklungsstadium viel mit der Drohne experimentiert werden muss. Dadurch verzögert sich der Projektfortschritt. Des Weiteren ist es auch bereits zu mehreren Missgeschicken mit der Drohne gekommen. Beispielsweise wurde vergessen ein 'Stopp'/'Land'-Signal einzubauen, weswegen die Drohne in eine Wand geflogen und kaputt gegangen ist.
 
 === Anforderungen
-Um die beiden Probleme zu minimieren, repsektive eleminieren, soll ein Simulator entwickelt werden, welcher sich möglichst gleich verhält wie die echte Tello-Drohne. Dieser soll rein software-technisch umgesetzt werden, damit nicht wieder die Abhängigkeit von einem technischen Gerät entsteht. Der Simulator muss die Programmierschnittstelle des Tello SDK 2.0 anbieten. Folgende Anforderungen wurden definiert:
+Um die beiden Probleme zu minimieren, respektive eliminieren, soll ein Simulator entwickelt werden, welcher sich möglichst gleich verhält wie die echte Tello-Drohne. Dieser soll rein software-technisch umgesetzt werden, damit nicht wieder die Abhängigkeit von einem technischen Gerät entsteht. Der Simulator muss die Programmierschnittstelle des Tello SDK 2.0 anbieten. Folgende Anforderungen wurden definiert:
 
 * Der Simulator kann Kommandos des Operators entgegennehmen und eine Response senden
 * Die virtuelle Drohne setzt alle Control-, Read- und Set-Commands visuell realitätsgetrau um
@@ -72,7 +72,7 @@ Um die beiden Probleme zu minimieren, repsektive eleminieren, soll ein Simulator
 * Der Simulator kann einen Videostream aus der Sicht der Drohne an den Operator senden
 * Error-Handling (ungültige Befehle, ungültige Parameter)
 
-Für das Extended Product, haben wir folgende Kann-Ziele definiert:
+Für das Extended Product, haben wurden folgende Kann-Ziele definiert:
 
 * Per UI kann eine Raumgrösse eingegeben werden (LxBxH) und eine Startposition der Drohne (x, y und Start am Boden)
 * Der Simulator kann mit mehreren Drohnen (Drohnenschwärme) umgehen
@@ -107,23 +107,23 @@ Diese Komponente zeigt die wichtigsten Parameter der Drohne an. Dazu gehören di
 
 ====== NetworkControls
 Die NetworkControls auf der rechten Seite beinhalten zuoberst den *Start Drone*-Button, mit welchem die virtuelle Drohne ein- und ausgeschaltet
-werden kann. Dieser Button repräsentiert in der Funktionsweise den On-Off-Schalter der echten Tello-Drohne. Denn erst nachdem die Tello-Drohne eingeschaltet wurde kann man sich mit ihr verbinden. Analog müss auch die virtuelle Drohne zuerst gestartet werden. Nach dem Betätigen des "Start Drone"-Buttons baut der Simulator die CommandConnection auf und beginnt auf dem entsprechenden Port Kommandos (Command) zu empfangen. Des Weiteren wird eine ensprechende Nachricht in das Log geschrieben, um dem User zu zeigen, dass die Drohne auf Commands wartet.
+werden kann. Dieser Button repräsentiert in der Funktionsweise den On-Off-Schalter der echten Tello-Drohne. Denn erst nachdem die Tello-Drohne eingeschaltet wurde kann man sich mit ihr verbinden. Analog muss auch die virtuelle Drohne zuerst gestartet werden. Nach dem Betätigen des "Start Drone"-Buttons baut der Simulator die CommandConnection auf und beginnt auf dem entsprechenden Port Kommandos (Command) zu empfangen. Des Weiteren wird eine entsprechende Nachricht in das Log geschrieben, um dem User zu zeigen, dass die Drohne auf Commands wartet.
 
-Unterhalb des Start-Buttons befinden sich Informationen zum Verbindungsaufbau mit dem Simulator. Im Feld *IP Address* steht bei aktiver Interntverbindung die IP-Addresse des Geräts, auf welchem der Simulator gerade läuft. Wenn keine Internetverbindung besteht, kann der Simulator diese Addresse leider nicht ermitteln. Dann steht in diesem Feld standardmässig die Loopback-Addresse 127.0.0.1.
+Unterhalb des Start-Buttons befinden sich Informationen zum Verbindungsaufbau mit dem Simulator. Im Feld *IP Address* steht bei aktiver Internetverbindung die IP-Adresse des Geräts, auf welchem der Simulator gerade läuft. Wenn keine Internetverbindung besteht, kann der Simulator diese Adresse leider nicht ermitteln. Dann steht in diesem Feld standardmässig die Loopback-Adresse 127.0.0.1.
 
 Im Feld *Command Port* wird die Port-Nummer angezeigt, auf welcher der Simulator seinen DatagramSocket zum Empfangen von Commands erstellt hat. Hierhin müssen also von einem Client-Programm die Commands geschickt werden.
 
 Das nächste Feld *State Port* gibt den Port an, mit welchem sich die StateConnection des Simulators für das Versenden des Drohnen-Status verbindet. Auf diesem Port sollte man also den Drohnen-Status empfangen.
 
 ====== LogBox
-Die LogBox an der Unterseite ist ein mächtiges Tool zum Debuggen. Hier werden sozusagen alle Aktivitäten des Simulators geloggt. Die verschiedenen Log-Level sind dabei farblich unterschiedlich dargestelt. Das Log-Level lässt sich je nach Bedarf einstellen, und die ListView wird entsprchend gefiltert. Ebenfalls lässt sich mit *Show Timestamp* ein Zeitstempel ein- und ausblenden. Der Button *Autoscroll to Tail* scrollt automatisch immer nach unten zum neusten Log-Eintrag.
+Die LogBox an der Unterseite ist ein mächtiges Tool zum Debuggen. Hier werden sozusagen alle Aktivitäten des Simulators geloggt. Die verschiedenen Log-Level sind dabei farblich unterschiedlich dargestellt. Das Log-Level lässt sich je nach Bedarf einstellen und die ListView wird entsprechend gefiltert. Ebenfalls lässt sich mit *Show Timestamp* ein Zeitstempel ein- und ausblenden. Der Button *Autoscroll to Tail* scrollt automatisch immer nach unten zum neusten Log-Eintrag.
 
 ====== Simulator3DScene
-Im Mittelpunkt des UI steht die Simulator3DScene, auf welcher die ganze 3D-Welt inklusive virtueller Drohne gerendert wird. Hierzu verwendt der Simulator eine JavaFX-SubScene, welche in der umschliessenden BorderPane im Zentrum platziert ist. Neben der 3D-Welt und der Drohne befinden sich zwei Kameras in dem SceneGraph der Subscene: einerseits die vom User kontrollierbare SimulatorCamera sowie die an die Drohne fixierte DroneCamera.
+Im Mittelpunkt des UI steht die Simulator3DScene, auf welcher die ganze 3D-Welt inklusive virtueller Drohne gerendert wird. Hierzu verwendet der Simulator eine JavaFX-SubScene, welche in der umschliessenden BorderPane im Zentrum platziert ist. Neben der 3D-Welt und der Drohne befinden sich zwei Kameras in dem SceneGraph der Subscene: einerseits die vom User kontrollierbare SimulatorCamera sowie die an die Drohne fixierte DroneCamera.
 
 Die DroneView ist die Repräsentation der Drohne im 3D-Raum als 3D-Modell. Ihr Modell wird mittels einem FXML Source File geladen, inklusive animierten Rotoren. Die Position und Rotation der DroneView sind dabei einseitig an die entsprechenden Properties des DroneModels im Backend gebunden. Das heisst wenn sich im DroneModel was ändert, wird dies durch die DroneView in der 3D-Welt abgebildet.
 
-Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, lässt sich die SimulatorCamera mit der linken Maustaste drehen. Der Pivot-Punkt, um welchen sich die Kamera dreht, transformiet sich dabei gleichmässig mit der Drohne. So fliegt die Drohne nicht plötzlich aus dem Sichtfeld. Ebenfalls lässt sich die Kamera mit der rechten Maustaste oder durch Drücken des Mausrads nach links und rechts verschieben, um eine andere Perspektive zu erhalten. Die Zoom-Distanz der Kamera lässt sich durch das Scrollen mit dem Mausrad oder dem Touchpad anpassen. Alle diese Manipulationen (Drehen, Verschieben und Zoom) können durch das Halten der Ctrl- beziehungsweise Shift-Taste präzisiert beziehungsweise verstärkt werden.
+Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, lässt sich die SimulatorCamera mit der linken Maustaste drehen. Der Pivot-Punkt, um welchen sich die Kamera dreht, transformiert sich dabei gleichmässig mit der Drohne. So fliegt die Drohne nicht plötzlich aus dem Sichtfeld. Ebenfalls lässt sich die Kamera mit der rechten Maustaste oder durch Drücken des Mausrads nach links und rechts verschieben, um eine andere Perspektive zu erhalten. Die Zoom-Distanz der Kamera lässt sich durch das Scrollen mit dem Mausrad oder dem Touchpad anpassen. Alle diese Manipulationen (Drehen, Verschieben und Zoom) können durch das Halten der Ctrl- beziehungsweise Shift-Taste präzisiert beziehungsweise verstärkt werden.
 
 [title="Überblick aller Interaktionsmöglichkeiten mit der Simulaotor3Dscene.", id="Table-{counter:table-counter}", options="header"]
 
@@ -156,9 +156,9 @@ Damit der User das Verhalten der virtuellen Drohne optimal beobachten kann, läs
 |===
 
 ==== Backend
-Die Netzwerkschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Als Ausgangslage diente die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche als Testobjekt verwendet werden konnte. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren. Die aus den Tests mit der Tello-Drohne gewonnenen Erkenntnisse sind ins Kaptiel <<Programmierschnittstelle>> eingeflossen.
+Die Netzwerkschnittstelle und die grundlegenden Logiken des Simulators wurden stets unter Berücksichtigung des Verhalten der echten Tello-Drohne implementiert. Als Ausgangslage diente die offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>> sowie eine Tello-Drohne, welche als Testobjekt verwendet werden konnte. Damit liessen sich Stück für Stück die Logiken der Tello-Drohne rekonstruieren und in den Simulator implementieren. Die aus den Tests mit der Tello-Drohne gewonnenen Erkenntnisse sind ins Kapitel <<Programmierschnittstelle>> eingeflossen.
 
-Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simulator kann zum Beispiel im Gegensatz zur echten Drohne kein eigenes Wireless-Netzwerk aufbauen. Aussderem muss der Simulator auch auf dem gleichen Gerät laufen können wie das Client-Programm. Dabei kann es zu Konflikten mit der Port-Belegung kommen. Dies ist unter <<UDP-Schnittstelle>> genauer erlätuert. Bei der Tello-Drohne hat man diese Probleme nicht, da die Drohne immer alle Ports für sich selbst zur Verfügung hat.
+Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simulator kann zum Beispiel im Gegensatz zur echten Drohne kein eigenes Wireless-Netzwerk aufbauen. Ausserdem muss der Simulator auch auf dem gleichen Gerät laufen können wie das Client-Programm. Dabei kann es zu Konflikten mit der Port-Belegung kommen. Dies ist unter <<UDP-Schnittstelle>> genauer erläutert. Bei der Tello-Drohne hat man diese Probleme nicht, da die Drohne immer alle Ports für sich selbst zur Verfügung hat.
 
 Um die zentralen Datenflüsse der Tello-Drohne abzubilden, implementiert der TelloSimulator zwei Threads, welche parallel zu dem Hauptprogramm  laufen: die *CommandConnection* und die *StateConnection*. Die *VideoConnection* als letzter Teil dieser Dreifaltigkeit wurde aus Ressourcengründen nicht umgesetzt.
 
@@ -167,19 +167,19 @@ image::tello-simulator-backend-swimlane-diagram.svg[width=800, title="Ein grober
 ===== CommandConnection
 Sobald der Benutzer die virtuelle Drohne einschaltet, wird eine neue Instanz der CommandConnection erstellt und der Thread gestartet. Beim Erstellen des Sockets besteht hierbei eine Eigenheit des Simulators. Der Standard-Port der Tello-Drohne wäre 8889, jedoch wird dieser Port in den meisten Fällen schon durch das ebenfalls lokal laufende Client-Programm belegt sein. Deshalb bindet sich der Simulator-DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Danach empfängt der Thread laufend UDP-Pakete auf diesem Socket.
 
-Nach einem initalen `command`-Command wird dann wie bei der echten Tello-Drohe der SDK Mode aktiviert. Ab dann ist die Drohne bereit für andere Commands. Gleichzeitig bewirkt dies die Initierung der StateConnection, welche ab dann regelmässig den Drohnen-Status versendet. 
+Nach einem initialen `command`-Command wird dann wie bei der echten Tello-Drohe der SDK Mode aktiviert. Ab dann ist die Drohne bereit für andere Commands. Gleichzeitig bewirkt dies die Initiierung der StateConnection, welche ab dann regelmässig den Drohnen-Status versendet.
 
-Alle über die CommandConnection empfangenen Nachrichten werden gewrappt als CommandPackage samt Herkunfts-Addresse und Herkunfts-Port an die CommandHandler-Klasse weitergegeben.
+Alle über die CommandConnection empfangenen Nachrichten werden gewrappt als CommandPackage samt Herkunfts-Adresse und Herkunfts-Port an die CommandHandler-Klasse weitergegeben.
 
 
 ===== StateConnection
 Die StateConnection ist ein Stück weniger kompliziert, da sie sich nur mit dem Versenden des Drohnen-Status befassen muss. Nach dem Start durch die CommandConnection schickt die StateConnection asynchron alle 100 ms den Status der Drone im entsprechenden Format an die Addresse, von welcher das erste `command`-Command empfangen wurde. Da auf dem State-Port nichts empfangen werden muss, verwendet der Simulator hier den gleichen Port wie die Tello-Drohne.
 
 ===== CommandHandler
-Die Aufgabe der CommandHandler-Klasse ist es, mit den verschiedenen Commands umzugehen. Der CommandHandler splittet die über die CommandConnection empfangenen Command-Strings auf und extrahiert die enthaltenen Parameter. Anschliessend wird über ein Switch-Statement jedes Command validiert und zu den entsprechenden Methoden im DroneController weitergeleitet. Kann ein Command nicht erfolgreich validiert werden, wird über den CommandResponseSender eine entprechende Antwort an das Client-Programm versendet.
+Die Aufgabe der CommandHandler-Klasse ist es, mit den verschiedenen Commands umzugehen. Der CommandHandler splittet die über die CommandConnection empfangenen Command-Strings auf und extrahiert die enthaltenen Parameter. Anschliessend wird über ein Switch-Statement jedes Command validiert und zu den entsprechenden Methoden im DroneController weitergeleitet. Kann ein Command nicht erfolgreich validiert werden, wird über den CommandResponseSender eine entsprechende Antwort an das Client-Programm versendet.
 
 ===== CommandResponseSender
-Da der Simulator zu diversen Zeitpunkten und von verschiedensten Klassen aus eine Response schicken können muss, ist der CommandResponseSender als `public final class` implementiert. So ist diese Klasse immer die einzige Quelle aller Responses des Simulators. Die Klasse beinhaltet statische Methoden zum Versenden der Responses. Aufgerufen werden diese z.B. aus dem CommandHandler, wenn ein Command als fehlerhaft validiert wurde, oder auch aus dem DroneController, nachdem die Ausführung vollendet wurde. Versendet werden die Responses über den gleichen DatagramSocket, welcher in der CommandConnection inital erstellt wurde. Dadurch erhält das Client-Programm die Antworten immer von der Addresse wo das erste `command`-Command hingeschickt wurde.
+Da der Simulator zu diversen Zeitpunkten und von verschiedensten Klassen aus eine Response schicken können muss, ist der CommandResponseSender als `public final class` implementiert. So ist diese Klasse immer die einzige Quelle aller Responses des Simulators. Die Klasse beinhaltet statische Methoden zum Versenden der Responses. Aufgerufen werden diese z.B. aus dem CommandHandler, wenn ein Command als fehlerhaft validiert wurde, oder auch aus dem DroneController, nachdem die Ausführung vollendet wurde. Versendet werden die Responses über den gleichen DatagramSocket, welcher in der CommandConnection inital erstellt wurde. Dadurch erhält das Client-Programm die Antworten immer von der Adresse wo das erste `command`-Command hingeschickt wurde.
 
 ===== DroneController
 Diese Klasse steuert die virtuelle Drohne und enthält ihre gesamte Logik. Sie aktualisiert und animiert alle Daten, die in dem DroneModel gespeichert sind, dem sie zugeordnet ist. Die Methoden des DroneControllers führen die Befehle aus, wenn sie vom CommandHandler aufgerufen werden. Ebenfalls sendet der Controller Antworten über den CommandResponseSender an das Client-Programm, sobald ein bestimmtes Command fertig ausgeführt wurde.
@@ -194,11 +194,11 @@ Dies ist die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentier
 Identisch zur Tello-Drohne findet auch beim Simulator die gesamte Kommunikation über das UDP-Netzwerkprotokoll statt. Um den Verbindungsaufbau mit dem Simulator ähnlich wie mit der Tello-Drohne zu gestalten, wurde die Schnittstelle so weit wie möglich gleich gestaltet, wie sie von der Tello-Drohne implementiert wird. Als Grundlage diente hierbei der offizielle Tello SDK 2.0 User Guide <<sdk2.0userguide>>. Des Weiteren wurden eigene Tests mit der Tello-Drohne durchgeführt, welche die teilweise lückenhafte Dokumentation im User Guide ergänzen.
 
 ==== Visualisierung der Schnittstellen
-In Abbildung 3 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (genannt Operator) und der Simulator sich auf dem selben Gerät (gleiche IP) befinden, in Abbildung 4, wenn sie sich auf unterschiedlichen Geräten (andere IPs) befinden. Die genauen Erklärungen zur Schnittstelle des Simulators und der Tello-Drohne sind in den nachfolgenden zwei Kaptieln zu finden.
+In Abbildung 3 ist der Netzwerkaufbau dokumentiert, wenn das Client-Programm (genannt Operator) und der Simulator sich auf dem selben Gerät (gleiche IP) befinden, in Abbildung 4, wenn sie sich auf unterschiedlichen Geräten (andere IPs) befinden. Die genauen Erklärungen zur Schnittstelle des Simulators und der Tello-Drohne sind in den nachfolgenden zwei Kapiteln zu finden.
 
-image::tello-simulator-network-diagram-different-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)", id="Figure-{counter:image-number}"]
+image::tello-simulator-network-diagram-same-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben die gleiche IP)", id="Figure-{counter:image-number}"]
 
-image::tello-simulator-network-diagram-same-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)", id="Figure-{counter:image-number}"]
+image::tello-simulator-network-diagram-different-host.png[width=800, title="Netzwerk-Diagramm mit Simulator, Client-Programm (Operator) und Tello-Drohne (Operator und Simulator haben eine unterschiedliche IP)", id="Figure-{counter:image-number}"]
 
 ==== Die UDP-Schnittstelle der Tello-Drohne
 Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist ziemlich unkompliziert und statisch. Commands werden auf der fixen Adresse 192.168.10.1:8889 empfangen sowie an den gleichen Port des Client-Programms versendet. Der State wird auf Port 8890 geschickt, der Videostream auf Port 11111.
@@ -206,7 +206,7 @@ Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist zi
 [cols="1,2,2,2", options="header", title="Tello-Drone UDP-Schnittstelle für Commands", id="Table-{counter:table-counter}"]
 
 |===
-| Verbindung | IP-Adresse der Drone | Empfängt Pakete auf Socket mit Port | Sendet Pakete statisch an
+| Verbindung | IP-Adresse der Drohne | Empfängt Pakete auf Socket mit Port | Sendet Pakete statisch an
 
 | Command
 | 192.168.10.1
@@ -257,7 +257,7 @@ Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejen
 . *Der UDP-Socket des Clients (gebunden an Port 8889) muss sich in der connect-Methode zu 8879 verbinden anstatt 8889.*
 
 ****
-*Hinweis:* Eine detailliere Anleitung zum Verbindungsaufbau mit dem Simulator inkl. beispielhaftem Java-Code ist im Readme des Projekts sowie im Anhang dieses Berichts zu finden.
+*Hinweis:* Eine detailliere Anleitung zum Verbindungsaufbau mit dem Simulator inkl. beispielhaftem Java-Code ist im Readme des Projekts zu finden.
 ****
 
 === Programmierschnittstelle
@@ -265,7 +265,7 @@ Somit verhält sich die Simulator-Schnittstelle ein wenig dynamischer als diejen
 In diesem Kapitel wird die Programmierschnittstelle des Simulators beschrieben. Dazu gehören alle Commands, welche vom
 Simulator unterstützt werden. Grundsätzlich basiert diese Dokumentation der Commands auf dem Tello SDK 2.0 <<sdk2.0userguide>>. Dank ausführlichen Tests mit der Tello-Drohne beinhaltet die folgende Auflistung aber detailliertere und vollständigere Beschreibungen zu den einzelnen Commands.
 ****
-*Für alle Commands gilt:* Unbekannte oder falsch geschriebene Commands liefern die Antwort 'unknown command:' gefolgt vom gesendeten String. Commands sind dabei case-sensitive, d.h. Gross- und Kleinschriebung muss eingehalten werden.
+*Für alle Commands gilt:* Unbekannte oder falsch geschriebene Commands liefern die Antwort 'unknown command:' gefolgt vom gesendeten String. Commands sind dabei Case-sensitive, d.h. Gross- und Kleinschreibung muss eingehalten werden.
 ****
 
 [cols="3,5a,2,^1", options="header", title="Control Commands", id="Table-{counter:table-counter}"]
@@ -365,7 +365,7 @@ Hinweis: Funktioniert zu jeder Zeit.
 | {checkedbox}
 
 | curve x1 y1 z1 x2 y2 z2 speed
-| *Fly at a curve according to the two given coordinates at speed (cm/s)*. _x1, x2 = -500-500, y1, y2 = -500-500, z1, z2 = -500-500, speed = 10 - 60_. Mit Hilfe der aktuellen Dronenposition als Punkt (0,0,0) und der beiden gegebenen Punkten (relativ zur aktuellen Drohnenposition) wird ein Kreisbogen im Raum konstruiert. Die Drohne fliegt auf dieser Kurve bis sie am Endpunkt (x2, y2, z2) angelangt ist.
+| *Fly at a curve according to the two given coordinates at speed (cm/s)*. _x1, x2 = -500-500, y1, y2 = -500-500, z1, z2 = -500-500, speed = 10 - 60_. Mit Hilfe der aktuellen Drohnenposition als Punkt (0,0,0) und der beiden gegebenen Punkten (relativ zur aktuellen Drohnenposition) wird ein Kreisbogen im Raum konstruiert. Die Drohne fliegt auf dieser Kurve bis sie am Endpunkt (x2, y2, z2) angelangt ist.
 
 Hinweis 1: Wenn x1, y1 und z1 oder x2, y2 und z2 gleichzeitig zwischen -20 und 20 sind, schickt die Drohne die Antwort 'out of range'.
 
@@ -403,16 +403,16 @@ Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Dr
 | Command | Beschreibung | Mögliche Antwort | Simulator
 
 | speed x
-| *Set speed to x cm/s*. _x = 10-100_. Setzt die Speed-Variable der drohne auf den entsprechenden Wert.
+| *Set speed to x cm/s*. _x = 10-100_. Setzt die Speed-Variable der Drohne auf den entsprechenden Wert.
 | ok / error
 | {checkedbox}
 
 | rc a b c d
-| *Set remote controller control via four channels*. _a = left/right (-100-100), b = forward/backward (-100-100), c = up/down (-100-100), d = yaw (-100-100)_. Setzt die Bewegungsgeschwindigkeiten in cm/s in die ensprechende Richtung. Die Werte sind unabhängig von der gesetzten speed-Variable auf der Drohne.
+| *Set remote controller control via four channels*. _a = left/right (-100-100), b = forward/backward (-100-100), c = up/down (-100-100), d = yaw (-100-100)_. Setzt die Bewegungsgeschwindigkeiten in cm/s in die entsprechende Richtung. Die Werte sind unabhängig von der gesetzten speed-Variable auf der Drohne.
 
 Hinweis 1: Funktioniert zu jeder Zeit und schickt kein ok.
 
-Hinweis 2: Wenn während einer Sekunde nur 20 nach vorne gegeben werden, reicht das meistens noch nicht aus, um die Drohne zu bewegen. Es braucht mind 30 in eine Richtung während zwei Sekunden, um die Drohne überhaupt aus dem "Gleichgewicht" zu bringen.
+Hinweis 2: Wenn während einer Sekunde nur 20 nach vorne gegeben werden, reicht das meistens noch nicht aus, um die Drohne zu bewegen. Es braucht mind. 30 in eine Richtung während zwei Sekunden, um die Drohne überhaupt aus dem "Gleichgewicht" zu bringen.
 | out of range
 | {checkedbox}
 
@@ -494,7 +494,7 @@ Durch ausführliche Tests mit der Tello-Drohne konnten ausserdem folgende besond
 
 * Mitgeschickte *Parameter der Commands können nicht "genullt"* werden, müssen also immer vorhanden sein. Sonst wird das Command nicht erkannt.
 
-* Die Tello-Drohne beginnt mit dem Senden des Status erst nachdem sie *das erste command-Command* erhalten hat.
+* Die Tello-Drohne beginnt mit dem Senden des Status erst, nachdem sie *das erste command-Command* erhalten hat.
 
 * Parameter mit *Kommastellen* wie z.B. forward '35.234234' oder 'cw 35.23453' werden von der Drohne ausgeführt.
 
@@ -504,15 +504,15 @@ Durch ausführliche Tests mit der Tello-Drohne konnten ausserdem folgende besond
 
 
 === Usability Testing
-Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Tesatskript, die Testprotokolle sowie die Auswertung sind im Anhang zu finden.
-Das Testing wurde auf dem Commit e63f7657acbb2ce787390f7302206a44baecf067 durchgeführt, die Ansicht des GUIs wird in Abbildung 5 gezeigt.
+Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usability Testing gewonnen werden konnten. Des Weiteren wird die Vorgehensweise des Testings kurz erläutert. Das Testkonzept, das Testskript, die Testprotokolle sowie die Auswertung sind im Anhang zu finden.
+Das Testing wurde auf dem Commit e63f765 durchgeführt, die Ansicht des GUIs wird in Abbildung 5 gezeigt.
 
 image::tello-simulator-gui-stand-usability-testing.png[width=498, title="GUI zum Stand des Usability Testings", id="Figure-{counter:image-number}"]
 
 ==== Vorgehensweise
 Um eine unkomplizierte Inbetriebnahme sowie eine einfache Handhabung des Simulators zu gewährleisten, wurde ein Usability Testing durchgeführt.
 
-Das Testing wurde in die folgenden drei Abschnitte unterteilt: «Installation», «Konfiguration des Operators» und «Anwendung TelloSimulator», diese sind im Testkonept im Anhang etwas genauer beschrieben. Per Videotelefonie wurde das Testing mit vier iCompetence-Studierenden der FHNW (2./3. Semester) durchgeführt. Dabei wurde eine Aufgabenstellung per Chat abgegeben und der Proband versuchte die Aufgabe ohne Hilfe des Moderierenden zu lösen. Der Moderierende konnte bei Problemen eingreifen, der Beobachtende notierte die wichtigsten Verhaltensweisen und Aussagen des Probanden. Zusätzlich wurde das Meeting aufgezeichnet, um wichtige Abschnitte nachgehend noch detaillierter zu dokumentieren.
+Das Testing wurde in die folgenden drei Abschnitte unterteilt: «Installation», «Konfiguration des Operators» und «Anwendung TelloSimulator», diese sind im Testkonzept im Anhang etwas genauer beschrieben. Per Videotelefonie wurde das Testing mit vier iCompetence-Studierenden der FHNW (2./3. Semester) durchgeführt. Dabei wurde eine Aufgabenstellung per Chat abgegeben und der Proband versuchte die Aufgabe ohne Hilfe des Moderierenden zu lösen. Der Moderierende konnte bei Problemen eingreifen, der Beobachtende notierte die wichtigsten Verhaltensweisen und Aussagen des Probanden. Zusätzlich wurde das Meeting aufgezeichnet, um wichtige Abschnitte nachgehend noch detaillierter zu dokumentieren.
 
 Anschliessend wurden die wichtigsten Erkenntnisse in die folgenden Kategorien unterteilt: «negative Aussagen / beobachtete Probleme», «positive Aussagen» und «Tipps». Diese wurden nach Thema gruppiert. Pro Thema wurde ein Verbesserungsvorschlag definiert und ins Backlog aufgenommen.
 
@@ -531,7 +531,7 @@ Durch das Usability Testing konnten die folgenden Erkenntnisse gewonnen werden. 
 *** Kameraposition überdenken
 *** Drohne als 3D-Model implementieren oder mindestens ein Pfeil auf dem Quader einblenden, damit die Blickrichtung der Drohne klar ist
 ** Drohne/Simulator muss auch wieder ausgeschaltet werden können
-** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden
+** GUI ist noch nicht sehr strukturiert (schwierig, wichtige Infos zu finden)
 
 <<<
 
@@ -542,17 +542,17 @@ Um das Projekt zusammenzufassen und darüber zu reflektieren werden in diesem ab
 
 Eine der wohl zentralsten Anforderungen war das *Entgegennehmen von Commands sowie das Versenden von Responses* via UDP. Deshalb wurde bereits zu Projektbeginn der Fokus auf die Entwicklung dieser Schnittstelle gelegt. So konnte bereits vor MVP-Release eine solide Basis für das Backend gebaut werden, auf welcher auch der finale Release noch beruht.
 
-Das eng mit der ersten Anforderung zusammenhängende *Versenden des Status* gestaltete sich dank der guten Vorabeit mit der CommandConnection entsprechend leicht.
+Das eng mit der ersten Anforderung zusammenhängende *Versenden des Status* gestaltete sich dank der guten Vorarbeit mit der CommandConnection entsprechend leicht.
 
-Auch das Umsetzen aller Control-, Read- und Set-Commands konnte bis auf die Mission Pad Detection erfüllt werden. Obwohl beim Ausdruck "realitätsgetreu" wohl gewisse Einschränkungen gemacht wurden (keine Simulation von Schwerkraft, Wind und weiteren komplexen Faktoren) verhält sich die virtuelle Drohne grösstenteils wie die echte Tello-Drohne.
+Auch das *Umsetzen aller Control-, Read- und Set-Commands* konnte bis auf die Mission Pad Detection erfüllt werden. Obwohl beim Ausdruck "realitätsgetreu" wohl gewisse Einschränkungen gemacht wurden (keine Simulation von Schwerkraft, Wind und weiteren komplexen Faktoren) verhält sich die virtuelle Drohne grösstenteils wie die echte Tello-Drohne.
 
-Wo der Simulator ebenfalls glänzt ist das *Error-Handling* von Commands sowie das ganze Logging der Applikation. Mittels Tests mit der echten Tello-Drohne und dem Auslesen des Netzwerk-Verkehrs konnten viele Erkenntnisse bezüglich dem Error-Handling der Drohne gewonnen werden. Diese gingen über die öffentlich zugängliche Tello SDK 2.0 Dokumentation hinaus und halfen dabei, ein möglichst ähnliches Error-Handling zu programmieren. Alle Commands und Parameter werden durch den Simulator validiert und auf das im UI integrierte Log ausgegeben. Dies bietet eine Unterstützung beim Debugging.
+Wo der Simulator ebenfalls glänzt, ist das *Error-Handling* von Commands sowie das ganze Logging der Applikation. Mittels Tests mit der echten Tello-Drohne und dem Auslesen des Netzwerk-Verkehrs konnten viele Erkenntnisse bezüglich dem Error-Handling der Drohne gewonnen werden. Diese gingen über die öffentlich zugängliche Tello SDK 2.0 Dokumentation hinaus und halfen dabei, ein möglichst ähnliches Error-Handling zu programmieren. Alle Commands und Parameter werden durch den Simulator validiert und auf das im UI integrierte Log ausgegeben. Dies bietet eine Unterstützung beim Debugging.
 
 Die *Raumgrösse* kann via Slider eingestellt werden. Die Startposition kann via Reset-Button zurückgesetzt werden.
 
 Leider erwies sich das *Versenden des Video-Feeds* als komplizierter als erwartet. Es wurde zwar eine funktionsfähige Videopublisher-Klasse implementiert, welche den Webcam-Feed via UDP überträgt. Die Video-Schnittstelle wurde dabei mittels H.264-Encoding umgesetzt, analog zu derjenigen der Tello-Drohne. Jedoch war es schlussendlich mangels Wissens und Ressourcen nicht möglich, die Funktionalität auf das Versenden der JavaFX-Scene-Snapshots anzuwenden. Aus diesem Grund wurde die Priorität dieser Anforderung nach unten korrigiert und der Task ins Backlog verschoben.
 
-Die Anforderung, mit *Dronhnen-Schwärmen* umzugehen, konnte leider ebenfalls noch nicht angegangen werden. Trotzdem wurde bei der Gestaltung der Software-Architektur darauf geachtet, dass die Applikation skalierbar ist. Durch die Entkopplung von CommandHandler, DroneController und DroneModel könnten theoretisch vom CommandHandler aus auch mehrere DroneModels geupdated werden. Auch vonseiten View wäre für die Anzeige mehrerer DroneViews keine grössere Veränderung nötig.
+Die Anforderung, mit *Drohnen-Schwärmen* umzugehen, konnte leider ebenfalls noch nicht angegangen werden. Trotzdem wurde bei der Gestaltung der Software-Architektur darauf geachtet, dass die Applikation skalierbar ist. Durch die Entkopplung von CommandHandler, DroneController und DroneModel könnten theoretisch vom CommandHandler aus auch mehrere DroneModels geupdated werden. Auch vonseiten View wäre für die Anzeige mehrerer DroneViews keine grössere Veränderung nötig.
 
 === Wahl der Programmiersprache
 Zusammen mit unseren Betreuenden haben wir uns am Anfang des Projekts für das JavaFX-Framework entschieden. Der Hauptgrund dafür war das Vorwissen der Betreuenden und uns Studierenden. Der grosse Vorteil dabei war, dass wir sehr schnell mit dem Programmieren loslegen konnten und uns nicht zuerst in eine neue Sprache eindenken mussten. Als Nachteil betrachten wir, dass das Framework nicht wirklich auf 3D ausgelegt ist. Im Nachhinein würden wir uns aber wieder dafür entscheiden.
@@ -560,7 +560,7 @@ Zusammen mit unseren Betreuenden haben wir uns am Anfang des Projekts für das J
 === Mögliche Weiterentwicklungen
 
 Obwohl der Simulator in seinem jetzigen Zustand die Grundanforderungen abdeckt, gibt es noch diverse Funktionen,
-die aus Ressourcengründen im Backlog des Projekts geblieben sind. Dazu gehören die im vorangehenden Abschnitt beschriebenen Funktionen des Video-Streams sowie der Drohnen-Schwärme. Zusätzlich wurden während der Entwicklung und auch im Testing diverse zusätzliche Weiterentwicklungen disskutiert;
+die aus Ressourcengründen im Backlog des Projekts geblieben sind. Dazu gehören die im vorangehenden Abschnitt beschriebenen Funktionen des Video-Streams sowie der Drohnen-Schwärme. Zusätzlich wurden während der Entwicklung und auch im Testing diverse zusätzliche Weiterentwicklungen diskutiert;
 
 
 ==== Verbesserungen Usability
