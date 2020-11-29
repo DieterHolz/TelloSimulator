@@ -90,7 +90,7 @@ image::/docs/assets/tello-simulator-gui-final.png[width=1000]
 |kbd:[Room-Slider]
 |Anpassung der Grösse der 3D-Welt.
 
-|kbd:[Log-Level DEBUG INFO WARN ERRROR]
+|kbd:[DEBUG INFO WARN ERROR]
 |Setzt das Level für die Filterung der angezeigten Logs.
 
 |kbd:[Show Timestamp]
