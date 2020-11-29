@@ -2,6 +2,7 @@ package tellosimulator;
 
 import javafx.application.Application;
 import javafx.scene.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import tellosimulator.log.Log;
@@ -37,6 +38,7 @@ public class TelloSimulator extends Application {
 
         primaryStage.setTitle("Tello Simulator");
         primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image("tello_icon.png"));
         primaryStage.show();
 
         logger.debug("Welcome. Start the virtual drone and connect to it with your Application.");
