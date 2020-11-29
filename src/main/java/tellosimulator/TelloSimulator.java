@@ -36,7 +36,7 @@ public class TelloSimulator extends Application {
 
         scene.getStylesheets().add(getClass().getResource("/log-view.css").toExternalForm());
 
-        primaryStage.setTitle("Tello Simulator");
+        primaryStage.setTitle("Tello Simulator v1.0.0");
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image("tello_icon.png"));
         primaryStage.show();
