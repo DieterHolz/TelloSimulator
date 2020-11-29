@@ -17,8 +17,8 @@
 image::fhnw_ht_10mm.jpg[width=400, align="center"]
 [.text-center]
 IP5 im Studiengang Informatik mit Vertiefung in Design und Management an der Fachhochschule Nordwestschweiz +
-v0.1 +
-Brugg, 6. Oktober 2020
+v1.0.0 +
+Brugg, 29. November 2020
 
 [.text-center]
 *Autoren* +
@@ -160,6 +160,8 @@ Die Netzwerkschnittstelle und die grundlegenden Logiken des Simulators wurden st
 
 Systembedingt mussten auch einige Spezialfälle berücksichtigt werden. Der Simulator kann zum Beispiel im Gegensatz zur echten Drohne kein eigenes Wireless-Netzwerk aufbauen. Ausserdem muss der Simulator auch auf dem gleichen Gerät laufen können wie das Operator-Programm. Dabei kann es zu Konflikten mit der Port-Belegung kommen. Dies ist unter <<UDP-Schnittstelle>> genauer erläutert. Bei der Tello-Drohne hat man diese Probleme nicht, da die Drohne immer alle Ports für sich selbst zur Verfügung hat.
 
+<<<
+
 Um die zentralen Datenflüsse der Tello-Drohne abzubilden, implementiert der TelloSimulator zwei Threads, welche parallel zu dem Hauptprogramm  laufen: die *CommandConnection* und die *StateConnection*. Die *VideoConnection* als letzter Teil dieser Dreifaltigkeit wurde aus Ressourcengründen nicht umgesetzt.
 
 image::tello-simulator-backend-swimlane-diagram.svg[width=800, title="Ein grober Überblick, wie das Backend des TelloSimulator bezüglich parallel laufender Threads aufgebaut ist.", id="Figure-{counter:image-number}"]
@@ -168,6 +170,8 @@ image::tello-simulator-backend-swimlane-diagram.svg[width=800, title="Ein grober
 Sobald der Benutzer die virtuelle Drohne einschaltet, wird eine neue Instanz der CommandConnection erstellt und der Thread gestartet. Beim Erstellen des Sockets besteht hierbei eine Eigenheit des Simulators. Der Standard-Port der Tello-Drohne wäre 8889, jedoch wird dieser Port in den meisten Fällen schon durch das ebenfalls lokal laufende Operator-Programm belegt sein. Deshalb bindet sich der Simulator-DatagramSocket der CommandConnection bewusst zum Port 8879 anstatt 8889. Danach empfängt der Thread laufend UDP-Pakete auf diesem Socket.
 
 Nach einem initialen command-Command wird dann wie bei der echten Tello-Drohe der SDK Mode aktiviert. Ab dann ist die Drohne bereit für andere Commands. Gleichzeitig bewirkt dies die Initiierung der StateConnection, welche ab dann regelmässig den Drohnen-Status versendet.
+
+<<<
 
 Alle über die CommandConnection empfangenen Nachrichten werden gewrappt als CommandPackage samt Herkunfts-Adresse und Herkunfts-Port an die CommandHandler-Klasse weitergegeben.
 
@@ -183,6 +187,8 @@ Da der Simulator zu diversen Zeitpunkten und von verschiedensten Klassen aus ein
 
 ===== DroneController
 Diese Klasse steuert die virtuelle Drohne und enthält ihre gesamte Logik. Sie aktualisiert und animiert alle Daten, die in dem DroneModel gespeichert sind, dem sie zugeordnet ist. Die Methoden des DroneControllers führen die Befehle aus, wenn sie vom CommandHandler aufgerufen werden. Ebenfalls sendet der Controller Antworten über den CommandResponseSender an das Operator-Programm, sobald ein bestimmtes Command fertig ausgeführt wurde.
+
+<<<
 
 ===== DroneModel
 Dies ist die Model-Klasse, welche das Datenmodell der Tello-Drohne repräsentiert. Die Werte des DroneModels werden nur durch die Logik des DroneControllers verändert und im Frontend durch die an seine Properties gebundene Views dargestellt. Dabei dient das DroneModel als *single source of truth* für alle anderen Komponenten, die auf die Parameter der Drohne zugreifen möchten. Dies gewährleistet die Datenintegrität und ermöglicht eine einfachere Skalierbarkeit der Applikation in Zukunft.
@@ -229,6 +235,8 @@ Die Schnittstelle der Tello-Drohne als eigenständiges Gerät im Netzwerk ist zi
 | -
 | Client-IP:11111
 |===
+
+<<<
 
 ==== Die UDP-Schnittstelle des Simulators
 Aufgrund der Anforderung, dass der Simulator sowohl vom gleichen Gerät aus als auch von jedem sich im lokalen Netzwerk befindenden Client angesteuert werden können muss, ist seine Schnittstelle leicht unterschiedlich gestaltet.
@@ -403,6 +411,8 @@ Hinweis 1: Wenn x, y und z gleichzeitig zwischen -20 und 20 sind, schickt die Dr
 |
 |===
 
+<<<
+
 [cols="3,5a,2,^1", options="header", title="Set Commands", id="Table-{counter:table-counter}"]
 
 |===
@@ -448,6 +458,8 @@ Hinweis 2: Wenn während einer Sekunde nur 20 nach vorne gegeben werden, reicht 
 |
 
 |===
+
+<<<
 
 [cols="3,5a,2,^1", options="header", title="Read Commands", id="Table-{counter:table-counter}"]
 
@@ -514,6 +526,8 @@ Dieses Kapitel beschreibt im Speziellen die Erkenntnisse, welche aus einem Usabi
 Das Testing wurde auf dem Commit e63f765 durchgeführt, die Ansicht des GUIs wird in Abbildung 5 gezeigt.
 
 image::tello-simulator-gui-stand-usability-testing.png[width=498, title="GUI zum Stand des Usability Testings.", id="Figure-{counter:image-number}"]
+
+<<<
 
 ==== Vorgehensweise
 Um eine unkomplizierte Inbetriebnahme sowie eine einfache Handhabung des Simulators zu gewährleisten, wurde ein Usability Testing durchgeführt.
