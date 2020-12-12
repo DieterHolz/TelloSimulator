@@ -5,12 +5,9 @@
 
 === Vorbereitung 1: Setup TelloSimulator
 
-*Schritt 1:* Repository https://github.com/DieterHolz/TelloSimulator in gewünschtes lokales Verzeichnis klonen (z.B. mit Git Bash / Terminal):
+*Schritt 1:* TelloSimulator.zip von Teams herunterladen (Channel 9 - TelloSimulator Dateien) und in gewünschtes lokales Verzeichnis entpacken.
 
-[source,bash]
-git clone https://github.com/DieterHolz/TelloSimulator
-
-*Schritt 2:* Ins TelloSimulator Verzeichnis wechseln:
+*Schritt 2:* Bash/Terminal öffnen und ins TelloSimulator Verzeichnis wechseln:
 
 [source,bash]
 cd TelloSimulator
@@ -29,38 +26,39 @@ gradlew run
 ....
 
 
-=== Vorbereitung 2: Setup YelloApp
+=== Vorbereitung 2: Setup TelloPlaygroundApp
 
-*Schritt 1:* emoba-Repository aktualisieren (git pull).
+*Schritt 1:* TelloPlaygroundApp-Code von Teams downloaden und in das emoba-Projekt integrieren.
 
-*Schritt 2:* In YelloApp.kt auf Zeile 15 deine Simulator IP (im TelloSimulator GUI rechts ersichtlich) einsetzen.
+*Schritt 2:* In TelloPlaygroundApp.kt auf Zeile 15 deine Simulator IP (im TelloSimulator GUI rechts ersichtlich) einsetzen.
 
 [source, kotlin]
 ....
-val connector = TelloConnector(ip = "SimulatorIP",      //real Tello: 192.168.0.12
+val connector = TelloConnector(ip = "YourSimulatorIP",  //real Tello: 192.168.0.12
                                 commandPort = 8879,     //real Tello: 8889
                                 statePort   = 8890)
 ....
 
 
-*Schritt 3:* YelloApp auf Emulator oder Android Device starten.
+*Schritt 3:* TelloPlaygroundApp auf Emulator oder Android Device starten. 
 
 *Schritt 4:* Die virtuelle Drohne im Simulator mit dem Button "Start Drone" einschalten.
 
-*Schritt 5:* Von der YelloApp aus mit dem Button "Connect" sich mit der virtuellen Drohe verbinden.
+*Schritt 5:* Von der TelloPlaygroundApp aus mit dem Button "Connect" sich mit der virtuellen Drohe verbinden.
 
-Die Drohne sollte nun von der YelloApp aus steuerbar sein.
+Die Drohne sollte nun von der TelloPlaygroundApp aus steuerbar sein.
 
-NOTE: Wenn der Simulator 20 Sekunden lang kein Command erhält, schliesst er automatisch die Verbindung. Um die Verbindung zurückzusetzen, kann die virtuelle Drohne im Simulator einfach mit "Stop/Start Drone" wieder aus- und eingeschaltet werden.
+NOTE: Wenn der Simulator 20 Sekunden lang kein Command erhält, schliesst er automatisch die Verbindung. Um die Verbindung zurückzusetzen, kann die virtuelle Drohne im Simulator einfach mit "Stop/Start Drone" wieder aus- und eingeschaltet werden. 
 
 
-TIP: Wir empfehlen an diesem Punkt kurz die YelloApp und die bereits implementierten Commands zu studieren.
+TIP: Wir empfehlen an diesem Punkt kurz die TelloPlaygroundApp und die bereits implementierten Commands zu studieren.
 
+<<<
 
 === Aufgabe 1: «flip»-Command
 Das «flip»-Command wird mit einem Paramter «l» (left), «r» (right), «f» (forward) oder (also z.B. «flip b») (backward) verschickt. Die Drohne führt damit einen Salto in die entsprechende Richtung durch. (also z.B. «flip b» um einen Rückwärts-Salto durchzuführen)
 
-*_Implementiere in der YelloApp einen Button, um der Drohne das command «flip» inkl. Paramter (z.B. «flip b») zu schicken._*
+*_Implementiere in der TelloPlaygroundApp einen Button, um der Drohne das command «flip» inkl. Paramter (z.B. «flip b») zu schicken._*
 
 NOTE: Erhält die Drohne ein «flip»-Command, dann schickt sie nach erfolgreicher Ausführung die Antwort "ok" zurück. Erst nachdem diese Anwort verschickt wurde, werden weitere Commands wieder angenommen. Du solltest also die bereits vorhandene [source,kotlin]`sendCommandAndWait`-Funktion verwenden.
 
@@ -73,14 +71,12 @@ Das «rc»-Command (rc für Remote Controller) ist wohl das zentralste Command z
 
 NOTE:  Das «rc»-Command funktioniert zu jeder Zeit und erwartet auch keine Antwort von der Drohne. Deshalb wird bei der Implementation die [source,kotlin]`fireAndForgetCommand`-Funktion verwendet.
 
-<<<
-
 === Aufgabe 3: Status auslesen
-Die Tello-Drohne verschickt alle 100 ms einen Status mit diversen nützlichen Parameter-Werten der Drohne. Der Status-String wird dabei von der YelloApp über den statusSocket empfangen.
+Die Tello-Drohne verschickt alle 100 ms einen Status mit diversen nützlichen Parameter-Werten der Drohne. Der Status-String wird dabei von der TelloPlaygroundApp über den statusSocket empfangen.
 
-*_Implementiere ein Textfeld in der YelloApp, um den aktuellen Batterieladestand gemäss Drohnen-Status anzuzeigen._*
+*_Implementiere ein Textfeld in der TelloPlaygroundApp, um den aktuellen Batterieladestand gemäss Drohnen-Status anzuzeigen._*
 
-NOTE: Beispiel eines State-Strings: `mid:-2;x:-200;y:-200;z:-200;mpry:-1,-1,-1;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:0;templ:72;temph:75;tof:80;h:60;bat:65;baro:281.96;time:27;agx:24.00;agy:1.00;agz:-1001.00;\r\n`
+NOTE: Ein Beispiel eines State-Strings findest du im Anhang unter <<Weitere Eigenschaften der Tello-API>>.
 
 TIP: Als Vorlage kann dir der bereits implementierte «height»-Text dienen.
 
