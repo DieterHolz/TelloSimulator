@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.8.dev">
-<title>TelloSimulator Übungen</title>
+<title>Arbeitsblatt TelloSimulator</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,16 +438,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>TelloSimulator Übungen</h1>
+<h1>Arbeitsblatt TelloSimulator</h1>
 </div>
 <div id="content">
 <div class="sect2">
 <h3 id="truevorbereitung-1-setup-tellosimulator"><a class="anchor" href="#truevorbereitung-1-setup-tellosimulator"></a>Vorbereitung 1: Setup TelloSimulator</h3>
 <div class="paragraph">
-<p><strong>Schritt 1:</strong> TelloSimulator.zip von Teams herunterladen (Channel 9 - TelloSimulator Dateien) und in gewünschtes lokales Verzeichnis entpacken.</p>
+<p><strong>Schritt 0:</strong> Für den TelloSimulator wird ein aktuelles Java JDK mit integriertem JavaFX benötigt. Bitte installiere deshalb den
+“Full JDK” des LibericaJDK. Auf der Download-Seite <a href="https://bell-sw.com/pages/downloads/#/java-15-current" class="bare">https://bell-sw.com/pages/downloads/#/java-15-current</a> kannst du den
+passenden Liberica JDK 15.0.1+9 für dein Betriebssystem herunterladen.</p>
 </div>
 <div class="paragraph">
-<p><strong>Schritt 2:</strong> Bash/Terminal öffnen und ins TelloSimulator Verzeichnis wechseln:</p>
+<p><strong>Schritt 1:</strong> Repository in gewünschtes lokales Verzeichnis klonen (z.B. mit Command Prompt / Git Bash / Terminal):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">git clone https://github.com/DieterHolz/TelloSimulator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Schritt 2:</strong> Ins TelloSimulator Verzeichnis wechseln:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -459,7 +469,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">./gradlew run</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradlew run</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -467,14 +477,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradlew run</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">./gradlew run</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="truevorbereitung-2-setup-telloplaygroundapp"><a class="anchor" href="#truevorbereitung-2-setup-telloplaygroundapp"></a>Vorbereitung 2: Setup TelloPlaygroundApp</h3>
 <div class="paragraph">
-<p><strong>Schritt 1:</strong> TelloPlaygroundApp-Code von Teams downloaden und in das emoba-Projekt integrieren.</p>
+<p><strong>Schritt 1:</strong> TelloPlaygroundApp-Code von Teams downloaden (<strong>module09-start.zip</strong>) und in das emoba-Projekt integrieren.</p>
 </div>
 <div class="paragraph">
 <p><strong>Schritt 2:</strong> In TelloPlaygroundApp.kt auf Zeile 15 deine Simulator IP (im TelloSimulator GUI rechts ersichtlich) einsetzen.</p>
@@ -1037,7 +1047,7 @@ z.B. <code><strong>76\r\n</strong></code></p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-12-12 14:05:07 +0100
+Last updated 2020-12-15 11:22:20 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -1,13 +1,20 @@
 :checkedbox: pass:normal[{startsb}&#10004;{endsb}]
 
-= TelloSimulator Übungen
+= Arbeitsblatt zur Tello-Drohne
 
 
 === Vorbereitung 1: Setup TelloSimulator
 
-*Schritt 1:* TelloSimulator.zip von Teams herunterladen (Channel 9 - TelloSimulator Dateien) und in gewünschtes lokales Verzeichnis entpacken.
+*Schritt 0:* Für den TelloSimulator wird ein aktuelles Java JDK mit integriertem JavaFX benötigt. Bitte installiere deshalb den
+“Full JDK” des LibericaJDK. Auf der Download-Seite https://bell-sw.com/pages/downloads/#/java-15-current kannst du den
+passenden Liberica JDK 15.0.1+9 für dein Betriebssystem herunterladen.
 
-*Schritt 2:* Bash/Terminal öffnen und ins TelloSimulator Verzeichnis wechseln:
+*Schritt 1:* Repository in gewünschtes lokales Verzeichnis klonen (z.B. mit Command Prompt / Git Bash / Terminal):
+
+[source,bash]
+git clone https://github.com/DieterHolz/TelloSimulator
+
+*Schritt 2:* Ins TelloSimulator Verzeichnis wechseln:
 
 [source,bash]
 cd TelloSimulator
@@ -16,19 +23,18 @@ cd TelloSimulator
 
 [source,bash]
 ....
-./gradlew run
+gradlew run
 ....
 oder
-
 [source,bash]
 ....
-gradlew run
+./gradlew run
 ....
 
 
 === Vorbereitung 2: Setup TelloPlaygroundApp
 
-*Schritt 1:* TelloPlaygroundApp-Code von Teams downloaden und in das emoba-Projekt integrieren.
+*Schritt 1:* TelloPlaygroundApp-Code von Teams downloaden (*module09-start.zip*) und in das emoba-Projekt integrieren.
 
 *Schritt 2:* In TelloPlaygroundApp.kt auf Zeile 15 deine Simulator IP (im TelloSimulator GUI rechts ersichtlich) einsetzen.
 
@@ -76,7 +82,7 @@ Die Tello-Drohne verschickt alle 100 ms einen Status mit diversen nützlichen Pa
 
 *_Implementiere ein Textfeld in der TelloPlaygroundApp, um den aktuellen Batterieladestand gemäss Drohnen-Status anzuzeigen._*
 
-NOTE: Ein Beispiel eines State-Strings findest du im Anhang unter <<Weitere Eigenschaften der Tello-API>>.
+NOTE: Ein Beispiel eines State-Strings findest du ganz am Schluss im Anhang unter <<Weitere Eigenschaften der Tello-API>>.
 
 TIP: Als Vorlage kann dir der bereits implementierte «height»-Text dienen.
 
